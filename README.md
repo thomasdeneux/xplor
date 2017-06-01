@@ -1,2 +1,2 @@
 # xplor
-bla bla
+Multi-Dimensional Data Visualization
