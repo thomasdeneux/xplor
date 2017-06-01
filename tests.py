@@ -114,7 +114,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(xdata.Dimensionlabel.defaultvalue('logical'), False)
         self.assertEqual(xdata.Dimensionlabel.defaultvalue('string'), '')
         self.assertTrue(xdata.Dimensionlabel.defaultvalue('mixed') is None)
-        self.assertTrue(xdata.Dimensionlabel.defaultvalue('whatever') is None)
+        self.assertRaises(Exception, xdata.Dimensionlabel.defaultvalue, 
+        'prices')
+        self.assertRaises(Exception, xdata.Dimensionlabel, 2)
         
         print("\n")
         

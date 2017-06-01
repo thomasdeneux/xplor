@@ -31,6 +31,7 @@ There are 3 classes in this module:
 
 import numpy as np
 from operator import itemgetter
+#this one is used to sort a list of dictionary
 
 class Dimensionlabel:
     
@@ -193,16 +194,17 @@ class Dimensionlabel:
             return False
         elif dimensiontype == 'string':
             return ''
-        else:
-            #'mixed' type
+        elif dimensiontype == 'mixed':
             return None
+        else:
+            raise Exception("This function only gives the default value for \
+            the following types: 'numeric', 'logical', 'string', 'mixed'")
     
     
                 
 if __name__ == "__main__":
     print('Dimensionlabel')
-    #Dimensionlabel(1,'numeric')
-    raise Exception('label must be a string')
+    
     
 
         
