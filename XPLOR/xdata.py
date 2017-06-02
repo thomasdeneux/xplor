@@ -1,13 +1,10 @@
 """xdata module is a module to define data in the form of an ND array
-
 XPLOR dataset is contained in a N dimensional array. The array contains the 
 data itself, but the array also has headers. The headers contains this
 informations about each of the dimensions : names, types, units, scale, ...
-
 This module uses : 
         numpy
         operator
-
 There are 3 classes in this module:
     
     - Dimensionlabel : for a specific dimension, Dimensionlabel stores a label,
@@ -32,6 +29,7 @@ There are 3 classes in this module:
 import numpy as np
 from operator import itemgetter
 #this one is used to sort a list of dictionary
+
 
 class Dimensionlabel:
     
@@ -67,7 +65,6 @@ class Dimensionlabel:
               associated defaultvalue
     defaultvalue (dimensiontype) : gives the default value associated to 
               a certain dimensiontype
-
     Examples
     --------
      dimensionlabel(label,type,unit)
@@ -199,17 +196,9 @@ class Dimensionlabel:
         else:
             raise Exception("This function only gives the default value for \
             the following types: 'numeric', 'logical', 'string', 'mixed'")
+
     
     
                 
 if __name__ == "__main__":
     print('Dimensionlabel')
-    
-    
-
-        
-            
-        
-        
-        
-        
