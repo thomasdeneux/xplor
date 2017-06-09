@@ -304,11 +304,11 @@ class MyTestCase(unittest.TestCase):
 #        self.assertEqual(f.dimensiontype, fdd.dimensiontype)
        
              
-if __name__ == "__main__":    
-    firsttest = MyTestCase()
-    firsttest.test_xdata_module_DimensionDescription_class()
-    #firsttest.test_xdata_module_CategoricalHeader_class()
-    firsttest.test_xdata_module_MeasureHeader_class()
-#    firsttest.test_xdata_module_Xdata_class()
-#    firsttest.test_xdata_module_createDimensionDescription_function()
-    
+#if __name__ == "__main__":    
+#    firsttest = MyTestCase()
+#    firsttest.test_xdata_module_DimensionDescription_class()
+#    #firsttest.test_xdata_module_CategoricalHeader_class()
+#    firsttest.test_xdata_module_MeasureHeader_class()
+##    firsttest.test_xdata_module_Xdata_class()
+##    firsttest.test_xdata_module_createDimensionDescription_function()
+#    
