@@ -264,9 +264,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEquals(x.update_measureheader(n_elem = 0).n_elem, 0)
         self.assertEquals(x.update_measureheader(scale = 4).scale, 4)
         self.assertEquals(x.update_measureheader(2, 0).scale, 0.5)
-        
-        
-        
         print("Test 13: testing ismeasure, iscategoricalwithvalue, and "
               "isundifferentiated")
         self.assertTrue(x.ismeasure)
@@ -275,45 +272,43 @@ class MyTestCase(unittest.TestCase):
 
         print("\n")
         
-    def test_xdata_module_Xdata_class(self):
-        print("Tests for the class Xdata (module xdata):")
-        print("\n")
-        return ("bye")
-    
-    def test_xdata_module_createDimensionDescription_function(self):
-        print("Test for the createDimensionDescription function \
-        (module xdata) \n")
-        self.assertRaises(Exception, xdata.createDimensionDescription, 1)
-        self.assertRaises(Exception,
-                          xdata.createDimensionDescription,'fruits', 1)
-        self.assertRaises(Exception,
-                          xdata.createDimensionDescription,'fruits',
-                                                           numpy.arange(15))
-        c = xdata.createDimensionDescription('cars')
-        fruits = numpy.array([['apple'], ['pear'], ['banana']])
-        f = xdata.createDimensionDescription ('fruits', fruits)
-        #mix = numpy.array([[1], [2], ['Nan'], [1]])
-        #m = xdata.createDimensionDescription('mix', mix)
-        
-        cdd = xdata.DimensionDescription('cars', 'mixed')
-        fdd = xdata.DimensionDescription('fruits', 'string')
-        #mdd = xdata.DimensionDescription('mix', 'mixed')
-        
-        self.assertEqual(c.label, cdd.label)
-        self.assertEqual(c.dimensiontype, cdd.dimensiontype)
-        #self.assertEqual(m.label, mdd.label)
-        #self.assertEqual(m.dimensiontype, mdd.dimensiontype)
-        self.assertEqual(f.label, fdd.label)
-        self.assertEqual(f.dimensiontype, fdd.dimensiontype)
-        
-def same(chose = None):
- return chose        
+#    def test_xdata_module_Xdata_class(self):
+#        print("Tests for the class Xdata (module xdata):")
+#        print("\n")
+#        return ("bye")
+#    
+#    def test_xdata_module_createDimensionDescription_function(self):
+#        print("Test for the createDimensionDescription function \
+#        (module xdata) \n")
+#        self.assertRaises(Exception, xdata.createDimensionDescription, 1)
+#        self.assertRaises(Exception,
+#                          xdata.createDimensionDescription,'fruits', 1)
+#        self.assertRaises(Exception,
+#                          xdata.createDimensionDescription,'fruits',
+#                                                           numpy.arange(15))
+#        c = xdata.createDimensionDescription('cars')
+#        fruits = numpy.array([['apple'], ['pear'], ['banana']])
+#        f = xdata.createDimensionDescription ('fruits', fruits)
+#        #mix = numpy.array([[1], [2], ['Nan'], [1]])
+#        #m = xdata.createDimensionDescription('mix', mix)
+#        
+#        cdd = xdata.DimensionDescription('cars', 'mixed')
+#        fdd = xdata.DimensionDescription('fruits', 'string')
+#        #mdd = xdata.DimensionDescription('mix', 'mixed')
+#        
+#        self.assertEqual(c.label, cdd.label)
+#        self.assertEqual(c.dimensiontype, cdd.dimensiontype)
+#        #self.assertEqual(m.label, mdd.label)
+#        #self.assertEqual(m.dimensiontype, mdd.dimensiontype)
+#        self.assertEqual(f.label, fdd.label)
+#        self.assertEqual(f.dimensiontype, fdd.dimensiontype)
+       
              
 if __name__ == "__main__":    
     firsttest = MyTestCase()
     firsttest.test_xdata_module_DimensionDescription_class()
     #firsttest.test_xdata_module_CategoricalHeader_class()
     firsttest.test_xdata_module_MeasureHeader_class()
-    firsttest.test_xdata_module_Xdata_class()
-    firsttest.test_xdata_module_createDimensionDescription_function()
+#    firsttest.test_xdata_module_Xdata_class()
+#    firsttest.test_xdata_module_createDimensionDescription_function()
     
