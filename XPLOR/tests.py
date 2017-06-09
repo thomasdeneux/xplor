@@ -17,7 +17,7 @@ This module uses :
 # version 1.0
 # -*- coding: utf-8 -*-
 
-import numpy
+import numpy as np
 import unittest
 
 import xdata
@@ -235,8 +235,12 @@ class MyTestCase(unittest.TestCase):
         print("Test 8: testing the getallunits function")
         self.assertEqual(x.getallunits(), [[{'unit' : 'mm', 'value' : 1.0}]])
         self.assertEqual(t.getallunits(), [[{'unit' : 's', 'value' : 1.0}]])
-        print("Test 9: testing the iscategorical function")
+        print("Test 9: testing the iscategorical, ismeasure, "
+              "iscategoricalwithvalue, and isundifferentiated")
         self.assertFalse(x.iscategorical)
+        self.assertTrue(x.ismeasure)
+        self.assertFalse(x.iscategoricalwithvalues)
+        self.assertFalse(x.isundifferentiated)
         print("Test 10: testing the getvalue function")
         self.assertEqual(x.getvalue(0), 1)
         self.assertEqual(x.getvalue(3,1), 2.5)
@@ -264,12 +268,32 @@ class MyTestCase(unittest.TestCase):
         self.assertEquals(x.update_measureheader(n_elem = 0).n_elem, 0)
         self.assertEquals(x.update_measureheader(scale = 4).scale, 4)
         self.assertEquals(x.update_measureheader(2, 0).scale, 0.5)
-        print("Test 13: testing ismeasure, iscategoricalwithvalue, and "
-              "isundifferentiated")
-        self.assertTrue(x.ismeasure)
-        self.assertFalse(x.iscategoricalwithvalues)
-        self.assertFalse(x.isundifferentiated)
-
+        print("Test 13: testing check_header_update function")
+        self.assertRaises(Exception,
+                          x.check_header_update, 'hello', np.array([1]), x)
+        self.assertRaises(Exception,
+                          x.check_header_update, 'all', 'bonjour', x)
+        self.assertRaises(Exception,
+                          x.check_header_update, 'all', np.array([1]), 'hallo')
+        self.assertRaises(Exception,
+                          x.check_header_update, 'new', np.array([1]), x)
+        self.assertRaises(Exception,
+                          x.check_header_update, 'remove', np.array([1]), x)
+        self.assertRaises(Exception,
+                          x.check_header_update,
+                          'chg',
+                          np.array([[1]]),
+                          x.update_measureheader(n_elem = 30))
+        self.assertRaises(Exception,
+                          x.check_header_update,
+                          'chg&new',
+                          np.array([[1], [2]]),
+                          x)
+        self.assertRaises(Exception,
+                          x.check_header_update,
+                          'chg&rm',
+                          np.array([[1], [2]]),
+                          x)
         print("\n")
         
 #    def test_xdata_module_Xdata_class(self):
@@ -304,11 +328,11 @@ class MyTestCase(unittest.TestCase):
 #        self.assertEqual(f.dimensiontype, fdd.dimensiontype)
        
              
-#if __name__ == "__main__":    
-#    firsttest = MyTestCase()
-#    firsttest.test_xdata_module_DimensionDescription_class()
-#    #firsttest.test_xdata_module_CategoricalHeader_class()
-#    firsttest.test_xdata_module_MeasureHeader_class()
-##    firsttest.test_xdata_module_Xdata_class()
-##    firsttest.test_xdata_module_createDimensionDescription_function()
-#    
+if __name__ == "__main__":    
+    firsttest = MyTestCase()
+    firsttest.test_xdata_module_DimensionDescription_class()
+    #firsttest.test_xdata_module_CategoricalHeader_class()
+    firsttest.test_xdata_module_MeasureHeader_class()
+#    firsttest.test_xdata_module_Xdata_class()
+#    firsttest.test_xdata_module_createDimensionDescription_function()
+    

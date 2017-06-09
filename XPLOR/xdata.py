@@ -281,8 +281,7 @@ class Header(ABC):
       
     Methods
     -------           
-    (abstract methods)
-    
+    (abstract methods)    
     - n_elem : number of element in the column(s)/ number of samples
     - iscategorical : differentiate measure and categorical headers for the
                       properties ismeasure, iscategoricalwithvalues and
@@ -306,7 +305,15 @@ class Header(ABC):
                 nline can here be an integer or a list of integer.
                 the function returns the corresponding values of the first
                 column
-    
+                
+    (non abstract method)
+    - check_header_update: (self, flag, ind, newheader)
+                            flag : 'all', 'chgdim', 'new', 'remove', 'chg',
+                                   'chg&new' or 'chg&rm'
+                            ind : numpy.array of shape (n,)
+                            basics checks when updating data and giving a new
+                            header
+        
     Examples
     --------
      CategorialHeader: (with values)
@@ -334,8 +341,8 @@ class Header(ABC):
         
     CategorialHeader: (undifferentiated)
          label : 'fruits'
-         column_descriptors : (list of DimensionDescriptors, simplified here)
-         #TODO : is there a column descriptor if there is no column?
+         column_descriptors : (list of DimensionDescriptors)
+                 None
          n_elem : 4
          values : None
             
@@ -400,6 +407,62 @@ class Header(ABC):
         """fast way to test if a header is categorical with no values"""
         return self.iscategorical and self.getncolumns==0
                 
+    #method
+    def check_header_update(self, flag, ind, newheader):
+        """basics checks when updating data and giving a new header"""
+        #check types of parameters
+        if not isinstance(newheader, Header):
+            raise Exception("newheader must be a header")
+        elif not flag in ['all', 'chgdim', 'new', 'remove', 'chg', 'chg&new',
+                          'chg&rrm']:
+            raise Exception("flags can be : 'all', 'chgdim', 'new', 'remove', "
+            "'chg', 'chg&new' or 'chg&rm'")
+        elif not isinstance(ind, np.array):
+            raise Exception ("ind must be of type numpy.array")
+        elif len(ind.shape) != 1:
+            raise Exception("ind must be of shape (n,)")
+        if flag != 'chgdim':
+            #only 'chgdim' flags allow to change the type of the header
+            # and/or change the various labels
+            
+            #check that the types are coherent
+            if self.iscategorical != newheader.iscategorical:
+                raise Exception("both headers must be of same type")
+            #check that labels are preserved
+            if self._label != newheader._label:
+                raise Exception ("both headers must have the same label")
+            for column in range (len(self._column_descriptors)):
+                if self._column_descriptors[column].label != \
+                    newheader._column_descriptores[column].label:
+                        raise Exception ("sublabels are not preserved")
+            #only 'all' and 'chgdim' flag allows to change n_elem as we want
+            if flag == 'new':
+                if newheader.n_elem != self._n_elem + ind.size:
+                    raise Exception ("the new headers has the wrong number of "
+                                     "elements")
+            elif flag == 'chg':
+                if newheader.n_elem != self._n_elem:
+                    raise Exception ("both headers must have the same number "
+                                         "of elements")
+            elif flag == 'remove':
+                if newheader.n_elem != self._n_elem - ind.size:
+                    raise Exception ("the new headers has the wrong number of "
+                                     "elements")
+            #'chg&new' and 'chg&rm' flags impose ind to be an array of array
+            #with the first element being the array of indices to be changed
+            #and the second element being an array of new indices
+            elif flag == 'chg&new':
+                if newheader.n_elem != self._n_elem + ind[0][1].size:
+                    raise Exception ("the new headers has the wrong number of "
+                                     "elements")
+            elif flag == 'chg&rm':
+                if newheader.n_elem != self._n_elem + ind[0][1].size:
+                    raise Exception ("the new headers has the wrong number of "
+                                     "elements")
+    
+    
+    
+    
     #abstract methods
     @abstractmethod
     def n_elem(self):
