@@ -503,9 +503,9 @@ class Header(ABC):
         pass
     
     @abstractmethod
-    def getvalue(self, nline, column = None):
-        """get the value of the line nline of the column column (defined by
-        it's label or number) or the first column"""
+    def getvalue(self, line, column = None):
+        """get the value of the line of number line of the column column
+        (defined by it's label or number) or the first column"""
         pass
     
     @abstractmethod
@@ -713,7 +713,7 @@ class CategoricalHeader(Header):
         """
         return self.values.shape[0]
    
-    #@property  TODO
+    @property
     def iscategorical(self):
         """CategoricalHeader instances are all categorical"""
         return True
@@ -1189,7 +1189,6 @@ class MeasureHeader(Header):
 
                 
 def createDimensionDescription(label, column = None):
-    #TODO change to pandas.core.series.Series
     """the function creates an instance of DimensionDescription.
     
     createDimensionDescription gives an instance of the class
@@ -1212,17 +1211,17 @@ def createDimensionDescription(label, column = None):
     #if no table of value is given:
     if column is None:
         return(DimensionDescription(label, 'mixed'))
-    elif not isinstance(column, pandas.core.series.Series):
+    elif not isinstance(column, pd.core.series.Series):
         raise Exception("column must be of type pandas.core.series.Series")
     elif len(column.shape) != 1:
-        raise Exception("column must be an array of shape (n,1)")
+        raise Exception("column must be of shape (n,1)")
     #if a table of value is given, we must determine the dimensiontype
     #we must check all the elements to make sure it is not a 'mixed' type
-    dimensiontype =  DimensionDescription.infertype(column[0][0])
+    dimensiontype =  DimensionDescription.infertype(column[0])
     notmixed = True
     i = 0
     while notmixed and i < column.shape[0]:
-          if dimensiontype == DimensionDescription.infertype(column[0][i]):
+          if dimensiontype == DimensionDescription.infertype(column[i]):
               i += 1
           else:
               notmixed = False

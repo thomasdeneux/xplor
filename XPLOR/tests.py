@@ -5,6 +5,7 @@ The modules that need to be tested are :
 
 This module uses :
         numpy
+        pandas
         unittest
         
         xdata
@@ -18,6 +19,7 @@ This module uses :
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import pandas as pd
 import unittest
 
 import xdata
@@ -301,31 +303,37 @@ class MyTestCase(unittest.TestCase):
 #        print("\n")
 #        return ("bye")
 #    
-#    def test_xdata_module_createDimensionDescription_function(self):
-#        print("Test for the createDimensionDescription function \
-#        (module xdata) \n")
-#        self.assertRaises(Exception, xdata.createDimensionDescription, 1)
-#        self.assertRaises(Exception,
-#                          xdata.createDimensionDescription,'fruits', 1)
-#        self.assertRaises(Exception,
-#                          xdata.createDimensionDescription,'fruits',
-#                                                           numpy.arange(15))
-#        c = xdata.createDimensionDescription('cars')
-#        fruits = numpy.array([['apple'], ['pear'], ['banana']])
-#        f = xdata.createDimensionDescription ('fruits', fruits)
-#        #mix = numpy.array([[1], [2], ['Nan'], [1]])
-#        #m = xdata.createDimensionDescription('mix', mix)
-#        
-#        cdd = xdata.DimensionDescription('cars', 'mixed')
-#        fdd = xdata.DimensionDescription('fruits', 'string')
-#        #mdd = xdata.DimensionDescription('mix', 'mixed')
-#        
-#        self.assertEqual(c.label, cdd.label)
-#        self.assertEqual(c.dimensiontype, cdd.dimensiontype)
-#        #self.assertEqual(m.label, mdd.label)
-#        #self.assertEqual(m.dimensiontype, mdd.dimensiontype)
-#        self.assertEqual(f.label, fdd.label)
-#        self.assertEqual(f.dimensiontype, fdd.dimensiontype)
+    def test_xdata_module_createDimensionDescription_function(self):
+        print("Test for the createDimensionDescription function \
+        (module xdata) \n")
+        #checking the Exceptions
+        self.assertRaises(Exception, xdata.createDimensionDescription, 1, 1)
+        self.assertRaises(Exception,
+                          xdata.createDimensionDescription,'fruits', 1)
+        self.assertRaises(Exception,
+                          xdata.createDimensionDescription,
+                          'fruits',
+                          pd.DataFrame([['apple', 0.5],
+                                        ['pear', 0.75],
+                                        ['banana', 0.66],
+                                        ['cherry', 0.89]]))
+        #creating DimensionDescription instances with the function
+        c = xdata.createDimensionDescription('cars')
+        fruits = pd.Series(['apple', 'pear', 'banana'])
+        f = xdata.createDimensionDescription ('fruits', fruits)
+        mix = pd.Series(['apple', int(3), 'banana'])
+        m = xdata.createDimensionDescription ('mix', mix)
+        #creating  DimensionDescription instances without the function
+        cdd = xdata.DimensionDescription('cars', 'mixed')
+        fdd = xdata.DimensionDescription('fruits', 'string')
+        mdd = xdata.DimensionDescription('mix', 'mixed')
+        #asserting that both instances are the same
+        self.assertEqual(c.label, cdd.label)
+        self.assertEqual(c.dimensiontype, cdd.dimensiontype)
+        self.assertEqual(m.label, mdd.label)
+        self.assertEqual(m.dimensiontype, mdd.dimensiontype)
+        self.assertEqual(f.label, fdd.label)
+        self.assertEqual(f.dimensiontype, fdd.dimensiontype)
        
              
 if __name__ == "__main__":    
@@ -334,5 +342,5 @@ if __name__ == "__main__":
     #firsttest.test_xdata_module_CategoricalHeader_class()
     firsttest.test_xdata_module_MeasureHeader_class()
 #    firsttest.test_xdata_module_Xdata_class()
-#    firsttest.test_xdata_module_createDimensionDescription_function()
+    firsttest.test_xdata_module_createDimensionDescription_function()
     
