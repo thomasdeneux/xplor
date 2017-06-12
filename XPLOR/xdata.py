@@ -203,7 +203,7 @@ class DimensionDescription:
             dimtype = 'logical'
         elif isinstance(x,str):
             dimtype = 'string'
-        elif type(x) in [int, float, complex]:
+        elif type(x) in [int, float, complex, np.float64]:
             dimtype = 'numeric'
         elif isinstance(x, tuple):
             if len(x)==3 :
@@ -400,12 +400,12 @@ class Header(ABC):
     def iscategoricalwithvalues(self):
         """fast way to test if a header is categorical with values
         (ie list of elements)"""
-        return self.iscategorical and self.getncolumns>0
+        return self.iscategorical and self.getncolumns()>0
 
     @property    
     def isundifferentiated(self):
         """fast way to test if a header is categorical with no values"""
-        return self.iscategorical and self.getncolumns==0
+        return self.iscategorical and self.getncolumns()==0
                 
     #method
     def check_header_update(self, flag, ind, newheader):
@@ -655,7 +655,7 @@ class CategoricalHeader(Header):
                 raise Exception("if no value is given, n_elem must be given")
             elif not isinstance(n_elem, int):
                 raise Exception("n_elem must be of type int")
-            if (not column_descriptors is None) | column_descriptors == []:
+            if not ((column_descriptors is None) | (column_descriptors == [])):
                 raise Exception("if there is no values, there are no columns"
                                 " to be described")
             self._values = pd.DataFrame(np.zeros((n_elem, 0)))
@@ -669,41 +669,45 @@ class CategoricalHeader(Header):
             #consideration correspond
             if isinstance(n_elem, int):
                 if not n_elem == values.shape[0]:
-                    raise Exception("n_elem is not coherent with shape of values")
+                    raise Exception("n_elem is not coherent with shape of "
+                                    "values")
             elif not n_elem is None:
                 raise Exception("n_elem must but of type int")
-            #n_elem is either not given or correspond to the number of lines of the
-            #dataframe
-            #now let's check that values and column_descriptors are size coherent
+            #n_elem is either not given or correspond to the number of lines of
+            #the dataframe
+            #let's check that values and column_descriptors are size coherent
             if isinstance(column_descriptors, str) | \
                          isinstance(column_descriptors, DimensionDescription):
                 column_descriptors = [column_descriptors]
             elif not isinstance(column_descriptors, list):
                 raise Exception ("column_descriptors must be of type str, "
-                                 "DimensionDescription or a list of such elements")
+                                 "DimensionDescription or a list of such "
+                                 "elements")
             #column_descriptors is now a list
             if len(column_descriptors) != values.shape[1]:
-                raise Exception ("column_descriptors and values must have the same"
-                                 " length")
+                raise Exception ("column_descriptors and values must have the "
+                                 "same length")
             self._values = values
             self._column_descriptors = []
             for i in range (len(column_descriptors)):
                 if isinstance(column_descriptors[i], str):
                     dimdescription = \
-                    createDimensionDescription(column_descriptors[i], values[i])
+                    createDimensionDescription(column_descriptors[i],
+                                               values[i])
                     self._column_descriptors += [dimdescription]
                 elif isinstance(column_descriptors[i], DimensionDescription):
+                    d = column_descriptors[i].dimensiontype
                     for e in range (values.shape[0]):
                         #/!\dataframe[column][line]
-                        if DimensionDescription.infertype(values[i][e]) != \
-                        column_descriptors.dimensiontype :
-                            raise Exception("dimensiontypes of column_descriptors "
-                                            "must be coherent with the data in "
-                                            "values")
+                        if DimensionDescription.infertype(values[i][e]) != d:
+                            raise Exception("dimensiontypes of "
+                                            "column_descriptors must be "
+                                            "coherent with the data in values")
                     self._column_descriptors += [column_descriptors[i]]
                 else:
                     raise Exception("all column_descriptors elements must be "
-                                    "either of type str or DimensionDescription")
+                                    "either of type str or "
+                                    "DimensionDescription")
         
 
     #private property but with get access
@@ -757,29 +761,34 @@ class CategoricalHeader(Header):
         
     def getncolumns(self):
         """returns the number of columns"""
-        if self._colum_descriptors is None:
+        if self._column_descriptors is None:
             return 0
         return (len(self._column_descriptors))
 
     def getunits(self):
         """gives a list of the units of all the columns"""
         units = []
-        for dimensiondescription in self._column_descriptors:
-            if dimensiondescription.unit == None:
-                units += 'no unit'
-            else:
-                units += dimensiondescription.unit
-        return units
+        if self.getncolumns() == 0:
+            return ([])
+        else:
+            for dimensiondescription in self._column_descriptors:
+                if dimensiondescription.unit == None:
+                    units += ['no unit']
+                else:
+                    units += [dimensiondescription.unit]
+            return units
     
     def getallunits(self):
         """gives a list of the conversion tables for the units of all the
         columns"""
         allunits = []
+        if self.getncolumns() == 0:
+            return ([])
         for dimensiondescription in self._column_descriptors:
             if dimensiondescription.unit == None:
-                allunits += 'no unit'
+                allunits += ['no unit']
             else:
-                allunits += dimensiondescription.allunits
+                allunits += [dimensiondescription.allunits]
         return allunits
     
     def disp(self):
@@ -800,15 +809,14 @@ class CategoricalHeader(Header):
         column"""
         if not isinstance(line, int):
             raise Exception("line must be of type int")
-        if line >= self.n_elem() | line < 0:
+        if line >= self.n_elem| line < 0:
             raise Exception("line must be in [0, n_elem[")
         if column is None :
-            column = 1
+            column = 0
         if isinstance(column, int):
-            if column == 1 and self.getncolumns() == 0:
+            if column == 0 and self.getncolumns() == 0:
                 #nline must be 0 to have the first elem of a list in python.
-                #but if there is no column, we want to strat counting from 1
-                return (line + 1)
+                return (line)
             if column >= self.getncolumns() | column < 0:
                 raise Exception("column is a str or an int in [0, n_col[")
             return (self._values[column][line])
@@ -819,7 +827,7 @@ class CategoricalHeader(Header):
         count = 0
         for dimdescriptor in self._column_descriptors:
             if dimdescriptor.label == column:
-                return self._value[count][line]
+                return self._values[count][line]
             count += 1
         raise Exception("column is either the label of a column or it's"
             "number (int)")
@@ -830,7 +838,7 @@ class CategoricalHeader(Header):
         #this function is the same for both the headers, but it could be
         #modified to choose witch column we want for categorical headers
         if isinstance(line, int):
-            if line >= self.n_elem() | line < 0:
+            if line >= self.n_elem| line < 0:
                 raise Exception("nline must be in [0, n_elem[")
             return (self.getvalue(line))
         elif isinstance(line, list):
@@ -1092,9 +1100,9 @@ class MeasureHeader(Header):
     
     def getvalue(self, line, column = None):
         """get the value of the line of number line of the first column"""
-        if not (column is None or column == 1):
+        if not (column is None or column == 0):
             raise Exception ("Measure headers have only one column, column"
-            "argument must be None or 1")
+            "argument must be None or 0")
         if not isinstance(line, int):
             raise Exception("line must be of type int")
         if line >= self._n_elem or line < 0:

@@ -132,33 +132,206 @@ class MyTestCase(unittest.TestCase):
         
         
         
-#    def test_xdata_module_CategoricalHeader_class(self):
-#        print("Tests for the class CategoricalHeader (module xdata):")
-#        print("\n")
-#        fruitprices = xdata.DimensionDescription('prices',
-#                                                'numeric',
-#                                                'euros/kg')
-#        values = numpy.array([['apple', 0.5, 'red'],
-#                          ['pear', 0.75, 'green' ],
-#                          ['banana', 0.66, 'yellow'],
-#                          ['strawberry', 0.89, 'red']])
-#        print(type(values))
-#        fruits = xdata.CategoricalHeader('fruits',
-#                                         ['fruits', fruitprices, 'colors'],
-#                                         4,
-#                                         values)
-#        print("Test 1: attributes have the correct type")
-#        #test pour fruits
-#        self.assertTrue(isinstance(fruits.label, str))
-#        self.assertTrue(isinstance(fruits.column_descriptors, list))
-#        self.assertTrue(isinstance(fruits.column_descriptors[0], 
-#                                   xdata.DimensionDescriptor))
-#        self.assertTrue(isinstance(fruits.n_elem, int))
-#        self.assertTrue(isinstance(fruits.values, numpy.ndarray))
-#        print("Test 2: attributes have the correct value")
-#        print("Test 3: raising errors for arguments with wrong types")
-#        print("\n")
-#    
+    def test_xdata_module_CategoricalHeader_class(self):
+        print("Tests for the class CategoricalHeader (module xdata):")
+        print("\n")
+        dfvalues = pd.DataFrame([['apple', 0.5, 'red'],
+                                 ['pear', 0.75, 'green'],
+                                 ['banana', 0.66, 'yellow'],
+                                 ['cherry', 0.89, 'red']])
+        fruits = xdata.CategoricalHeader('fruits',
+                                         ['fruits', 'fruitprices', 'colors'],
+                                         4,
+                                         dfvalues)
+        fruits3 = xdata.CategoricalHeader('fruits',
+                                         ['fruits', 'fruitprices', 'colors'],
+                                         4,
+                                         dfvalues)
+        fruitprices = xdata.DimensionDescription('prices',
+                                                'numeric',
+                                                'euros/kg')
+        fruits2 = xdata.CategoricalHeader('fruits',
+                                          ['fruits', fruitprices, 'colors'],
+                                          values = dfvalues)
+        undifferentiated = xdata.CategoricalHeader('repetitions', n_elem = 10)
+
+        print("Test 1: attributes have the correct type")
+        #tests for fruits
+        self.assertTrue(isinstance(fruits.label, str))
+        self.assertTrue(isinstance(fruits.column_descriptors, list))
+        self.assertTrue(isinstance(fruits.column_descriptors[0], 
+                                   xdata.DimensionDescription))
+        self.assertTrue(isinstance(fruits.n_elem, int))
+        self.assertTrue(isinstance(fruits.values,pd.core.frame.DataFrame))
+        #tests for fruits2
+        self.assertTrue(isinstance(fruits2.label, str))
+        self.assertTrue(isinstance(fruits2.column_descriptors, list))
+        self.assertTrue(isinstance(fruits2.column_descriptors[0], 
+                                   xdata.DimensionDescription))
+        self.assertTrue(isinstance(fruits2.n_elem, int))
+        self.assertTrue(isinstance(fruits2.values,pd.core.frame.DataFrame))
+        #tests for undifferentiated
+        self.assertTrue(isinstance(undifferentiated.label, str))
+        self.assertTrue(undifferentiated.column_descriptors is None)
+        self.assertTrue(isinstance(undifferentiated.n_elem, int))
+        self.assertTrue(isinstance(undifferentiated.values,
+                                   pd.core.frame.DataFrame))
+        print("Test 2: attributes have the correct value")
+        #tests for fruits
+        self.assertEqual(fruits.label, 'fruits')
+        self.assertEqual(fruits.column_descriptors[0].label,
+                         xdata.DimensionDescription('fruits', 'string').label)
+        self.assertEqual(fruits.column_descriptors[0].dimensiontype,
+                         xdata.DimensionDescription('fruits',
+                                                    'string').dimensiontype)
+        self.assertEqual(fruits.column_descriptors[1].label, 
+                         xdata.DimensionDescription('fruitprices',
+                                                    'numeric').label)
+        self.assertEqual(fruits.column_descriptors[1].dimensiontype, 
+                         xdata.DimensionDescription('fruitprices',
+                                                    'numeric').dimensiontype)
+        self.assertEqual(fruits.column_descriptors[2].label, 
+                         xdata.DimensionDescription('colors',
+                                                    'string').label)
+        self.assertEqual(fruits.column_descriptors[2].dimensiontype, 
+                         xdata.DimensionDescription('colors',
+                                                    'string').dimensiontype)
+        self.assertEqual(fruits.n_elem, 4)
+        self.assertEqual(fruits.values[0][0], 'apple')
+        self.assertEqual(fruits.values[1][0], 0.5)
+        self.assertEqual(fruits.values[2][3], 'red')
+        #tests for fruits2
+        self.assertEqual(fruits2.label, 'fruits')
+        self.assertEqual(fruits2.column_descriptors[0].label,
+                         xdata.DimensionDescription('fruits','string').label)
+        self.assertEqual(fruits2.column_descriptors[0].dimensiontype,
+                         xdata.DimensionDescription('fruits',
+                                                    'string').dimensiontype)
+        self.assertEqual(fruits2.column_descriptors[1].label, 
+                         xdata.DimensionDescription('prices',
+                                                    'numeric',
+                                                    'euros/kg').label)
+        self.assertEqual(fruits2.column_descriptors[1].dimensiontype, 
+                         xdata.DimensionDescription('prices',
+                                                    'numeric',
+                                                    'euros/kg').dimensiontype)
+        self.assertEqual(fruits2.column_descriptors[1].unit, 
+                         xdata.DimensionDescription('prices',
+                                                    'numeric',
+                                                    'euros/kg').unit)
+        self.assertEqual(fruits2.column_descriptors[1].allunits, 
+                         xdata.DimensionDescription('prices',
+                                                    'numeric',
+                                                    'euros/kg').allunits)
+        self.assertEqual(fruits2.column_descriptors[2].label, 
+                         xdata.DimensionDescription('colors',
+                                                    'string').label)
+        self.assertEqual(fruits2.column_descriptors[2].dimensiontype, 
+                         xdata.DimensionDescription('colors',
+                                                    'string').dimensiontype)
+        self.assertEqual(fruits2.n_elem, 4)
+        self.assertEqual(fruits2.values[0][0], 'apple')
+        self.assertEqual(fruits2.values[1][0], 0.5)
+        self.assertEqual(fruits2.values[2][3], 'red')        
+        #tests for undifferentiated
+        self.assertEqual(undifferentiated.label, 'repetitions')
+        self.assertEqual(undifferentiated.n_elem, 10)
+        self.assertEqual(undifferentiated.values.shape, (10,0))
+        print("Test 3: raising errors for arguments with wrong types")
+        self.assertRaises(Exception, xdata.CategoricalHeader, 1)
+        self.assertRaises(Exception, xdata.CategoricalHeader, 'label')
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader, 'label', n_elem = 'n_elem')
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader, 'label', n_elem = 1,
+                          column_descriptors = ['str'])
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader, 'label', values = [1, 2, 3])
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader,
+                          'label',
+                          n_elem = 1,
+                          values = dfvalues)
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader,
+                          'label',
+                          n_elem = 'n_elem',
+                          values = dfvalues)
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader,
+                          'label',
+                          n_elem = 1,
+                          values = dfvalues,
+                          column_descriptors = [])
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader,
+                          'label',
+                          n_elem = 1,
+                          values = dfvalues,
+                          column_descriptors = 56)
+        self.assertRaises(Exception,
+                          xdata.CategoricalHeader,
+                          'label',
+                          n_elem = 1,
+                          values = dfvalues,
+                          column_descriptors = ['fruits', 45])
+        print("Test 4: testing the __eq__ function")
+        self.assertTrue(fruits == fruits3)
+        self.assertFalse(fruits == fruits2)
+        print("Test 5: testing the __ne__ function")
+        self.assertTrue(fruits!= fruits2)
+        self.assertFalse(fruits!=fruits3)
+        print("Test 6: testing the getncolumns function")
+        self.assertEqual(fruits.getncolumns(), 3)
+        self.assertEqual(undifferentiated.getncolumns(), 0)
+        print("Test 7: testing the getunits function")
+        self.assertEqual(undifferentiated.getunits(), [])
+        self.assertEqual(fruits.getunits(), ['no unit', 'no unit', 'no unit'])
+        self.assertEqual(fruits2.getunits(),
+                         ['no unit', 'euros/kg', 'no unit'])
+        print("Test 8: testing the getallunits function")
+        self.assertEqual(undifferentiated.getallunits(), [])
+        self.assertEqual(fruits.getallunits(), ['no unit', 'no unit', 'no unit'])
+        self.assertEqual(fruits2.getallunits(),
+                         ['no unit',
+                          [{'unit' : 'euros/kg', 'value' : 1}],
+                          'no unit'])
+        print("Test 9: testing the iscategorical, ismeasure, "
+              "iscategoricalwithvalue, and isundifferentiated")
+        self.assertTrue(fruits.iscategorical)
+        self.assertTrue(undifferentiated.iscategorical)
+        self.assertFalse(fruits.ismeasure)
+        self.assertFalse(undifferentiated.ismeasure)
+        self.assertTrue(fruits.iscategoricalwithvalues)
+        self.assertFalse(undifferentiated.iscategoricalwithvalues)
+        self.assertFalse(fruits.isundifferentiated)
+        self.assertTrue(undifferentiated.isundifferentiated)
+        print("Test 10: testing the getvalue function")
+        self.assertEqual(undifferentiated.getvalue(0), 0)
+        self.assertEqual(fruits.getvalue(2,1), 0.66)
+        self.assertEqual(fruits.getvalue(2), 'banana')
+        self.assertEqual(fruits.getvalue(2, 'fruits'), 'banana')
+        self.assertRaises(Exception, fruits.getvalue, '2')
+        self.assertRaises(Exception, fruits.getvalue, -3)
+        self.assertRaises(Exception, fruits.getvalue, 10)
+        print("Test 11: testing the get_itemname function")
+        self.assertRaises(Exception, fruits.get_itemname, 'coffee')
+        self.assertRaises(Exception, fruits.get_itemname, 10)
+        self.assertRaises(Exception, fruits.get_itemname, -10)
+        self.assertRaises(Exception, fruits.get_itemname, ['chocolate', 'milk'])
+        self.assertRaises(Exception, fruits.get_itemname, [10])
+        self.assertEqual(fruits.get_itemname(0), 'apple')
+        self.assertEqual(fruits.get_itemname([0]), ['apple'])
+        self.assertEqual(fruits.get_itemname([]), [])
+        self.assertEqual(fruits.get_itemname([0, 1, 3, 2]),
+                                             ['apple',
+                                             'pear',
+                                             'cherry',
+                                             'banana'])
+        print("Test 12: testing the update_measureheader function")
+        print("Test 13: testing check_header_update function")
+        print("\n")
+    
     def test_xdata_module_MeasureHeader_class(self):
         x = xdata.MeasureHeader('x', 1, 6, 0.5, 'mm')
         # TODO get unit from bank and also path when it fails to find a correspondence
@@ -245,7 +418,7 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(x.isundifferentiated)
         print("Test 10: testing the getvalue function")
         self.assertEqual(x.getvalue(0), 1)
-        self.assertEqual(x.getvalue(3,1), 2.5)
+        self.assertEqual(x.getvalue(3,0), 2.5)
         self.assertRaises(Exception, x.getvalue, 3, 2)
         self.assertRaises(Exception, x.getvalue, 3, -1)
         self.assertRaises(Exception, x.getvalue, 'something')
@@ -338,9 +511,9 @@ class MyTestCase(unittest.TestCase):
              
 if __name__ == "__main__":    
     firsttest = MyTestCase()
-    firsttest.test_xdata_module_DimensionDescription_class()
-    #firsttest.test_xdata_module_CategoricalHeader_class()
-    firsttest.test_xdata_module_MeasureHeader_class()
+#    firsttest.test_xdata_module_DimensionDescription_class()
+    firsttest.test_xdata_module_CategoricalHeader_class()
+#    firsttest.test_xdata_module_MeasureHeader_class()
 #    firsttest.test_xdata_module_Xdata_class()
     firsttest.test_xdata_module_createDimensionDescription_function()
     
