@@ -309,7 +309,7 @@ class Header(ABC):
     (non abstract method)
     - check_header_update: (self, flag, ind, newheader)
                             flag : 'all', 'chgdim', 'new', 'remove', 'chg',
-                                   'chg&new' or 'chg&rm'
+                                   'perm','chg&new' or 'chg&rm'
                             ind : numpy.array of shape (n,)
                             basics checks when updating data and giving a new
                             header
@@ -414,7 +414,7 @@ class Header(ABC):
         if not isinstance(newheader, Header):
             raise Exception("newheader must be a header")
         elif not flag in ['all', 'chgdim', 'new', 'remove', 'chg', 'chg&new',
-                          'chg&rrm']:
+                          'chg&rrm', 'perm']:
             raise Exception("flags can be : 'all', 'chgdim', 'new', 'remove', "
             "'chg', 'chg&new' or 'chg&rm'")
         elif not isinstance(ind, np.array):
@@ -440,7 +440,7 @@ class Header(ABC):
                 if newheader.n_elem != self._n_elem + ind.size:
                     raise Exception ("the new headers has the wrong number of "
                                      "elements")
-            elif flag == 'chg':
+            elif flag == 'chg' | flag == 'perm':
                 if newheader.n_elem != self._n_elem:
                     raise Exception ("both headers must have the same number "
                                          "of elements")
@@ -592,8 +592,27 @@ class CategoricalHeader(Header):
                 column
     
     (other methods)
-    - updatefromselection : TODO
-                
+    - add_column : (column_descriptor, values)
+                    column_descriptor must be of type str or
+                    DimensionDescription
+                    values must be of type pandas.core.series.Series
+                    this method allows to created a new categorical header from
+                    the attributes of a previous categorical haeder, while
+                    adding a new column
+                    (it can be usefull for selections or to add colors)
+    - update_categoricalheader : (flag, ind, values)
+                                 flags can be : 'all', 'new', 'chg', 'chg&new'
+                                 'chg&rm', 'remove', 'chgdim', 'perm'
+                                 idn indicates were the changes take place
+                                 values contains the new values
+                                 allows filters to create a new categorical
+                                 header from the current one, with some changes
+                                 in the values
+    - mergelines : (ind)
+                    When merging some data, the corresponding header's lines
+                    must be merged as well. Mergelines returns for each column
+                    all the encountered values with no repetitions in the from
+                    of a pandas Serie
     Example
     --------
     (with values)
@@ -879,7 +898,180 @@ class CategoricalHeader(Header):
                                   column_descriptors,
                                   values = newvalues))
         
+    def update_categoricalheader(self, flag, ind, values):
+        """udates the values of a categorical header"""
+        #flag 'all', 'chgdim' : all the values can change, they are all given
+        #in values argument of type pandas DataFrame
+        if flag == 'all' | flag == 'chgdim':
+            if (ind is None) | ind ==[] | ind == range(self._n_elem):
+                if not isinstance(values, pd.core.frame.DataFrame):
+                    raise Exception("values must be a pandas DataFrame")
+                elif values.shape[1] != self._values.shape[1]:
+                    raise Exception("values must keep the same number of "
+                    "columns")
+                for j in range(values.shape[1]):
+                    dimtype = self._column_descriptors[j].dimensiontype
+                    if dimtype != 'mixed':
+                        for i in range(values.shape[0]):
+                            if dimtype != \
+                            DimensionDescription.infertype (values[j][i]):
+                                raise Exception ("new types of the values must"
+                                                 "be coherent with the "
+                                                 "dimensionDescriptions")
+                return CategoricalHeader(self._label,
+                                         self._column_descriptors,
+                                         values = values)
+            else:
+                raise Exception("ind must be empty or the list of all the "
+                                "indices that have changed")
+        #flag 'new' : adding new lines, some of wich can be the merging of many
+        #lines
+        if flag == 'new':
+            if (ind is None) | (ind == []) | \
+               (ind == range(self._n_elem, (self._n_elem + len(ind)))):
+                   if not isinstance(values, list):
+                       raise Exception("values must be a list of pandas Serie")
+                   newvalues = self._values.copy()
+                   new_descriptors = self.column_descriptors
+                   for s in values:
+                       j = self.getncolumns()
+                       if not isinstance(s, pd.core.series.Series):
+                           raise Exception("values must be a list of pandas "
+                                           "Serie")
+                       elif (s.shape[0] != j):
+                           raise Exception("all series in values must have the"
+                                           " same number of elements that the "
+                                           "number of column of the header")
+                       for i in range(j):
+                           dimtype = new_descriptors[i].dimensiontype
+                           if  dimtype != 'mixed' | \
+                           dimtype != DimensionDescription.infertype(s[i]):
+                               new_descriptors[i].dimensiontype = 'mixed'    
+                       newvalues.append(s)
+                   return CategoricalHeader (self._label,
+                                             new_descriptors,
+                                             newvalues)            
+            else :
+                raise Exception("ind must be empty or the list of all the "
+                                "indices that have changed")
+        #flag 'chg' : changing some lines (keep the same number of lines)
+        if flag == 'chg':
+            if not isinstance(ind, list):
+                raise Exception ("ind must be the list of the indicices of the"
+                                 " lines that have changed")
+            elif not isinstance(values, list):
+                raise Exception ("values must be a list of the new lines "
+                                 "(pandas series)")
+            elif len(values) != len(ind):
+                raise Exception ("values and ind must have the same length")
+            newvalues = self._values.copy()
+            new_descriptors = self.column_descriptors
+            j = self.getncolumns()
+            for i in range(len(ind)):
+                if not isinstance (ind[i], int):
+                    raise Exception ("ind must be the list of the indicices of"
+                                     "the lines that have changed")
+                elif ind[i]<0 | ind[i]>= self.n_elem:
+                    raise Exception ("for a chg flag, indices must be in range"
+                                     " of n_elem")
+                elif not isinstance(values[i], pd.core.series.Series):
+                    raise Exception ("new lines must be pandas series")
+                elif values[i].shape[0]!= j:
+                    raise Exception ("all series must have the same number of "
+                                     "element as the number of column of the "
+                                     "header")
+                for col in range(j):
+                    dimtype = new_descriptors[col].dimensiontype
+                    if  dimtype != 'mixed' | \
+                    dimtype != DimensionDescription.infertype(values[i][col]):
+                        new_descriptors[i].dimensiontype = 'mixed'    
+                newvalues[ind[i]] = values[i]
+            return CategoricalHeader (self._label,
+                                      new_descriptors,
+                                      newvalues)
+        #flag 'remove' : suppress some lines
+        if flag == 'remove':
+            if not isinstance(ind, list):
+                raise Exception ("ind must be the list of the indicices of the"
+                                 " lines that have changed")
+            for i in ind:
+                if not isinstance(i, int):
+                    raise Exception("all indicies must be of type int")
+                elif i<0 | i>self.getncolumns():
+                    raise Exception ("indices must correspond to an existing"
+                                     " line")
+            if (not values is None) | values != []:
+                raise Exception ("no new values can be given when only "
+                                 "removing lines")
+            newvalues = self._values.copy()
+            newvalues.drop(newvalues.index[ind])
+            return CategoricalHeader (self._label,
+                                      self._column_descriptors,
+                                      newvalues)
+        #flag 'perm' : change the lines order
+        if flag == 'perm':
+            if (not values is None) | values != []:
+                raise Exception ("no new values can be given when only "
+                                 "permutting lines")
+            elif not isinstance(ind, list):
+                raise Exception ("ind must be the list of the indicices of the"
+                                 " lines that have changed")
+            newvalues = pd.DataFrame()
+            for i in range(len(ind)):
+                if not isinstance(ind[i], int):
+                    raise Exception ("all indices must be integers")
+                newvalues[i] = self._values[:][ind[i]]
+            return CategoricalHeader(self._label,
+                                     self._column_descriptors,
+                                     newvalues)
+        #flag 'chg&new' : combination of 'chg' and 'new'
+        if flag == 'chg&new':
+            if not isinstance(ind, list):
+                raise Exception ("ind must be the list of the indicices of the"
+                                 " lines that have evolved")
+            elif not isinstance(values, list):
+                raise Exception ("values is of type list")
+            elif len(values) != 2:
+                raise Exception ("values must containes the values to change "
+                                 "and the values to add")
+            elif len(ind) == 2:
+                changed = self.update_categoricalheader('chg',
+                                                        ind[0],
+                                                        values[0]) 
+                return changed.update_categoricalheader('new',
+                                                        ind[1],
+                                                        values[1])
+            else:
+                changed = self.update_categoricalheader('chg',
+                                                        ind,
+                                                        values[0])
+                return changed.update_categoricalheader('new',
+                                                        [],
+                                                        values[1])
+        #flag 'chg&rm' : combination of 'chg' and 'rm'
+        if flag == 'chg&rm':
+            if not isinstance(ind, list):
+                raise Exception ("ind must be the list of the indicices of the"
+                                 " lines that have evolved")
+            elif not isinstance(values, list):
+                raise Exception ("values is of type list")
+            elif len(ind) == 2:
+                changed = self.update_categoricalheader('chg',
+                                                        ind[0],
+                                                        values) 
+                return changed.update_categoricalheader('remove',
+                                                        ind[1],
+                                                        None)
+            raise Exception ("ind must contain a list of lines to change and a"
+                             " list of lines to remove")
+        raise Exception("the given flag must be 'all', 'chgdim', 'chg', 'new'"
+                        " 'remove', 'chg&new', 'chg&rm' or 'perm'")
+        
+                
             
+                
+            
+        
         
                   
 class MeasureHeader(Header):
