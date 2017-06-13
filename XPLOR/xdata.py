@@ -1067,7 +1067,27 @@ class CategoricalHeader(Header):
         raise Exception("the given flag must be 'all', 'chgdim', 'chg', 'new'"
                         " 'remove', 'chg&new', 'chg&rm' or 'perm'")
         
-                
+    def mergelines(self, ind):
+        """creating the values for merged lines"""
+        if not isinstance(ind, list):
+            raise Exception ("ind must be a list of indices")
+        ncol = len(self._column_descriptors)
+        merge = []
+        for j in range(ncol):
+            merge.append([])
+        for i in ind:
+            if not isinstance(i, int):
+                raise Exception ("all indices must be of type int")
+            elif i<0 | i>self.n_elem:
+                raise Exception ("indices must correspond to an element of "
+                                 "values")
+            for j in range(ncol):
+                if not (self._values[j][i] in merge[j]):
+                    merge[j].append(self._values[j][i])
+        for j in range(ncol):
+            #transform [1,2,3] into '1, 2, 3'
+            merge[j] = (str(merge[j]))[1:-1]
+        return pd.Series(merge)
             
                 
             
