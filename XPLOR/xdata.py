@@ -1068,7 +1068,7 @@ class CategoricalHeader(Header):
                         " 'remove', 'chg&new', 'chg&rm' or 'perm'")
         
     def mergelines(self, ind):
-        """creating the values for merged lines"""
+        """creating the values (pandas Serie) for merged lines"""
         if not isinstance(ind, list):
             raise Exception ("ind must be a list of indices")
         ncol = len(self._column_descriptors)
@@ -1397,44 +1397,73 @@ class MeasureHeader(Header):
                               column_descriptors =  \
                               self._column_descriptors[0]))
 
-##class Xdata:
-#    """This class allows the creation of a ND dataset, with headers for each
-#    dimension and a name.
-#    
-#    Xdata is used to store the data. This means an ND (N dimensional) array
-#    with all the values, as well as a list of headers describing each of the N
-#    dimensions and a name for the whole set of data.
-#    It also includes a handeling of event.
-#    TODO : explain better the event part
-#    
-#    
-#    Parameters
-#    ----------     
-#    - data : N dimensional array with the data itself
-#    - headers : list of the headers describing each of the N dimensions
-#            (list of Header or ???????)
-#    - name : name of the dataset (str)
-#    
-#    Attributes
-#    ----------
-#    - data : N dimensional array with the data itself
-#    - headers : list of the headers describing each of the N dimensions
-#            (list of Header)
-#    - name : name of the dataset (str)
-#    
-#    Methods
-#    -------
-#    TODO
-#    
-#    Examples
-#    --------
-#    TODO
-#    """
-#"""    def __init__(self,
-#                 data,
-#                 headers,
-#                 name)"""
-#    """Constructor of the class Xdata"""
+class Xdata:
+    """This class allows the creation of a ND dataset, with headers for each
+    dimension and a name.
+    
+    Xdata is used to store the data. Xdata is a container for an ND
+    (N dimensional) array with all the values/data, as well as all of the 
+    headers describing each of the N dimensions, stored in a list. Xdata also
+    stores the name of the whole set of data and it includes a handeling of
+    events.
+    TODO : explain better the event part
+    
+    
+    Parameters
+    ----------     
+    - data : N dimensional array with the data itself
+    - headers : list of the headers describing each of the N dimensions
+    - name : name of the dataset (str)
+    
+    Attributes
+    ----------
+    - data : N dimensional numpy.array with the data itself
+    - headers : list of the headers describing each of the N dimensions
+    - name : name of the dataset (str)
+    
+    Methods
+    -------
+    TODO
+    
+    Examples
+    --------
+    TODO
+    """
+    def __init__(self,
+                 name,
+                 data,
+                 headers):
+        """Constructor of the class Xdata"""
+        #name must be a string
+        if not isinstance(name, str):
+            raise Exception ("name must be of type str")
+        self._name = name
+        #data must be a numpy array and headers a list with the same length
+        if not isinstance(data, np.array):
+            raise Exception ("data must be of type numpy.array")
+        elif not isinstance(headers, list):
+            raise Exception ("headers must be of type list")
+        elif len(headers) != len(data.shape):
+            raise Exception ("each dimension must be described by a header")
+        self._data = data
+        for h in headers:
+            if not isinstance(h, Header):
+                raise Exception ("headers must only contain header elements")
+        self._headers = headers
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def headers(self):
+        return self._headers
+    
+    @property
+    def data(self):
+        return self._data
+            
+        
     
 
                 
