@@ -330,6 +330,35 @@ class MyTestCase(unittest.TestCase):
                                              'banana'])
         print("Test 12: testing the update_measureheader function")
         print("Test 13: testing check_header_update function")
+        print("Test 14: testing add_column function")
+        flower = pd.Series(['rose', 'forgetmenot', 'waterlily'])
+        weight = pd.Series([103, 97, 76, 15])
+        wrongdimdes = xdata.DimensionDescription('flower', 'string')
+        gooddimdes = xdata.DimensionDescription('weight', 'numeric', 'g')
+        newfruits1 = fruits.add_column('weight', weight)
+        newfruits2 = fruits.add_column(gooddimdes, weight)
+        #testing Exceptions
+        self.assertRaises(Exception, fruits.add_column, 'rose', 'forgetmenot')
+        self.assertRaises(Exception, fruits.add_column, 'flower', flower)
+        self.assertRaises(Exception, fruits.add_column, weight, weight)
+        self.assertRaises(Exception, fruits.add_column, wrongdimdes, weight)
+        #testing the result
+        self.assertEqual(newfruits1.label, 'fruits')
+        self.assertEqual(newfruits1.column_descriptors[3].label, 'weight')
+        self.assertTrue(newfruits1.column_descriptors[3].unit is None)
+        self.assertEqual(newfruits1.column_descriptors[3].dimensiontype,
+                         'numeric')
+        self.assertEqual(newfruits1.values[3][0], 103)
+        self.assertEqual(newfruits2.label, 'fruits')
+        self.assertEqual(newfruits2.column_descriptors[3].label, 'weight')
+        self.assertEqual(newfruits2.column_descriptors[3].unit, 'g')
+        self.assertEqual(newfruits2.column_descriptors[3].dimensiontype,
+                         'numeric')
+        self.assertEqual(newfruits2.values[3][2], 76)
+        #making sure that the old header remains unchanged
+        self.assertEqual(fruits.label, 'fruits')
+        self.assertEqual(len(fruits.column_descriptors), 3)
+        self.assertEqual(fruits.values.shape, (4, 3))
         print("\n")
     
     def test_xdata_module_MeasureHeader_class(self):

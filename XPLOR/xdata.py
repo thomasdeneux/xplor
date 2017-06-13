@@ -203,7 +203,7 @@ class DimensionDescription:
             dimtype = 'logical'
         elif isinstance(x,str):
             dimtype = 'string'
-        elif type(x) in [int, float, complex, np.float64]:
+        elif type(x) in [int, float, complex, np.float64, np.int64]:
             dimtype = 'numeric'
         elif isinstance(x, tuple):
             if len(x)==3 :
@@ -849,7 +849,37 @@ class CategoricalHeader(Header):
                 itemnames += [self.getvalue(n)]
             return itemnames
         raise Exception("nline must be an int or a list of int")
-
+    
+    def add_column(self, column_descriptor, values):
+        """this method allows to add a column to a categorical header"""
+        if not isinstance(values, pd.core.series.Series):
+            raise Exception ("values must be of type pd.core.series.Series")
+        elif values.shape[0] != self._values.shape[0]:
+            raise Exception ("values must have the correct amount of lines")
+        if isinstance(column_descriptor, str):
+            column_descriptor = createDimensionDescription(column_descriptor,
+                                                           values)
+        elif not isinstance(column_descriptor, DimensionDescription):
+            raise Exception("column_descriptor must be of type str or "
+                            "DimensionDescription")
+        else:
+            #if it was a given DimensionDescriptor, let's check that the
+            #dimensiontype correspond to that of the values
+            dimensiontype = column_descriptor.dimensiontype
+            if dimensiontype != 'mixed':
+                for i in values:
+                    if DimensionDescription.infertype(i) != dimensiontype:
+                        raise Exception ("the dimensiontype of the "
+                                         "DimensionDescription must correspond"
+                                         " to that of the values")
+        column_descriptors = self._column_descriptors + [column_descriptor]
+        newvalues = self._values.copy()
+        newvalues[len(column_descriptors)-1] = values
+        return (CategoricalHeader(self._label,
+                                  column_descriptors,
+                                  values = newvalues))
+        
+            
         
                   
 class MeasureHeader(Header):
