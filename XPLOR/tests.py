@@ -95,7 +95,7 @@ class MyTestCase(unittest.TestCase):
                           'numeric', ['s', 0.001, 'ms', 0.000001])
         self.assertRaises(Exception, xdata.DimensionDescription, 'prices',
                           'numeric', {'s' : 1})
-        print("Test 4: function infertype")
+        print("Test 4: method infertype")
         #no getdefaultvalue
         self.assertTrue(xdata.DimensionDescription.infertype(0), 'numeric')
         self.assertTrue(xdata.DimensionDescription.infertype(0.03), 'numeric')
@@ -116,7 +116,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(xdata.DimensionDescription.infertype(0, True), 
                         ('numeric', 0))
 
-        print("Test 5: function defaultvalue")
+        print("Test 5: method defaultvalue")
         self.assertEqual(xdata.DimensionDescription.defaultvalue('numeric'), 0)
         self.assertEqual(xdata.DimensionDescription.defaultvalue('logical'),
                          False)
@@ -126,9 +126,19 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, xdata.DimensionDescription.defaultvalue, 
         'prices')
         self.assertRaises(Exception, xdata.DimensionDescription, 2)
-        print ("Test 6 : function set_dimtype_to_mixed")
+        print ("Test 6 : method set_dimtype_to_mixed")
         f.set_dimtype_to_mixed()
         self.assertEqual(f.dimensiontype, 'mixed')
+        print("Test 7: method copy")
+        pcopy = p.copy()
+        rcopy = r.copy()
+        fcopy = f.copy()
+        self.assertEqual(pcopy.allunits, [{'unit': 'euros', 'value' : 1}])
+        self.assertEqual(rcopy.allunits, [{'unit': 'ms', 'value': 0.001},
+                                          {'unit': 's', 'value': 1.0},
+                                          {'unit': 'min', 'value': 60.0},
+                                          {'unit': 'hour', 'value': 3600.0}])
+        self.assertTrue(fcopy.allunits is None)
         print("\n")
         
         
@@ -276,21 +286,21 @@ class MyTestCase(unittest.TestCase):
                           n_elem = 1,
                           values = dfvalues,
                           column_descriptors = ['fruits', 45])
-        print("Test 4: testing the __eq__ function")
+        print("Test 4: testing the __eq__ method")
         self.assertTrue(fruits == fruits3)
         self.assertFalse(fruits == fruits2)
-        print("Test 5: testing the __ne__ function")
+        print("Test 5: testing the __ne__ method")
         self.assertTrue(fruits!= fruits2)
         self.assertFalse(fruits!=fruits3)
-        print("Test 6: testing the getncolumns function")
+        print("Test 6: testing the getncolumns method")
         self.assertEqual(fruits.getncolumns(), 3)
         self.assertEqual(undifferentiated.getncolumns(), 0)
-        print("Test 7: testing the getunits function")
+        print("Test 7: testing the getunits method")
         self.assertEqual(undifferentiated.getunits(), [])
         self.assertEqual(fruits.getunits(), ['no unit', 'no unit', 'no unit'])
         self.assertEqual(fruits2.getunits(),
                          ['no unit', 'euros/kg', 'no unit'])
-        print("Test 8: testing the getallunits function")
+        print("Test 8: testing the getallunits method")
         self.assertEqual(undifferentiated.getallunits(), [])
         self.assertEqual(fruits.getallunits(), ['no unit', 'no unit', 'no unit'])
         self.assertEqual(fruits2.getallunits(),
@@ -307,7 +317,7 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(undifferentiated.iscategoricalwithvalues)
         self.assertFalse(fruits.isundifferentiated)
         self.assertTrue(undifferentiated.isundifferentiated)
-        print("Test 10: testing the getvalue function")
+        print("Test 10: testing the getvalue method")
         self.assertEqual(undifferentiated.getvalue(0), 0)
         self.assertEqual(fruits.getvalue(2,1), 0.66)
         self.assertEqual(fruits.getvalue(2), 'banana')
@@ -315,7 +325,7 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, fruits.getvalue, '2')
         self.assertRaises(Exception, fruits.getvalue, -3)
         self.assertRaises(Exception, fruits.getvalue, 10)
-        print("Test 11: testing the get_itemname function")
+        print("Test 11: testing the get_itemname method")
         self.assertRaises(Exception, fruits.get_itemname, 'coffee')
         self.assertRaises(Exception, fruits.get_itemname, 10)
         self.assertRaises(Exception, fruits.get_itemname, -10)
@@ -329,7 +339,7 @@ class MyTestCase(unittest.TestCase):
                                              'pear',
                                              'cherry',
                                              'banana'])
-        print("Test 12: testing the update_measureheader function")
+        print("Test 12: testing the update_measureheader method")
         wrongsizecol = pd.DataFrame([['apple', 0.5, 'red', 'yummy'],
                                      ['pear', 0.75, 'green', 'yummy'],
                                      ['banana', 0.66, 'yellow', 'yummy'],
@@ -498,8 +508,8 @@ class MyTestCase(unittest.TestCase):
         #testing for not a flag
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'yummy', [], [])
-        print("Test 13: testing check_header_update function")
-        #this function is a test itself, it does not return anything, it only
+        print("Test 13: testing check_header_update method")
+        #this method is a test itself, it does not return anything, it only
         #raises exceptions when there is an obvious problem (not a good name,
         #not a good size)
         #We conduct a few tests on this testing methods, but the method is not
@@ -524,7 +534,7 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, fruits.check_header_update,
                           'chg&rm', np.array([1]), chgandnewfruits1)
         
-        print("Test 14: testing add_column function")
+        print("Test 14: testing add_column method")
         flower = pd.Series(['rose', 'forgetmenot', 'waterlily'])
         weight = pd.Series([103, 97, 76, 15])
         wrongdimdes = xdata.DimensionDescription('flower', 'string')
@@ -553,7 +563,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(fruits.label, 'fruits')
         self.assertEqual(len(fruits.column_descriptors), 3)
         self.assertEqual(fruits.values.shape, (4, 3))
-        print("Test 15: testing mergelines function")
+        print("Test 15: testing mergelines method")
         #testing Exceptions
         self.assertRaises(Exception, fruits.mergelines, 5)
         self.assertRaises(Exception, fruits.mergelines, ['apple'])
@@ -567,6 +577,21 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(series[1], [0.5, 0.89])
         self.assertEqual(series[2], ['red'])
         self.assertEqual(series[3], (4, 4, 4))
+        print("Test 16: testing the copy method")
+        copyfruits = fruits2.copy()
+        #testing that chaging one is not changing the other
+        copyfruits = copyfruits.add_column('display', colors)
+        print(fruits2.column_descriptors[2].dimensiontype)
+        copyfruits.update_categoricalheader('new',
+                                            None,
+                                            [pd.Series(['kiwi',
+                                                        0.89,
+                                                        456,
+                                                        (2, 89, 6)])])
+        self.assertEqual(fruits2.getncolumns(), 3)
+        self.assertEqual(copyfruits.getncolumns(), 4)
+        self.assertEqual(fruits2.column_descriptors[2].dimensiontype, 'string')
+        self.assertEqual(fruits2.values.shape, (4, 3))
         print("\n")
     
     def test_xdata_module_MeasureHeader_class(self):
@@ -633,18 +658,18 @@ class MyTestCase(unittest.TestCase):
                           'time', 0, 10, 2, checkbank = True)
         self.assertRaises(Exception, xdata.MeasureHeader,
                           'time', 0, 10, 2, 4)
-        print("Test 4: testing the __eq__ function")
+        print("Test 4: testing the __eq__ method")
         self.assertTrue(t == t2)
         self.assertFalse(x == t)
-        print("Test 5: testing the __ne__ function")
+        print("Test 5: testing the __ne__ method")
         self.assertTrue(x!= t)
         self.assertFalse(t!=t2)
-        print("Test 6: testing the getncolumns function")
+        print("Test 6: testing the getncolumns method")
         self.assertEqual(x.getncolumns(), 1)
-        print("Test 7: testing the getunits function")
+        print("Test 7: testing the getunits method")
         self.assertEqual(x.getunits(), ['mm'])
         self.assertEqual(t.getunits(), ['s'])
-        print("Test 8: testing the getallunits function")
+        print("Test 8: testing the getallunits method")
         self.assertEqual(x.getallunits(), [[{'unit' : 'mm', 'value' : 1.0}]])
         self.assertEqual(t.getallunits(), [[{'unit' : 's', 'value' : 1.0}]])
         print("Test 9: testing the iscategorical, ismeasure, "
@@ -653,7 +678,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(x.ismeasure)
         self.assertFalse(x.iscategoricalwithvalues)
         self.assertFalse(x.isundifferentiated)
-        print("Test 10: testing the getvalue function")
+        print("Test 10: testing the getvalue method")
         self.assertEqual(x.getvalue(0), 1)
         self.assertEqual(x.getvalue(3,0), 2.5)
         self.assertRaises(Exception, x.getvalue, 3, 2)
@@ -661,7 +686,7 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, x.getvalue, 'something')
         self.assertRaises(Exception, x.getvalue, -10)
         self.assertRaises(Exception, x.getvalue, 10)
-        print("Test 11: testing the get_itemname function")
+        print("Test 11: testing the get_itemname method")
         self.assertRaises(Exception, x.get_itemname, 'coffee')
         self.assertRaises(Exception, x.get_itemname, 10)
         self.assertRaises(Exception, x.get_itemname, -10)
@@ -671,7 +696,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(x.get_itemname([0]), [1])
         self.assertEqual(x.get_itemname([]), [])
         self.assertEqual(x.get_itemname([0, 1, 3, 2]), [1, 1.5, 2.5, 2.0])
-        print("Test 12: testing the update_measureheader function")
+        print("Test 12: testing the update_measureheader method")
         self.assertRaises(Exception, x.update_measureheader, 'orange')
         self.assertRaises(Exception, x.update_measureheader, n_elem = 'apple')
         self.assertRaises(Exception, x.update_measureheader, scale = 'cherry')
@@ -680,7 +705,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEquals(x.update_measureheader(n_elem = 0).n_elem, 0)
         self.assertEquals(x.update_measureheader(scale = 4).scale, 4)
         self.assertEquals(x.update_measureheader(2, 0).scale, 0.5)
-        print("Test 13: testing check_header_update function")
+        print("Test 13: testing check_header_update method")
         self.assertRaises(Exception,
                           x.check_header_update, 'hello', np.array([1]), x)
         self.assertRaises(Exception,
@@ -706,6 +731,12 @@ class MyTestCase(unittest.TestCase):
                           'chg&rm',
                           np.array([[1], [2]]),
                           x)
+        print("Test 14: testing copy method")
+        xcopy = x.copy()
+        xcopy.update_measureheader(4, 5, 1)
+        self.assertEqual(x.n_elem, 6)
+        self.assertEqual(x.start, 1)
+        self.assertEqual(x.scale, 0.5)
         print("\n")
         
     def test_xdata_module_Xdata_class(self):
@@ -785,6 +816,14 @@ class MyTestCase(unittest.TestCase):
                           data,
                           [t, 'undifferentiated', fruits],
                           'm')
+        print("Test 4: testing getndimensions method")
+        self.assertEqual(setofdata.getndimensions(), 3)
+        print("Test 5: testing shape method")
+        self.assertEqual(setofdata.shape(), (5, 3, 4))
+        print("Test 6: testing copy method")
+        datacopy = setofdata.copy()
+        self.assertEqual(datacopy.data_descriptor.allunits, 
+                        setofdata.data_descriptor.allunits)
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
@@ -822,9 +861,9 @@ class MyTestCase(unittest.TestCase):
              
 if __name__ == "__main__":    
     firsttest = MyTestCase()
-#    firsttest.test_xdata_module_DimensionDescription_class()
-#    firsttest.test_xdata_module_CategoricalHeader_class()
-#    firsttest.test_xdata_module_MeasureHeader_class()
+    firsttest.test_xdata_module_DimensionDescription_class()
+    firsttest.test_xdata_module_CategoricalHeader_class()
+    firsttest.test_xdata_module_MeasureHeader_class()
     firsttest.test_xdata_module_Xdata_class()
     firsttest.test_xdata_module_createDimensionDescription_function()
     

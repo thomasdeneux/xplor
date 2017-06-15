@@ -90,6 +90,7 @@ class DimensionDescription:
     set_dimtype_to_mixed : changing the dimensiontype to 'mixed' if adding
                            values that are not of the correct dimensiontype
                            (merging lines for instance)
+    copy : to copy a DimensionDescription instance
     (static methods)
     infertype (x, getdefaultvalue=False) :
               gives the dimensiontype of the x element and possibly the
@@ -199,7 +200,19 @@ class DimensionDescription:
     
     def set_dimtype_to_mixed(self):
         self._dimensiontype = 'mixed'
-    #Determining the dimension type from some data.
+        
+    def copy(self):
+        """copy a DimensionDescription instance"""
+        if self.allunits is None:
+            unit = None
+        else:
+            unit = []
+            for i in self.allunits:
+                unit.append(i['unit'])
+                unit.append(i['value'])
+        return DimensionDescription(self.label,
+                                    self.dimensiontype,
+                                    unit)
     @staticmethod
     def infertype(x, getdefaultvalue=False):
         """infertype is a static method to access the dimensiontype of an
@@ -311,6 +324,7 @@ class Header(ABC):
                 nline can here be an integer or a list of integer.
                 the function returns the corresponding values of the first
                 column
+    - copy : creates a copy of the header
                 
     (non abstract method)
     - check_header_update: (self, flag, ind, newheader)
@@ -519,6 +533,11 @@ class Header(ABC):
         """get the value(s) of the line(s) in nline (it can be an int or a list
         of int), of the first column"""
         pass
+    
+    @abstractmethod
+    def copy(self):
+        """creates a copy of the Header instance"""
+        pass
 
 
 
@@ -596,6 +615,7 @@ class CategoricalHeader(Header):
                 nline can here be an integer or a list of integer.
                 the function returns the corresponding values of the first
                 column
+    - copy : creates a copy of the categorical header
     
     (other methods)
     - add_column : (column_descriptor, values)
@@ -1186,6 +1206,20 @@ class CategoricalHeader(Header):
                 n = len(merge[j])
                 merge[j]= (red/n, green/n, blue/n)
         return pd.Series(merge)
+    
+    def copy(self):
+        """creates a copy of a categoricalHeader"""
+        if self.column_descriptors is None:
+            column_descriptors = []
+        else:
+            column_descriptors = []
+            for c in self.column_descriptors:
+                column_descriptors.append(c.copy())
+        values = self._values.copy()
+        return CategoricalHeader(self.label,
+                                 column_descriptors,
+                                 self.n_elem,
+                                 values)
             
                 
             
@@ -1275,6 +1309,7 @@ class MeasureHeader(Header):
     - update_measureheader : (start = None, n_elem = None,scale = None)
                              creates a new measure header from the attributes
                              of a previous one, and the specified changes
+    - copy : creates a copy of a MeasureHeader instance
         
     
     Example
@@ -1339,7 +1374,7 @@ class MeasureHeader(Header):
             self._column_descriptors = [column_descriptors]
         elif not column_descriptors is None :
             raise Exception ("column_descriptors must be of type"
-            "DimensionDescription")
+            " DimensionDescription")
         elif not isinstance(checkbank, bool) :
             raise Exception("checkbank must be a boolean")
         elif unit is None:
@@ -1494,6 +1529,14 @@ class MeasureHeader(Header):
                               scale,
                               column_descriptors =  \
                               self._column_descriptors[0]))
+    def copy(self):
+        """creates a copy of a measure header"""
+        descriptor = self.column_descriptors[0].copy()
+        return MeasureHeader(self.label,
+                             self.start,
+                             self.n_elem,
+                             self.scale,
+                             column_descriptors = descriptor)
 
 class Xdata:
     """This class allows the creation of a ND dataset, with headers for each
@@ -1524,7 +1567,12 @@ class Xdata:
     
     Methods
     -------
-    TODO
+    - getndimensions : gives the number of dimensions of xdata
+                      (it corresponds to the number of headers)
+    - shape : gives the shape of the data
+             (it corresponds to the number of elements for each dimension)
+    - copy : creates a copy of a Xdata instance
+    
     
     Examples
     --------
@@ -1664,7 +1712,28 @@ class Xdata:
         "DimensionDescription instance to describe the content of data"
         return self._data_descriptor
             
-        
+    def getndimensions(self):
+        "gives the number of dimensions of the data"
+        return len(self.headers)
+    
+    def shape(self):
+        "gives the number of element in each dimension"
+        return self.data.shape
+    
+    def copy(self):
+        """gives a copy of a Xdata instance"""
+        data = self.data.copy()
+        headers = []
+        for h in self.headers:
+            headers.append(h.copy())
+        if self.data_descriptor.allunits is None:
+            unit = None
+        else:
+            unit = []
+            for i in self.data_descriptor.allunits:
+                unit.append(i['unit'])
+                unit.append(i['value'])
+        return Xdata(self.name, data, headers, unit)
     
 
                 
