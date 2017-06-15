@@ -562,7 +562,6 @@ class MyTestCase(unittest.TestCase):
         #testing the result
         colors = pd.Series([(0, 0, 0), (0, 0, 0), (0, 0, 0), (8, 8, 8)])
         newfruits = fruits.add_column('display', colors)
-        print(newfruits.column_descriptors[3].dimensiontype)
         series = newfruits.mergelines([0, 3])
         self.assertEqual(series[0], ['apple', 'cherry'])
         self.assertEqual(series[1], [0.5, 0.89])
@@ -709,28 +708,84 @@ class MyTestCase(unittest.TestCase):
                           x)
         print("\n")
         
-#    def test_xdata_module_Xdata_class(self):
-#        print("Tests for the class Xdata (module xdata): \n")
-#        print("Test 1: attributes have the correct type")
-#        print("Test 2: attributes have the correct value")
-#        print("Test 3: raising errors for arguments with wrong types")
-#        self.assertRaises(Exception,
-#                          xdata.Xdata,
-#                          1,
-#                          np.array([[[1, 2, 3, 4, 5],
-#                                     [0, 0, 0, 0, 0]
-#                                     [5, 6, 2, 4, 5]],
-#                                    [[1, 7, 6, 3, 5],
-#                                     [0, 0, 3, 0, 0]
-#                                     [5, 6, 2, 4, 5]],
-#                                    [[1, 0, 3, 2, 5],
-#                                     [0, 0, 2, 1, 4]
-#                                     [5, 8, 2, 4, 5]]
-#                                    [[7, 2, 6, 4, 5],
-#                                     [0, 3, 0, 9, 0]
-#                                     [5, 6, 7, 3, 5]]],
-#            ))
-#        print("\n")
+    def test_xdata_module_Xdata_class(self):
+        #creating the headers
+        time = xdata.DimensionDescription('time', 'numeric', 's')
+        t = xdata.MeasureHeader('time',
+                                0.6,
+                                5,
+                                0.2,
+                                column_descriptors = time)
+        undifferentiated = xdata.CategoricalHeader('repetitions', n_elem = 3)
+        dfvalues = pd.DataFrame([['apple', 0.5, 'red'],
+                                 ['pear', 0.75, 'green'],
+                                 ['banana', 0.66, 'yellow'],
+                                 ['cherry', 0.89, 'red']])
+        fruits = xdata.CategoricalHeader('fruits',
+                                         ['fruits', 'fruitprices', 'colors'],
+                                         4,
+                                         dfvalues)
+        #data
+        data = np.random.rand(5, 3, 4)
+
+        #the xdata instance
+        setofdata = xdata.Xdata('name',
+                                data,
+                                [t, undifferentiated, fruits],
+                                'm')
+        print("Tests for the class Xdata (module xdata): \n")
+        print("Test 1: attributes have the correct type")
+        self.assertTrue(isinstance(setofdata.name, str))
+        self.assertTrue(isinstance(setofdata.data, np.ndarray))
+        self.assertTrue(isinstance(setofdata.headers, list))
+        self.assertTrue(isinstance(setofdata.headers[1], xdata.Header))
+        self.assertTrue(isinstance(setofdata.data_descriptor,
+                                   xdata.DimensionDescription))
+        print("Test 2: attributes have the correct value")
+        self.assertEqual(setofdata.name, 'name')
+        self.assertEqual(setofdata.data.shape, data.shape)
+        self.assertEqual(setofdata.headers[0], t)
+        self.assertEqual(setofdata.data_descriptor.label, 'name')
+        self.assertEqual(setofdata.data_descriptor.unit, 'm')
+        self.assertEqual(setofdata.data_descriptor.dimensiontype, 'numeric')
+        print("Test 3: raising errors for arguments with wrong types")
+        self.assertRaises(Exception,
+                          xdata.Xdata,
+                          1,
+                          data,
+                          [t, undifferentiated, fruits],
+                          'm')
+        self.assertRaises(Exception,
+                          xdata.Xdata,
+                          'xdata',
+                          'yummy',
+                          [t, undifferentiated, fruits],
+                          'm')
+        self.assertRaises(Exception,
+                          xdata.Xdata,
+                          'xdata',
+                          data,
+                          t,
+                          'm')
+        self.assertRaises(Exception,
+                          xdata.Xdata,
+                          'xdata',
+                          data,
+                          [t, undifferentiated, fruits],
+                          125)
+        self.assertRaises(Exception,
+                          xdata.Xdata,
+                          'xdata',
+                          data,
+                          [t, undifferentiated],
+                          'm')
+        self.assertRaises(Exception,
+                          xdata.Xdata,
+                          'xdata',
+                          data,
+                          [t, 'undifferentiated', fruits],
+                          'm')
+        print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
         print("Test for the createDimensionDescription function \
@@ -768,8 +823,8 @@ class MyTestCase(unittest.TestCase):
 if __name__ == "__main__":    
     firsttest = MyTestCase()
 #    firsttest.test_xdata_module_DimensionDescription_class()
-    firsttest.test_xdata_module_CategoricalHeader_class()
+#    firsttest.test_xdata_module_CategoricalHeader_class()
 #    firsttest.test_xdata_module_MeasureHeader_class()
-#    firsttest.test_xdata_module_Xdata_class()
+    firsttest.test_xdata_module_Xdata_class()
     firsttest.test_xdata_module_createDimensionDescription_function()
     

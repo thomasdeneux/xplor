@@ -1628,8 +1628,8 @@ class Xdata:
             raise Exception ("name must be of type str")
         self._name = name
         #data must be a numpy array and headers a list with the same length
-        if not isinstance(data, np.array):
-            raise Exception ("data must be of type numpy.array")
+        if not isinstance(data, np.ndarray):
+            raise Exception ("data must be of type numpy.ndarray")
         elif not isinstance(headers, list):
             raise Exception ("headers must be of type list")
         elif len(headers) != len(data.shape):
