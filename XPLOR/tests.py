@@ -492,7 +492,35 @@ class MyTestCase(unittest.TestCase):
                           'chg&rm', [1, 2], series)
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'chg&rm', [[1,2], []], 'yummy')
+        #for a wrong flag
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'yummy', [], [])
         print("Test 13: testing check_header_update function")
+        #this function is a test itself, it does not return anything, it only
+        #raises exceptions when there is an obvious problem (not a good name,
+        #not a good size)
+        #We conduct a few tests on this testing methods, but the method is not
+        #fully covered
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'yummy', np.array([1]), chgandrmfruits)
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'new', [], chgandrmfruits)
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'new', np.array([1]), 'yummy')
+        t2 = xdata.MeasureHeader('time',
+                                0.6,
+                                100,
+                                0.2,
+                                's')
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'new', np.array([1]), t2)
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'rm', np.array([1]), undifferentiated)
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'new', np.array([1]), chgandrmfruits)
+        self.assertRaises(Exception, fruits.check_header_update,
+                          'chg&rm', np.array([1]), chgandnewfruits1)
+        
         print("Test 14: testing add_column function")
         flower = pd.Series(['rose', 'forgetmenot', 'waterlily'])
         weight = pd.Series([103, 97, 76, 15])
