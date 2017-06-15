@@ -1486,22 +1486,25 @@ class Xdata:
     Xdata is used to store the data. Xdata is a container for an ND
     (N dimensional) array with all the values/data, as well as all of the 
     headers describing each of the N dimensions, stored in a list. Xdata also
-    stores the name of the whole set of data and it includes a handeling of
-    events.
+    has the name of the whole set of data and a data_descriptor attribute to
+    describe the data.
+    Xdata includes a handeling of events.
     TODO : explain better the event part
     
     
     Parameters
     ----------     
+    - name : name of the dataset (str)
     - data : N dimensional array with the data itself
     - headers : list of the headers describing each of the N dimensions
-    - name : name of the dataset (str)
+    - unit : simple unit or list of conversion
     
     Attributes
     ----------
     - data : N dimensional numpy.array with the data itself
     - headers : list of the headers describing each of the N dimensions
     - name : name of the dataset (str)
+    - data_descriptor : DimensionDescription instance describing the dataset
     
     Methods
     -------
@@ -1601,7 +1604,8 @@ class Xdata:
     def __init__(self,
                  name,
                  data,
-                 headers):
+                 headers,
+                 unit):
         """Constructor of the class Xdata"""
         #name must be a string
         if not isinstance(name, str):
@@ -1619,6 +1623,11 @@ class Xdata:
             if not isinstance(h, Header):
                 raise Exception ("headers must only contain header elements")
         self._headers = headers
+        #unit must allow creation of a DimensionDescription instance
+        if isinstance(unit, str) | isinstance(unit, list) | (unit is None):
+            self._data_descriptor = DimensionDescription(name, 'numeric', unit)
+        else:
+            raise Exception ("unit must a string or a list of conversion")
     
     @property
     def name(self):
@@ -1626,11 +1635,18 @@ class Xdata:
     
     @property
     def headers(self):
+        "list of the headers for each dimension"
         return self._headers
     
     @property
     def data(self):
+        "ND numpy.array of numerical data"
         return self._data
+    
+    @property
+    def data_descriptor(self):
+        "DimensionDescription instance to describe the content of data"
+        return self._data_descriptor
             
         
     
