@@ -1038,50 +1038,117 @@ class CategoricalHeader(Header):
         #flag 'chg&new' : combination of 'chg' and 'new'
         if flag == 'chg&new':
             if not isinstance(ind, list):
-                raise Exception ("ind must be the list of the indicices of the"
-                                 " lines that have evolved")
+                raise Exception ("ind must be a list of the list of the "
+                                 "indicices that have changed and the list of "
+                                 "those to remove")    
             elif not isinstance(values, list):
-                raise Exception ("values is of type list")
+                raise Exception ("values is of type list")    
             elif len(values) != 2:
                 raise Exception ("values must containes the values to change "
                                  "and the values to add")
-            elif not (isinstance(values[0], list) & isinstance(values[1], list)):
+            elif not (isinstance(values[0], list) & \
+                      isinstance(values[1], list)):
                 raise Exception ("values must containes the values to change "
                                  "and the values to add in two lists")
             elif isinstance(ind[0], list):
-                changed = self.update_categoricalheader('chg',
-                                                        ind[0],
-                                                        values[0]) 
-                return changed.update_categoricalheader('new',
-                                                        ind[1],
-                                                        values[1])
+                indchg = ind[0]
             else:
-                changed = self.update_categoricalheader('chg',
-                                                        ind,
-                                                        values[0])
-                return changed.update_categoricalheader('new',
-                                                        [],
-                                                        values[1])
+                indchg = ind
+            #let's first change the lines that needs to be changed...    
+            if len(values[0]) != len(indchg):
+                raise Exception ("all the lines to be changed must be given "
+                                 "a value")
+            newvalues = self._values.copy()
+            new_descriptors = self.column_descriptors
+            j = self.getncolumns()
+            for i in range(len(indchg)):
+                if not isinstance (indchg[i], int):
+                    raise Exception ("all indices must be of type int")
+                elif (indchg[i] < 0) | (indchg[i] >= self.n_elem):
+                    raise Exception ("for a chg action, indices must be in "
+                                     "range of n_elem")
+                elif not isinstance(values[0][i], pd.core.series.Series):
+                    raise Exception ("new lines must be pandas series")
+                elif values[0][i].shape[0]!= j:
+                    raise Exception ("all series must have the same number of "
+                                     "element as the number of column of the "
+                                     "header")
+                for c in range(j):
+                    dimtype = new_descriptors[c].dimensiontype
+                    if  (dimtype != 'mixed') | \
+                    (dimtype != DimensionDescription.infertype(values[0][i][c])):
+                        new_descriptors[i].set_dimtype_to_mixed()    
+                newvalues.iloc[indchg[i]] = values[0][i]
+            #...now let's add the new lines
+            for s in values[1]:
+                if not isinstance(s, pd.core.series.Series):
+                    raise Exception("values must be a list of pandas Serie")
+                elif (s.shape[0] != j):
+                    raise Exception("all series in values must have the same "
+                                    "number of elements that the number of "
+                                    "column of the header")
+                for i in range(j):
+                    dimtype = new_descriptors[i].dimensiontype
+                    if  (dimtype != 'mixed') | \
+                    (dimtype != DimensionDescription.infertype(s[i])):
+                        new_descriptors[i].set_dimtype_to_mixed()    
+                newvalues = newvalues.append(s, ignore_index=True)
+            return CategoricalHeader (self._label,
+                                      new_descriptors,
+                                      values = newvalues) 
         #flag 'chg&rm' : combination of 'chg' and 'rm'
         if flag == 'chg&rm':
             if not isinstance(ind, list):
-                raise Exception ("ind must be the list of the indicices of the"
-                                 " lines that have evolved")
+                raise Exception ("ind must be a list of the list of the "
+                                 "indicices that have changed and the list of "
+                                 "those to remove")    
             elif not isinstance(values, list):
-                raise Exception ("values is of type list")
-            elif not len(ind) == 2:
-                raise Exception ("ind must contain a list of lines to change and a"
-                             " list of lines to remove")
-            elif not (isinstance(ind[0], list) & isinstance(ind[1], list)):
-                raise Exception ("ind must contain a list of lines to change and a"
-                                 " list of lines to remove")
-            changed = self.update_categoricalheader('chg',
-                                                    ind[0],
-                                                    values) 
-            return changed.update_categoricalheader('remove',
-                                                    ind[1],
-                                                    None)
-            
+                raise Exception ("values is of type list")    
+            elif len(ind) != 2:
+                raise Exception ("ind must containes the lines to change "
+                                 "and the lines to remove")
+            elif not (isinstance(ind[0], list) & \
+                      isinstance(ind[1], list)):
+                raise Exception ("values must containes the values to change "
+                                 "and the values to add in two lists")
+            #let's first change the lines that needs to be changed...    
+            if len(values) != len(ind[0]):
+                raise Exception ("all the lines to be changed must be given "
+                                 "a value")
+            newvalues = self._values.copy()
+            new_descriptors = self.column_descriptors
+            j = self.getncolumns()
+            for i in range(len(ind[0])):
+                if not isinstance (ind[0][i], int):
+                    raise Exception ("all indices must be of type int")
+                elif (ind[0][i] < 0) | (ind[0][i] >= self.n_elem):
+                    raise Exception ("for a chg action, indices must be in "
+                                     "range of n_elem")
+                elif not isinstance(values[i], pd.core.series.Series):
+                    raise Exception ("new lines must be pandas series")
+                elif values[i].shape[0]!= j:
+                    raise Exception ("all series must have the same number of "
+                                     "element as the number of column of the "
+                                     "header")
+                for c in range(j):
+                    dimtype = new_descriptors[c].dimensiontype
+                    if  (dimtype != 'mixed') | \
+                    (dimtype != DimensionDescription.infertype(values[i][c])):
+                        new_descriptors[i].set_dimtype_to_mixed()    
+                newvalues.iloc[ind[0][i]] = values[i]
+            #...now let's remove the unwanted lines
+            for i in ind[1]:
+                if not isinstance(i, int):
+                    raise Exception("all indicies must be of type int")
+                elif (i < 0) | (i >= self.n_elem):
+                    raise Exception ("indices must correspond to an existing"
+                                     " line")
+            newvalues = newvalues.drop(newvalues.index[ind[1]])
+            newvalues = newvalues.reset_index(drop=True)
+            return CategoricalHeader (self._label,
+                                      new_descriptors,
+                                      values = newvalues)
+        #the all flags were listed before, so the argument is not valid                              values = newvalues)  
         raise Exception("the given flag must be 'all', 'chgdim', 'chg', 'new'"
                         " 'remove', 'chg&new', 'chg&rm' or 'perm'")
         

@@ -411,7 +411,7 @@ class MyTestCase(unittest.TestCase):
                           [pd.Series(['kiwi', 0.95, 'brown', 'yummy']), 
                            pd.Series(['blueberry', '1.20', 'blue', 'yummy'])])
         #testing for flag 'remove'
-        removefruits = fruits.update_categoricalheader('remove', [3], [])
+        removefruits = fruits.update_categoricalheader('remove', [2], [])
         self.assertEqual(removefruits.label, fruits.label)
         self.assertEqual(removefruits.values.shape, (3, 3))
         self.assertRaises(Exception, fruits.update_categoricalheader,
