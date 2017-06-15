@@ -214,8 +214,8 @@ class DimensionDescription:
         elif isinstance(x, tuple):
             if len(x)==3 :
                 if ((type(x[0]) == type(x[1]) == type(x[2]) == int) & \
-                x[0] < 256 & x[1] < 256 & x[2] < 256 & \
-                (x[0] > 0) & (x[1] > 0) & (x[2] > 0)):
+                ((x[0] < 256) & (x[1] < 256) & (x[2] < 256)) & \
+                ((x[0] >= 0) & (x[1] >= 0) & (x[2] >= 0))):
                     dimtype = 'color'               
         if getdefaultvalue:
             return (dimtype,DimensionDescription.defaultvalue(dimtype))
@@ -908,9 +908,9 @@ class CategoricalHeader(Header):
         
     def update_categoricalheader(self, flag, ind, values):
         """udates the values of a categorical header"""
-        #flag 'all', 'chgdim' : all the values can change, they are all given
+        #flag 'all' : all the values can change, they are all given
         #in values argument of type pandas DataFrame
-        if (flag == 'all') | (flag == 'chgdim'):
+        if (flag == 'all'):
             if (ind is None) | (ind ==[]) | (ind == range(self.n_elem)):
                 if not isinstance(values, pd.core.frame.DataFrame):
                     raise Exception("values must be a pandas DataFrame")
@@ -933,7 +933,7 @@ class CategoricalHeader(Header):
                                 "indices that have changed")
         #flag 'new' : adding new lines, some of wich can be the merging of many
         #lines
-        if flag == 'new':
+        elif flag == 'new':
             if (ind is None) | (isinstance(ind, list)):
                    if not isinstance(values, list):
                        raise Exception("values must be a list of pandas Serie")
@@ -961,7 +961,7 @@ class CategoricalHeader(Header):
                 raise Exception("ind must be empty or the list of all the "
                                 "indices that have changed")
         #flag 'chg' : changing some lines (keep the same number of lines)
-        if flag == 'chg':
+        elif flag == 'chg':
             if not isinstance(ind, list):
                 raise Exception ("ind must be the list of the indicices of the"
                                  " lines that have changed")
@@ -996,7 +996,7 @@ class CategoricalHeader(Header):
                                       new_descriptors,
                                       values = newvalues)
         #flag 'remove' : suppress some lines
-        if flag == 'remove':
+        elif flag == 'remove':
             if not isinstance(ind, list):
                 raise Exception ("ind must be the list of the indicices of the"
                                  " lines that have changed")
@@ -1016,7 +1016,7 @@ class CategoricalHeader(Header):
                                       self._column_descriptors,
                                       values = newvalues)
         #flag 'perm' : change the lines order
-        if flag == 'perm':
+        elif flag == 'perm':
             if (not values is None) & (values != []):
                 raise Exception ("no new values can be given when only "
                                  "permutting lines")
@@ -1036,7 +1036,7 @@ class CategoricalHeader(Header):
                                      self._column_descriptors,
                                      values = newvalues)
         #flag 'chg&new' : combination of 'chg' and 'new'
-        if flag == 'chg&new':
+        elif flag == 'chg&new':
             if not isinstance(ind, list):
                 raise Exception ("ind must be a list of the list of the "
                                  "indicices that have changed and the list of "
@@ -1097,7 +1097,7 @@ class CategoricalHeader(Header):
                                       new_descriptors,
                                       values = newvalues) 
         #flag 'chg&rm' : combination of 'chg' and 'rm'
-        if flag == 'chg&rm':
+        elif flag == 'chg&rm':
             if not isinstance(ind, list):
                 raise Exception ("ind must be a list of the list of the "
                                  "indicices that have changed and the list of "
@@ -1148,9 +1148,14 @@ class CategoricalHeader(Header):
             return CategoricalHeader (self._label,
                                       new_descriptors,
                                       values = newvalues)
+        elif flag == 'chgdim':
+            raise Exception ("a 'chgdim' flag can't use the method "
+                             "update_categoricalheader, but use the custructor"
+                             " because it changes the labels and dimension "
+                             "descriptions as well")
         #the all flags were listed before, so the argument is not valid                              values = newvalues)  
-        raise Exception("the given flag must be 'all', 'chgdim', 'chg', 'new'"
-                        " 'remove', 'chg&new', 'chg&rm' or 'perm'")
+        raise Exception("the given flag must be 'all', 'perm', 'chg', 'new'"
+                        " 'remove', 'chg&new', or 'chg&rm'")
         
     def mergelines(self, ind):
         """creating the values (pandas Serie) for merged lines"""
@@ -1169,6 +1174,17 @@ class CategoricalHeader(Header):
             for j in range(ncol):
                 if not (self._values[j][i] in merge[j]):
                     merge[j].append(self._values[j][i])
+        for j in range(ncol):
+            if self._column_descriptors[j].dimensiontype == 'color':
+                red = 0
+                green = 0
+                blue = 0
+                for i in (merge[j]):
+                    red += i[0]
+                    green += i[1]
+                    blue += i[2]
+                n = len(merge[j])
+                merge[j]= (red/n, green/n, blue/n)
         return pd.Series(merge)
             
                 

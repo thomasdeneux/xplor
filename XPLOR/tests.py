@@ -338,7 +338,7 @@ class MyTestCase(unittest.TestCase):
                                      ['pear', 0.75, 'green'],
                                      ['banana', 0.66, 'yellow'],
                                      ['cherry', 0.89, 'red']])
-        #testing for flag 'all'/'chgdim' (same code)
+        #testing for flag 'all'
         allfruits = fruits.update_categoricalheader('all', None, wrongdimtype)
         self.assertEqual(allfruits.label, fruits.label)
         self.assertEqual(allfruits.column_descriptors[1].dimensiontype,
@@ -356,7 +356,7 @@ class MyTestCase(unittest.TestCase):
                           [1, 2, 3])
         self.assertRaises(Exception,
                           fruits.update_categoricalheader,
-                          'chgdim',
+                          'all',
                           None,
                           wrongsizecol)
         #testing for flag 'new'
@@ -492,7 +492,10 @@ class MyTestCase(unittest.TestCase):
                           'chg&rm', [1, 2], series)
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'chg&rm', [[1,2], []], 'yummy')
-        #for a wrong flag
+        #testing for flag 'chgdim'
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chgdim', [], [])
+        #testing for not a flag
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'yummy', [], [])
         print("Test 13: testing check_header_update function")
@@ -557,10 +560,14 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, fruits.mergelines, [0, 1, 23])
         self.assertRaises(Exception, fruits.mergelines, [-2])
         #testing the result
-        series = fruits.mergelines([0, 3])
+        colors = pd.Series([(0, 0, 0), (0, 0, 0), (0, 0, 0), (8, 8, 8)])
+        newfruits = fruits.add_column('display', colors)
+        print(newfruits.column_descriptors[3].dimensiontype)
+        series = newfruits.mergelines([0, 3])
         self.assertEqual(series[0], ['apple', 'cherry'])
         self.assertEqual(series[1], [0.5, 0.89])
         self.assertEqual(series[2], ['red'])
+        self.assertEqual(series[3], (4, 4, 4))
         print("\n")
     
     def test_xdata_module_MeasureHeader_class(self):
@@ -703,10 +710,28 @@ class MyTestCase(unittest.TestCase):
         print("\n")
         
 #    def test_xdata_module_Xdata_class(self):
-#        print("Tests for the class Xdata (module xdata):")
+#        print("Tests for the class Xdata (module xdata): \n")
+#        print("Test 1: attributes have the correct type")
+#        print("Test 2: attributes have the correct value")
+#        print("Test 3: raising errors for arguments with wrong types")
+#        self.assertRaises(Exception,
+#                          xdata.Xdata,
+#                          1,
+#                          np.array([[[1, 2, 3, 4, 5],
+#                                     [0, 0, 0, 0, 0]
+#                                     [5, 6, 2, 4, 5]],
+#                                    [[1, 7, 6, 3, 5],
+#                                     [0, 0, 3, 0, 0]
+#                                     [5, 6, 2, 4, 5]],
+#                                    [[1, 0, 3, 2, 5],
+#                                     [0, 0, 2, 1, 4]
+#                                     [5, 8, 2, 4, 5]]
+#                                    [[7, 2, 6, 4, 5],
+#                                     [0, 3, 0, 9, 0]
+#                                     [5, 6, 7, 3, 5]]],
+#            ))
 #        print("\n")
-#        return ("bye")
-#    
+    
     def test_xdata_module_createDimensionDescription_function(self):
         print("Test for the createDimensionDescription function \
         (module xdata) \n")
