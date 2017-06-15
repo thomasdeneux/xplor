@@ -115,8 +115,7 @@ class MyTestCase(unittest.TestCase):
         #getdefaultvalue = True
         self.assertTrue(xdata.DimensionDescription.infertype(0, True), 
                         ('numeric', 0))
-        
-        
+
         print("Test 5: function defaultvalue")
         self.assertEqual(xdata.DimensionDescription.defaultvalue('numeric'), 0)
         self.assertEqual(xdata.DimensionDescription.defaultvalue('logical'),
@@ -127,7 +126,9 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, xdata.DimensionDescription.defaultvalue, 
         'prices')
         self.assertRaises(Exception, xdata.DimensionDescription, 2)
-        
+        print ("Test 6 : function set_dimtype_to_mixed")
+        f.set_dimtype_to_mixed()
+        self.assertEqual(f.dimensiontype, 'mixed')
         print("\n")
         
         
@@ -329,6 +330,168 @@ class MyTestCase(unittest.TestCase):
                                              'cherry',
                                              'banana'])
         print("Test 12: testing the update_measureheader function")
+        wrongsizecol = pd.DataFrame([['apple', 0.5, 'red', 'yummy'],
+                                     ['pear', 0.75, 'green', 'yummy'],
+                                     ['banana', 0.66, 'yellow', 'yummy'],
+                                     ['cherry', 0.89, 'red', 'yummy']])
+        wrongdimtype = pd.DataFrame([['apple', '0.5', 'red'],
+                                     ['pear', 0.75, 'green'],
+                                     ['banana', 0.66, 'yellow'],
+                                     ['cherry', 0.89, 'red']])
+        #testing for flag 'all'/'chgdim' (same code)
+        allfruits = fruits.update_categoricalheader('all', None, wrongdimtype)
+        self.assertEqual(allfruits.label, fruits.label)
+        self.assertEqual(allfruits.column_descriptors[1].dimensiontype,
+                         'mixed')
+        self.assertEqual(allfruits.values.shape, (4,3))
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'all',
+                          [2, 4],
+                          dfvalues)
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'all',
+                          None,
+                          [1, 2, 3])
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'chgdim',
+                          None,
+                          wrongsizecol)
+        #testing for flag 'new'
+        series = [pd.Series(['kiwi', 0.95, 'brown']), 
+                  pd.Series(['blueberry', '1.20', 'blue'])]
+        newfruits = fruits.update_categoricalheader('new', None, series)
+        self.assertEqual(newfruits.label, fruits.label)
+        self.assertEqual(newfruits.column_descriptors[1].dimensiontype,
+                         'mixed')
+        self.assertEqual(newfruits.values.shape, (6, 3))
+        self.assertEqual(newfruits.values[1][5], '1.20')
+        self.assertEqual(newfruits.values[0][4], 'kiwi')
+        self.assertEqual(newfruits.values[1][4], 0.95)
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'new', 1, series)
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'new', [], pd.Series(['kiwi', 0.95, 'brown']))
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'new', [], [1, 2])
+        self.assertRaises(Exception,
+                          fruits.update_categoricalheader,
+                          'new',
+                          [],
+                          [pd.Series(['kiwi', 0.95, 'brown', 'yummy']), 
+                           pd.Series(['blueberry', '1.20', 'blue', 'yummy'])])
+        #testing for flag 'chg'
+        chgfruits = fruits.update_categoricalheader('chg', [1, 3], series)
+        self.assertEqual(chgfruits.label, fruits.label)
+        self.assertEqual(chgfruits.column_descriptors[1].dimensiontype,
+                         'mixed')
+        self.assertEqual(chgfruits.values.shape, (4, 3))
+        self.assertEqual(chgfruits.values[1][3], '1.20')
+        self.assertEqual(chgfruits.values[0][1], 'kiwi')
+        self.assertEqual(chgfruits.values[1][1], 0.95)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', 1, series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', [1], 'yummy')
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', [1, -3], series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', [122, 1], series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', ['14', 1], series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', [1], ['yummy'])
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg', [1, 2],
+                          [pd.Series(['kiwi', 0.95, 'brown', 'yummy']), 
+                           pd.Series(['blueberry', '1.20', 'blue', 'yummy'])])
+        #testing for flag 'remove'
+        removefruits = fruits.update_categoricalheader('remove', [3], [])
+        self.assertEqual(removefruits.label, fruits.label)
+        self.assertEqual(removefruits.values.shape, (3, 3))
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'remove', 1, None)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'remove', [12], None)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'remove', [-1], None)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'remove', ['yummy'], None)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'remove', [1], [1])
+        #testing for flag 'perm'
+        permfruits = fruits.update_categoricalheader('perm',
+                                                     [1, 2, 3, 0],
+                                                     None)
+        self.assertEqual(permfruits.label, fruits.label)
+        self.assertEqual(permfruits.values[0][1], fruits.values[0][2])
+        self.assertEqual(permfruits.values[1][3], fruits.values[1][0])
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'perm', [1, 2, 3, 0], [1])
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'perm', 'yummy', None)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'perm', [1, 2], None)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'perm', ['yummy', 2, 3, 0], None)
+        #testing for flag 'chg&new'
+        chgandnewfruits1 = fruits.update_categoricalheader('chg&new',
+                                                     [1, 2],
+                                                     [series, series])
+        chgandnewfruits2 = fruits.update_categoricalheader('chg&new',
+                                                     [[3, 2], []],
+                                                     [series, series])
+        self.assertEquals(chgandnewfruits1.label,
+                          fruits.label,
+                          chgandnewfruits2.label)
+        self.assertEquals(len(chgandnewfruits1.column_descriptors),
+                          len(fruits.column_descriptors),
+                          len(chgandnewfruits2.column_descriptors))
+        self.assertEquals(chgandnewfruits1.values.shape,
+                          chgandnewfruits2.values.shape,
+                          (6, 3))
+        self.assertEqual(chgandnewfruits1.values[0][1], 'kiwi')
+        self.assertEqual(chgandnewfruits1.values[0][2], 'blueberry')
+        self.assertEqual(chgandnewfruits1.values[0][4], 'kiwi')
+        self.assertEqual(chgandnewfruits1.values[0][5], 'blueberry')
+        self.assertEqual(chgandnewfruits2.values[0][3], 'kiwi')
+        self.assertEqual(chgandnewfruits2.values[0][2], 'blueberry')
+        self.assertEqual(chgandnewfruits2.values[0][4], 'kiwi')
+        self.assertEqual(chgandnewfruits2.values[0][5], 'blueberry')
+        self.assertEquals(chgandnewfruits1.column_descriptors[1].dimensiontype,
+                          chgandnewfruits2.column_descriptors[1].dimensiontype,
+                          'mixed')
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&new', 1, [series, series])
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&new', [1,2], 'yummy')
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&new', [1,2], series)
+        #testing for flag 'chg&rm'
+        chgandrmfruits = fruits.update_categoricalheader('chg&rm',
+                                                     [[1, 2], [0]],
+                                                     series)
+        self.assertEqual(chgandrmfruits.label, fruits.label)
+        self.assertEqual(chgandrmfruits.getncolumns(), fruits.getncolumns())
+        self.assertEqual(chgandrmfruits.values.shape, (3,3))
+        self.assertEqual(chgandrmfruits.values[0][0], 'kiwi')
+        self.assertEqual(chgandrmfruits.values[0][1], 'blueberry')
+        self.assertEqual(chgandrmfruits.values[0][2], 'cherry')
+        self.assertEquals(chgandrmfruits.column_descriptors[1].dimensiontype,
+                          'mixed')
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&rm', 1, series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&rm', [1, 2, 3], series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&rm', [1, 2], series)
+        self.assertRaises(Exception, fruits.update_categoricalheader,
+                          'chg&rm', [[1,2], []], 'yummy')
         print("Test 13: testing check_header_update function")
         print("Test 14: testing add_column function")
         flower = pd.Series(['rose', 'forgetmenot', 'waterlily'])
@@ -359,6 +522,17 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(fruits.label, 'fruits')
         self.assertEqual(len(fruits.column_descriptors), 3)
         self.assertEqual(fruits.values.shape, (4, 3))
+        print("Test 15: testing mergelines function")
+        #testing Exceptions
+        self.assertRaises(Exception, fruits.mergelines, 5)
+        self.assertRaises(Exception, fruits.mergelines, ['apple'])
+        self.assertRaises(Exception, fruits.mergelines, [0, 1, 23])
+        self.assertRaises(Exception, fruits.mergelines, [-2])
+        #testing the result
+        series = fruits.mergelines([0, 3])
+        self.assertEqual(series[0], ['apple', 'cherry'])
+        self.assertEqual(series[1], [0.5, 0.89])
+        self.assertEqual(series[2], ['red'])
         print("\n")
     
     def test_xdata_module_MeasureHeader_class(self):
