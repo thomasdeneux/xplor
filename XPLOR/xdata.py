@@ -1621,8 +1621,8 @@ class Xdata:
                           It returns a new Xdata instance.
     
     
-    Examples
-    --------
+    Example
+    -------
     Let's take the example of children throwing a ball.
     We are interrested in the hight of the ball over time, for each child, and
     for each throw.
@@ -1823,8 +1823,152 @@ class Xdata:
         newxdata._data = newdata
         return (newxdata)
         
+    def update_xdata(self, flag, dim, ind, dataslices, modified_header):
+        """creates a new Xdata instance with the same attributes as the
+        previous one, except for lines changed both in the data and the
+        corresponding header"""
+        if not isinstance(dim, int):
+            raise Exception ("dim is of type int")
+        elif (dim < 0) | (dim >= self.getndimensions()):
+            raise Exception ("dim must correspond to an existing dimension")
+        ND = self.getndimensions()
+        oldheader = self.headers[dim]
+        #for flag 'all' : the whole content of the header has been modified
+        #dataslices is a numpy array with all the data
+        #check that flag 'all' is not in fact a flag 'chgdata'
+        if flag == 'all':
+            #checking that ind is coherent
+            if not (ind is None | isinstance(ind, list)):
+                raise Exception ("ind must be None, an empty list, or the list"
+                                 " of all indices")
+            #checking that modified_header is a Header
+            if not isinstance(modified_header, Header):
+                raise Exception("modified_header must be of type Header")
+            #checking that flag is not in fact 'chgdata'
+            #i.e. that the header has changed
+            if oldheader == modified_header:
+                flag = 'chgdata'
+            #checking that dataslices can replace data
+            if not isinstance(dataslices, np.ndarray):
+                raise Exception ("dataslices must be a numpy array for a flag "
+                "'all'")
+            elif len(dataslices.shape)!= ND:         
+                raise Exception ("dataslices must have the same number of "
+                                 "dimensions as data")
+            for n in range(ND):
+                # 'all' flag does not change the number of elements in the
+                #various dimensions except for the one that is being modified
+                if n == dim:
+                    if dataslices.shape[dim] != oldheader.n_elem:
+                        raise Exception ("the new data and the new header must"
+                                         " have the same number of elements in"
+                                         " the concerned dimension")
+                    elif modified_header.label != oldheader.label:
+                        raise Exception ("label of the header can't be changed"
+                                         " with this method")
+                    elif self.headers[dim].ismeasure:
+                        if modified_header.unit != oldheader.unit:
+                            raise Exception ("flag 'all' can't change the unit"
+                            " of the header")
+                        elif modified_header.allunits != oldheader.allunits:
+                            raise Exception ("flag 'all' can't change the unit"
+                            " of the header")
+                else:
+                    if dataslices.shape[n] != self.shape()[n]:
+                        raise Exception ("'all' flag only allows one dimension"
+                                         " to change its number of elements")
+            newxdata = self.copy()
+            newxdata._data = dataslices
+            newxdata._headers[dim] = modified_header
+            return (newxdata)
+        if flag == 'chgdata':
+            #header must be None or the same as the old one
+            if not ((modified_header is None) | \
+                    (modified_header == oldheader)):
+                raise Exception ("'chgdata' flag can't change the header")
+            if not (ind is None | isinstance(ind, list)):
+                raise Exception ("ind must be None, an empty list, or the list"
+                                 " of all indices")
+            elif not isinstance(dataslices, np.ndarray):
+                raise Exception ("dataslices must be a numpy array for a flag "
+                "'chgdata'")
+            elif dataslices.shape != self.data.shape:
+                raise Exception ("flag 'chgdata' can't change the dimensions "
+                                 "nor number of elements in the dimensions")
+            newxdata = self.copy()
+            newxdata._data = dataslices
+            return (newxdata)
+        elif flag == 'chg':
+            #lets first check the header
+            if not isinstance(modified_header, Header):
+                raise Exception("modified_header must be of type Header")
+            elif (modified_header.ismeasure | \
+                 modified_header.isundifferentiated):
+                if modified_header != oldheader:
+                    raise Exception ("measure headers and undifferentiated "
+                                     "ones can't be modified by a flag 'chg'")
+            else: #then it's a categoricalwithvaalues header
+                if oldheader.n_elem != modified_header.n_elem:
+                    raise Exception("'chg' flag can't change the number of "
+                                    "elements in the dimension")
+                elif oldheader.getncolumns() != modified_header.getncolumns():
+                    raise Exception ("'chg' flag can't change the number of "
+                                     "columns of the header")
+                elif oldheader.getallunits() != modified_header.getallunits():
+                    raise Exception ("'chg' flag can't change the units")
+                elif oldheader.label != modified_header.label:
+                    raise Exception("'chg' flag can't change labels")
+                for i in range(oldheader.getncolumns()):
+                    if oldheader.column_descriptors[i].label != \
+                       modified_header[i].columndescriptors.label:
+                        raise Exception("'chg' flag can't change labels")
+            #note : we didn't check that the values haven't changed for the 
+            #lines that are not supposed to be modified in order to fasten the
+            #update for huge sets of data. Such changes are usually done by
+            #filters, that are tested to do the right thing
+            
+            #now lets check that ind and dataslices have correct type and same
+            #length
+            if not isinstance(ind, list):
+                raise Exception("ind must be of type list")
+            elif not isinstance(dataslices, list):
+                raise Exception("dataslices must be of type list")
+            elif len(ind) != len(dataslices):
+                raise Exception("dataslices must have the same number of "
+                                "element as ind")
+            for i in range(len(ind)):
+                if not isinstance(ind[i], int):
+                    raise Exception("all indices must be of type int")
+                elif not isinstance(dataslices[i], np.ndarray):
+                    raise Exception("all dataslices must be of type "
+                                    "numpy.ndarray")
+                elif len(dataslices[i].shape) != (len(self.data.shape) -1):
+                    raise Exception ("dataslice doesn't have a correct shape")
+                for i in range(len(dataslices[i].shape)):
+                    if i<dim:
+                        if dataslices[i].shape[i] != self.data.shape[i]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                    if i>dim:
+                        if dataslices[i].shape[i] != self.data.shape[i + 1]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+            #now lets modify the data and replace the header
+            newxdata = self.copy()
+            #TODO!!!! newxdata._data = dataslices
+            newxdata._headers[dim] = modified_header
+            return (newxdata)
+        elif flag == 'new':
+        elif flag == 'remove':
+        elif falg == 'chg&new':
+        elif flag == 'chg&rm':
+        elif flag == 'perm':
+        #all accepted flags with this method are already taken care of
+        #flag argument is either not a flag or not one accepted by this method
+        raise Exception("flag must be 'all', 'chg', 'new', 'remove', 'perm' "
+        "'chg&new' or 'chg&rm'")
 
-                
+        
 def createDimensionDescription(label, column = None):
     """the function creates an instance of DimensionDescription.
     
