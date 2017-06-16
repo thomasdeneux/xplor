@@ -502,12 +502,9 @@ class MyTestCase(unittest.TestCase):
                           'chg&rm', [1, 2], series)
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'chg&rm', [[1,2], []], 'yummy')
-        #testing for flag 'chgdim'
+        #testing for not a flag or a flag that is not accepted by the method
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'chgdim', [], [])
-        #testing for not a flag
-        self.assertRaises(Exception, fruits.update_categoricalheader,
-                          'yummy', [], [])
         print("Test 13: testing check_header_update method")
         #this method is a test itself, it does not return anything, it only
         #raises exceptions when there is an obvious problem (not a good name,
@@ -824,6 +821,27 @@ class MyTestCase(unittest.TestCase):
         datacopy = setofdata.copy()
         self.assertEqual(datacopy.data_descriptor.allunits, 
                         setofdata.data_descriptor.allunits)
+        print("Test 7: testing the update_data method")
+        newdata1 = np.random.rand(5, 3, 4)
+        udsetofdata1 = setofdata.update_data(newdata1)
+        newdata2 = np.random.rand(10, 8, 4)
+        udsetofdata2 = setofdata.update_data(newdata2)
+        self.assertEqual(udsetofdata1.getndimensions(), 3)
+        self.assertEqual(udsetofdata2.getndimensions(), 3)
+        self.assertEqual(udsetofdata1.shape(), (5, 3, 4))
+        self.assertEqual(udsetofdata2.shape(), (10, 8, 4))
+        self.assertEqual(udsetofdata1.headers[0].n_elem, 5)
+        self.assertEqual(udsetofdata2.headers[0].n_elem, 10)
+        self.assertEqual(udsetofdata1.headers[1].n_elem, 3)
+        self.assertEqual(udsetofdata2.headers[1].n_elem, 8)
+        self.assertEqual(udsetofdata1.headers[2].n_elem, 4)
+        self.assertEqual(udsetofdata2.headers[2].n_elem, 4)
+        self.assertRaises(Exception,
+                          setofdata.update_data,
+                          np.random.rand(5, 3, 4, 5))
+        self.assertRaises(Exception,
+                          setofdata.update_data,
+                          np.random.rand(5, 3, 9))
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):

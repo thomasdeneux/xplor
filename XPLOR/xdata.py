@@ -628,7 +628,7 @@ class CategoricalHeader(Header):
                     (it can be usefull for selections or to add colors)
     - update_categoricalheader : (flag, ind, values)
                                  flags can be : 'all', 'new', 'chg', 'chg&new'
-                                 'chg&rm', 'remove', 'chgdim', 'perm'
+                                 'chg&rm', 'remove', 'perm'
                                  idn indicates were the changes take place
                                  values contains the new values
                                  allows filters to create a new categorical
@@ -1168,12 +1168,7 @@ class CategoricalHeader(Header):
             return CategoricalHeader (self._label,
                                       new_descriptors,
                                       values = newvalues)
-        elif flag == 'chgdim':
-            raise Exception ("a 'chgdim' flag can't use the method "
-                             "update_categoricalheader, but use the custructor"
-                             " because it changes the labels and dimension "
-                             "descriptions as well")
-        #the all flags were listed before, so the argument is not valid                              values = newvalues)  
+        #all the accepted flags were listed before, so the argument is not valid  
         raise Exception("the given flag must be 'all', 'perm', 'chg', 'new'"
                         " 'remove', 'chg&new', or 'chg&rm'")
         
@@ -1572,6 +1567,58 @@ class Xdata:
     - shape : gives the shape of the data
              (it corresponds to the number of elements for each dimension)
     - copy : creates a copy of a Xdata instance
+    - update_data : (newdata)
+                    Simply changing some values in data by giving a whole new
+                    numpy array. Thoses changes can change the length of
+                    measure headers or categorical headers tht are
+                    undifferentiated.
+                    This method returns a new Xdata instance.
+    - update_xdata : (flag, dim, ind, dataslices, modified_header)
+                     - flag : *'chgdata' to only chage some data (it can
+                              modifie the length of measure headers and
+                              undifferentiated headers but not
+                              categoricalwithvalues headers)
+                              *'all' to change the data and modifie the header
+                              (possible modifications are given for
+                              modified_header)
+                              *'chg' to change some lines of a header and
+                              corresponding data
+                              *'new' to add lines in a dimension
+                              *'remove' to remove some lines
+                              *'chg&new' to change and add some lines
+                              *'chg&rm' to change and remove some lines
+                              *'perm' to permute some lines
+                     - dim : (int) number of the modified header
+                     - ind : (list of int) indices of lines that are changing
+                     - dataslices : new values for the modified lines
+                     - modified_header : same header as before but with a few
+                                         changes (adding columns, lines,
+                                         changing values depending of the type
+                                         of header)
+                     This method allows to update a header and the
+                     corresponding data, the shape of data migth be modifed but
+                     the dimensions are still representing the same thing
+                     (DimensionDescriptions are not changed, (except for
+                     dimensiontype that migth become 'mixed' if some lines are
+                     merged)).
+                     It returns a new data instance.
+    - modify_dimensions : (flag, dim, newdata, newheaders)
+                          -flag : 'global' to change everything,
+                                  'chgdim' to change one dimension/dimensions,
+                                  'insertdim' to insert a dimension/dimensions,
+                                  'rmdim' to remove a dimension/dimensions,
+                                  or 'permdim' to permute the dimensions
+                          -dim : list of the dimensions to be changed
+                          -newdata : full numpy.array with the whole data
+                                    (except for flag 'permdim')
+                          -newheaders : list of the new headers
+                          This methods allows to modify the structure of a
+                          Xdata instance, i.e. to modify the
+                          DimensionDescriptions in the list of headers
+                          (and therefore the data) new headers do not represent
+                          the same thing as before. This method aslo allows to
+                          change the number of dimensions.
+                          It returns a new Xdata instance.
     
     
     Examples
@@ -1735,6 +1782,47 @@ class Xdata:
                 unit.append(i['value'])
         return Xdata(self.name, data, headers, unit)
     
+    def update_data(self, newdata):
+        """Creating a new Xdata instance, with updated data and the same 
+        headers as before (except for the length of some measure headers and
+        undiferentiated headers)"""
+        #checking the number of dimension
+        if len(newdata.shape) != self.getndimensions() :
+            raise Exception("update_data method does not allow to change the "
+                            "number of dimensions, please use "
+                            "modify_dimensions method instead")
+        #for each dimension, check if the number of element has chaged
+        #if it has changed, make sure this change is allowed
+        #if so, update the header
+        newxdata = self.copy()
+        for dim in range(self.getndimensions()):
+            if newdata.shape[dim] != self.headers[dim].n_elem :
+                oldh = newxdata.headers[dim]
+                if self.headers[dim].iscategoricalwithvalues:
+                    raise Exception ("categorical headers with values can't "
+                                     "have new not defined elements")
+                elif self.headers[dim].isundifferentiated:
+                    n = newdata.shape[dim] - self.headers[dim].n_elem
+                    if n > 0:
+                        values = [pd.Series([])] * n
+                        h = oldh.update_categoricalheader('new',
+                                                          None,
+                                                          values)
+                        newxdata.headers[dim] = h
+                    else : #the number element has decreased
+                        ind = range(n)
+                        h = oldh.update_categoricalheader('rm',
+                                                          ind,
+                                                          None)
+                        newxdata.headers[dim] = h
+                else : #the header is a measure header
+                    h = oldh.update_measureheader(n_elem = newdata.shape[dim])
+                    newxdata.headers[dim] = h
+                    
+        #once all headers are updated, update the data itself
+        newxdata._data = newdata
+        return (newxdata)
+        
 
                 
 def createDimensionDescription(label, column = None):
