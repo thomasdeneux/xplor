@@ -842,6 +842,109 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception,
                           setofdata.update_data,
                           np.random.rand(5, 3, 9))
+        print("Test 8: testing the update_xdata method")
+        #if dim is not an int of out of range, it raises an exception
+        series = [pd.Series(['kiwi', 0.95, 'brown']), 
+                  pd.Series(['blueberry', '1.20', 'blue'])]
+        newfruits = fruits.update_categoricalheader('chg', [1, 3], series)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 'yummy', None, newdata1, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 4, None, newdata1, newfruits)
+        #flag 'all' that should be a 'chgdata' flag (because the header
+        #hasn't changed)
+        (alltochgdataxdata, flag) = setofdata.update_xdata('all',
+                                                           1,
+                                                           None,
+                                                           newdata1,
+                                                           undifferentiated)
+        self.assertEqual(flag, 'chgdata')
+        self.assertEqual(alltochgdataxdata.data[0][0][0], newdata1[0][0][0])
+        self.assertEqual(setofdata.data[0][0][0], data[0][0][0])
+        
+        #flag 'all'  (not all exceptions are tested)
+        (allxdata, flag) = setofdata.update_xdata('all',
+                                                  2,
+                                                  None,
+                                                  newdata1,
+                                                  newfruits)
+        self.assertEqual(flag, 'all')
+        self.assertEqual(allxdata.headers[2].values[0][1], 'kiwi')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, 'yummy', newdata1, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], newdata1, 'yummy')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], 'yummy', newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], np.random.rand(5, 3, 4, 2), newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], np.random.rand(5, 8, 4), newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], np.random.rand(5, 3, 7), newfruits)
+        #flag 'chgdata'
+        (chgdataxdata, flag) = setofdata.update_xdata('chgdata',
+                                                      1,
+                                                      None,
+                                                      newdata1,
+                                                      None)
+        self.assertEqual(flag, 'chgdata')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 'yummy', None, newdata1, None)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 0, 'yummy', newdata1, None)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 0, None, 'yummy', None)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 0, None, newdata1, newfruits)
+        #flag 'chg'  (not all exceptions are tested)
+        slices = [np.random.rand(5, 3), np.random.rand(5, 3)]
+        (chgxdata, flag) = setofdata.update_xdata('chg',
+                                                  2,
+                                                  [1, 3],
+                                                  slices,
+                                                  newfruits)
+        self.assertEqual(chgxdata.data[3][0][1], slices[0][3][0])
+        self.assertEqual(flag, 'chg')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 0, [0, 1], slices,
+                          xdata.MeasureHeader('time', 0.6, 5, 2, 
+                                              column_descriptors = time))
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 0, [0, 1], slices, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0, 1], slices, t)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, 0, slices, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0, 1], 'yummy', newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0, 1, 2], slices, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0], [np.random.rand(5, 4)], fruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [1, 3], slices, 
+                          fruits.update_categoricalheader('new', None, series))
+        #flag 'new'  (not all exceptions are tested)
+        addfruits = fruits.update_categoricalheader('new', None, series)
+        (newxdata, flag) = setofdata.update_xdata('new',
+                                                  2,
+                                                  None,
+                                                  slices,
+                                                  addfruits)
+        self.assertEqual(newxdata.data[0][0][0], setofdata.data[0][0][0])
+        self.assertEqual(flag, 'new')
+        self.assertEqual(newxdata.shape(), (5, 3, 6))
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 0, None, slices, addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, 'yummy', slices, addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, None, slices[0], addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, None, 'yummy', addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, None, slices, 'yummy')
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
