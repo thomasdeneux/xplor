@@ -945,6 +945,25 @@ class MyTestCase(unittest.TestCase):
                           'new', 2, None, 'yummy', addfruits)
         self.assertRaises(Exception, setofdata.update_xdata,
                           'new', 2, None, slices, 'yummy')
+        #flag 'remove' (not all exceptions are tested)
+        rmfruits = fruits.update_categoricalheader('remove', [1, 3], None)
+        (rmxdata, flag) = setofdata.update_xdata('remove',
+                                                  2,
+                                                  [1, 3],
+                                                  None,
+                                                  rmfruits)
+        self.assertEqual(flag, 'remove')
+        self.assertEqual(rmxdata.shape(), (5, 3, 2))
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1], None, rmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 0, [1,3], None, rmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1,3], None, 'yummy')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1,'yummy'], None, rmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1,3], [1,3], rmfruits)
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):

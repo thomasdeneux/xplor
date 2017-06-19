@@ -2044,7 +2044,63 @@ class Xdata:
                 sliceofdata = self._headers[dim].n_elem + i
                 newxdata._data[tuple(newdata)] = sliceofdata             
             return (newxdata, flag)
-#        elif flag == 'remove':
+
+        elif flag == 'remove':
+            #lets first check that ind and dataslices has correct type
+            if not isinstance(ind, list):
+                raise Exception("ind must be of type list")
+            elif not ((dataslices is None) | (dataslices == [])):
+                raise Exception("dataslices must be empty")
+            for i in range(len(ind)):
+                if not isinstance(ind[i], int):
+                    raise Exception("all indices must be of type int")
+            #now lets check the header and its number of elements
+            if not isinstance(modified_header, Header):
+                raise Exception("modified_header must be of type Header")
+            elif modified_header.ismeasure != oldheader.ismeasure |\
+            modified_header.isundifferentiated != oldheader.isundifferentiated:
+                raise Exception("header can't change its type with flag "
+                "'remove'")
+            if (modified_header.n_elem != oldheader.n_elem - len(ind)):
+                    raise Exception ("the number of elements removed in a "
+                                     "dimension must be the same in data and "
+                                     "in the header")
+            if modified_header.iscategoricalwithvalues:
+                if oldheader.getncolumns() != modified_header.getncolumns():
+                    raise Exception ("'remove' flag can't change the number of"
+                                     " columns of the header")
+                elif oldheader.getallunits() != modified_header.getallunits():
+                    raise Exception ("'remove' flag can't change the units")
+                elif oldheader.label != modified_header.label:
+                    raise Exception("'remove' flag can't change labels")
+                for i in range(oldheader.getncolumns()):
+                    if oldheader.column_descriptors[i].label != \
+                       modified_header.column_descriptors[i].label:
+                        raise Exception("'remove' flag can't change labels")
+            #note : we didn't check that the values haven't changed for the 
+            #lines that are not supposed to be modified in order to fasten the
+            #update for huge sets of data. Such changes are usually done by
+            #filters, that are tested to do the right thing
+            newxdata = self.copy()
+            #Now lets replace the header
+            newxdata._headers[dim] = modified_header
+            #And recreate the data (can't change the size of a numpy array)
+            shape = list(self.shape())
+            shape[dim] -= len(ind)
+            newdataarray = np.zeros(tuple(shape))
+            newxdata._data = newdataarray
+            slicedata = [slice(None, None, None)] * ND
+            slicenewdata = [slice(None, None, None)] * ND
+            countslices = 0
+            for s in range(self.shape()[dim]):
+                if not s in ind:
+                    slicenewdata[dim] = countslices
+                    slicedata[dim] = s
+                    countslices += 1
+                    newxdata._data[tuple(slicenewdata)] = \
+                                   self.data[tuple(slicedata)]            
+            return (newxdata, flag)
+        
 #        elif falg == 'chg&new':
 #        elif flag == 'chg&rm':
 #        elif flag == 'perm':
