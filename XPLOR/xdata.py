@@ -1351,93 +1351,126 @@ class MeasureHeader(Header):
     Parameters
     ----------     
     - label:
-            name of the header
-            type : str
-    - start : 
-            type : float or int
-            first value of this dimension
+        name of the header
+        (type str)
+    - start :
+        first value of this dimension
+        (type float or int)
     - n_elem :
-            type : int
-            number of element in the column
+        number of element in the column
+        (type int)
     - scale :
-            type : float or int
-            interval between the values of this dimension
-    - unit : (optional)
-            type : str or list
-            One can define only the unit (e.g. mm) or the conversions as well
-            in the form of a list (e.g. ['mm', 10**(-3), 'm', 1])
-    - checkbank : (optional)
-                Default value of checkbank is Flase. If is it True, a unit must
-                be specified, in order to check in the bank of conversion
-                tables if one exists for the given unit.
-    - column_descriptors : (optional)
-            type : DimensionDescription
-            description of the dimension
-            it's label must be the same as the general label
+        interval between the values of this dimension
+        (type float or int)        
+    - unit :
+        One can define only the unit (e.g. mm) or the conversions as well in
+        the form of a list (e.g. ['mm', 10**(-3), 'm', 1])
+            
+        (type str or list)
+        
+        (optional)     
+    - checkbank :
+        Default value of checkbank is Flase. If is it True, a unit must be
+        specified, in order to check in the bank of conversion tables if one
+        exists for the given unit.
+        
+        (optional)
+                
+    - column_descriptors :
+        description of the dimension (it's label must be the same as the
+        general label of the header)
+            
+        (type DimensionDescription)
+        
+        (optional)
     
     
     Attributes
     ----------
-    - label : name of the dimension (str)
-    - column_descriptors : list of one DimensionDescription instance
-    - start : first value of this dimension (float)
-    - scale : interval between the values of this dimension (float)
+    - label :
+        name of the dimension (type str)
+    - column_descriptors :
+        list of one DimensionDescription instance
+    - start :
+        first value of this dimension (type float)
+    - scale :
+        interval between the values of this dimension (type float)
       
     Methods
     -------          
     (methods imposed by inheritance)
-    - n_elem : number of element in the column(s)/ number of samples
-    - iscategorical : differentiate measure and categorical headers for the
-                      properties ismeasure, iscategoricalwithvalues and
-                      isundifferentiated    
-    - __eq__ : compares all the fields of the headers
-               (returns True if all the fields are the same)
-               it can be used by writting header1 == header2
-    - getncolumns : gives the number of columns
-                    (1 for MeasureHeader, 0 to n for CategoricalHeader)
-    - getunits : gives the list of the unit used for each column
-                 ('no unit' is returned for each column with no specified unit)
-    - getallunits : gives the list of conversion table for each column
-                ('no unit' is returned for each column with no specified unit)
-    - disp : gives the main attributes of a Header
-    - getvalue : (self, nline, column = None)
-                 gives the value located at the line nline and at the column
-                 column (defined by it's label or it's number) or the fist one.
-                 Since we use pyhton, we have decided that to access the first
-                 element of the column, nline must be equal to 0.
-    - get_itemname :  (self, nline)
-                nline can here be an integer or a list of integer.
-                the function returns the corresponding values of the first
-                column
+    
+    - n_elem :
+        number of element in the column(s)/ number of samples
+    - iscategorical :
+        differentiate measure and categorical headers for the properties
+        ismeasure, iscategoricalwithvalues and isundifferentiated    
+    - __eq__ :
+        compares all the fields of the headers (returns True if all the
+        fields are the same) it can be used by writting header1 == header2
+    - getncolumns :
+        gives the number of columns (1 for MeasureHeader, 0 to n for
+        CategoricalHeader)
+    - getunits :
+        gives the list of the unit used for each column ('no unit' is
+        returned for each column with no specified unit)
+    - getallunits :
+        gives the list of conversion table for each column ('no unit' is
+        returned for each column with no specified unit)
+    - disp :
+        gives the main attributes of a Header
+    - getvalue(nline, column = None) :
+        gives the value located at the line nline and at the column column
+        (defined by it's label or it's number) or the fist one.Since we use
+        pyhton, we have decided that to access the first element of the
+        column, nline must be equal to 0.
+    - get_itemname(nline) :
+        nline can here be an integer or a list of integer. The function
+        returns the corresponding values of the first column.
                 
     (other methods)
-    - update_measureheader : (start = None, n_elem = None,scale = None)
-                             creates a new measure header from the attributes
-                             of a previous one, and the specified changes
-    - copy : creates a copy of a MeasureHeader instance
+    
+    - update_measureheader(start = None, n_elem = None,scale = None):
+        creates a new measure header from the attributes of a previous one,
+        and the specified changes
+    - copy :
+        creates a copy of a MeasureHeader instance
         
     
     Example
     --------
         label : 'x'
+        
         column_descriptors : (list of one DimensionDescription)
+        
             label : 'x', 
+            
             dimensiontype : 'numeric',
+            
             unit : 'mm',
-            allunits : [{unit : 'mm', 'value' : 10**(-3)},
-                         {unit : 'm', 'value' : 1}]
+            
+            allunits : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
+            'value' : 1}]
+    
         n-elem : 4
+        
         start : 1
+        
         scale : 1
         
-                                     x
+        
+                                   'x'
                                     
-                                   | x |
-                                   |___|
-                                   | 1 |
-                                   | 2 |
-                                   | 3 |
-                                   | 4 |
+                                    x 
+    
+                                    
+                                    1 
+                                   
+                                    3 
+                                   
+                                    5 
+                                   
+                                    7 
      
      
     """
