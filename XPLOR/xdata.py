@@ -2040,8 +2040,8 @@ class Xdata:
             newxdata._data[tuple(olddata)] = self.data
             for i in range(len(dataslices)):
                 newdata = olddata
-                newdata[dim] = self._headers[dim].n_elem + i,
-                sliceofdata = self._headers[dim].n_elem + i
+                newdata[dim] = self._headers[dim].n_elem + i
+                sliceofdata = np.array([dataslices[i]])
                 newxdata._data[tuple(newdata)] = sliceofdata             
             return (newxdata, flag)
 
@@ -2101,7 +2101,122 @@ class Xdata:
                                    self.data[tuple(slicedata)]            
             return (newxdata, flag)
         
-#        elif falg == 'chg&new':
+        elif flag == 'chg&new':
+            #lets first check dataslices
+            if not isinstance(dataslices, list):
+                raise Exception ("dataslices must be a list of two elements: "
+                                 "first the list of the lines that have "
+                                 "changed, second the list of new lines")
+            elif len(dataslices) != 2:
+                raise Exception ("dataslices must be a list of two elements: "
+                                 "first the list of the lines that have "
+                                 "changed, second the list of new lines")
+            elif not (isinstance(dataslices[0], list) & \
+                      isinstance(dataslices[1], list)):
+                raise Exception ("dataslices must be a list of two elements: "
+                                 "first the list of the lines that have "
+                                 "changed, second the list of new lines")
+            #now lets check ind
+            if not isinstance(ind, list):
+                raise Exception ("ind must be the list of indices of the lines"
+                                 " to be changed")
+            elif isinstance(ind[0], list):
+                if len(ind) != 2 :
+                    raise Exception ("ind must be the list of indices of the "
+                                     "lines to be changed")
+                elif not ((ind[1] is None) | isinstance(ind[1], list)):
+                    raise Exception ("the list of new lines to add must be "
+                                     "empty,, None or the list of the indices")
+                ind = ind[0]
+            #now lets check the modified header and check that the length of 
+            #the arguments is coherent
+            if not isinstance(modified_header, Header):
+                raise Exception("modified_header must be of type Header")
+            elif modified_header.ismeasure != oldheader.ismeasure |\
+            modified_header.isundifferentiated != oldheader.isundifferentiated:
+                raise Exception("header can't change its type with flag "
+                "'chg&new'")
+            if (modified_header.n_elem != \
+                oldheader.n_elem + len(dataslices[1])):
+                    raise Exception ("the number of elements added in a "
+                                     "dimension must be the same in data and "
+                                     "in the header")
+            if modified_header.iscategoricalwithvalues:
+                if oldheader.getncolumns() != modified_header.getncolumns():
+                    raise Exception ("'chg&new' flag can't change the number "
+                                     "of columns of the header")
+                elif oldheader.getallunits() != modified_header.getallunits():
+                    raise Exception ("'chg&new' flag can't change the units")
+                elif oldheader.label != modified_header.label:
+                    raise Exception("'chg&new' flag can't change labels")
+                for i in range(oldheader.getncolumns()):
+                    if oldheader.column_descriptors[i].label != \
+                       modified_header.column_descriptors[i].label:
+                        raise Exception("'chg&new' flag can't change labels")
+            #note : we didn't check that the values haven't changed for the 
+            #lines that are not supposed to be modified in order to fasten the
+            #update for huge sets of data. Such changes are usually done by
+            #filters, that are tested to do the right thing
+            if len(ind) != len(dataslices[0]):
+                raise Exception ("all changed slices must be given new values")
+            
+            newxdata = self.copy()
+            newxdata._headers[dim] = modified_header
+            shape = list(self.shape())
+            shape[dim] += len(dataslices)
+            newdataarray = np.zeros(tuple(shape))
+            olddata = [slice(None, None, None)] * ND
+            olddata[dim] = slice(0, self._headers[dim].n_elem, None)
+            newxdata._data = newdataarray
+            #lets copy the 'old' values
+            newxdata._data[tuple(olddata)] = self.data
+            #and change the lines before adding the new ones
+            changeslice  = [slice(None,None,None)] * ND
+            for i in range(len(ind)):
+                changeslice[dim] = ind[i]
+                if not isinstance(ind[i], int):
+                    raise Exception("all indices must be of type int")
+                elif not isinstance(dataslices[0][i], np.ndarray):
+                    raise Exception("all dataslices must be of type "
+                                    "numpy.ndarray")
+                elif len(dataslices[0][i].shape) != (len(self.data.shape) -1):
+                    raise Exception ("dataslice doesn't have a correct shape")
+                for j in range(len(dataslices[0][i].shape)):
+                    if j<dim:
+                        if dataslices[0][i].shape[j] != self.data.shape[j]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                    if j>dim:
+                        if dataslices[0][i].shape[j] != self.data.shape[j + 1]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                #slices and indices are correct, lets modify the data
+                newxdata._data[tuple(changeslice)] = dataslices[0][i]
+            #now lets add the new lines
+            for i in range(len(dataslices[1])):
+                if not isinstance(dataslices[1][i], np.ndarray):
+                    raise Exception("all dataslices must be of type "
+                                    "numpy.ndarray")
+                elif len(dataslices[1][i].shape) != (len(self.data.shape) -1):
+                    raise Exception ("dataslice doesn't have a correct shape")
+                for j in range(len(dataslices[1][i].shape)):
+                    if j<dim:
+                        if dataslices[1][i].shape[j] != self.data.shape[j]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                    if j>dim:
+                        if dataslices[1][i].shape[j] != self.data.shape[j + 1]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                
+                newdata = olddata
+                newdata[dim] = self._headers[dim].n_elem + i
+                sliceofdata = np.array([dataslices[1][i]])
+                newxdata._data[tuple(newdata)] = sliceofdata            
+            return (newxdata, flag)
+            
+            
+            
 #        elif flag == 'chg&rm':
 #        elif flag == 'perm':
         #all accepted flags with this method are already taken care of

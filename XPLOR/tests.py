@@ -933,6 +933,7 @@ class MyTestCase(unittest.TestCase):
                                                   slices,
                                                   addfruits)
         self.assertEqual(newxdata.data[0][0][0], setofdata.data[0][0][0])
+        self.assertEqual(newxdata.data[0][0][5], slices[1][0][0])
         self.assertEqual(flag, 'new')
         self.assertEqual(newxdata.shape(), (5, 3, 6))
         self.assertRaises(Exception, setofdata.update_xdata,
@@ -964,6 +965,48 @@ class MyTestCase(unittest.TestCase):
                           'remove', 2, [1,'yummy'], None, rmfruits)
         self.assertRaises(Exception, setofdata.update_xdata,
                           'remove', 2, [1,3], [1,3], rmfruits)
+        #flag 'chg&new' (not all exceptions are tested)
+        chgandnewfruits = fruits.update_categoricalheader('chg&new',
+                                                          [[0,1], None],
+                                                          [series, series])
+        (chgandnewxdata, flag) = setofdata.update_xdata('chg&new',
+                                                        2,
+                                                        [0, 1],
+                                                        [slices, slices],
+                                                        chgandnewfruits)
+        self.assertEqual(flag, 'chg&new')
+        self.assertEqual(chgandnewxdata.shape(), (5, 3, 6))
+        self.assertEqual(chgandnewxdata.data[0][0][5], slices[1][0][0])
+        self.assertEqual(chgandnewxdata.data[0][0][2], setofdata.data[0][0][2])
+        self.assertEqual(chgandnewxdata.data[0][0][0], slices[0][0][0])
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], 'yummy'],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 'yummy'], None],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1, 3], None],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          'yummy', chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [series, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [slices, slices], fruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [slices, slices], 'yummy')
+        
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
