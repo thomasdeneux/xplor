@@ -2547,8 +2547,12 @@ def createDimensionDescription(label, column = None):
     
     Parameters
     ----------     
-    - label: type str
-    - column : type pandas.core.series.Series, shape (n,1)
+    - label:
+        label for the DimensionDescription instance
+        (type str)
+    - column :
+        values to determine the dimensiontype of the DimensionDescription
+        (type pandas.core.series.Series, shape (n,1))
     """
     if not isinstance(label,str):
         raise Exception("label must be of type str")
@@ -2582,6 +2586,7 @@ def check_bank(unit):
     
     
 def disp(obj):
+    """generic disp method"""
     try:
         pprint(vars(obj))
     except:
