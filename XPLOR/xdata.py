@@ -624,97 +624,130 @@ class CategoricalHeader(Header):
     
     Parameters
     ----------     
-    - label: name of the header
-            type : str
-    - column_descriptors : (optional,
-                            the case with no column is possible.
-                            the legend would then be a list of int [1, 2, ...]
-                            it is undifferentiated)
-            type : str, DimensionDescription or a list of such elements
-            description of the dimension of each feature
-    - n_elem : (optional if values is specified)
-            type : int
-            number of element in the column(s)
-    - values : (otional if it is just undifferentiated series of measures and
-                that n_elem is given)
-            type : DataFrame from pandas (pandas.core.frame.DataFrame) of shape
-            (n_elem, len(column_descriptors))
-            content of the various subdimensions
+    - label:
+        name of the header
+        (type : str)
+    - column_descriptors :
+        description of the dimension of each feature
+        
+        (type str, DimensionDescription or a list of such elements)
+        
+        (optional, the case with no column is possible. The legend would then
+        be a list of int [1, 2, ...], it is undifferentiated)
+     
+    - n_elem :
+        number of element in the column(s)
+        
+        (type int)
+        
+        (optional if values is specified)
+            
+    - values :
+        content of the various subdimensions
+        
+        (type DataFrame from pandas (pandas.core.frame.DataFrame) of shape
+        (n_elem, len(column_descriptors))
+        
+        (optional if it is just undifferentiated series of measures and that
+        n_elem is given)
+            
     
     Attributes
     ----------
-    - label : name of the dimension (str)
-    - column_descriptors : list of the DimensionDescription of each of the 
-            columns of values
-    - values : content of the various subdimensions (pandas DataFrame
-            (pandas.core.frame.DataFrame)of shape
-            (n_elem, len(column_descriptors))
+    - label :
+        name of the dimension
+        (type str)
+    - column_descriptors :
+        list of the DimensionDescription of each of the columns of values
+    - values :
+        content of the various subdimensions (pandas DataFrame
+        (pandas.core.frame.DataFrame)of shape (n_elem, len(column_descriptors))
       
     Methods
     -------  
     (methods imposed by inheritance)
-    - n_elem : number of element in the column(s)/ number of samples
-               number of lines of values
-    - iscategorical : differentiate measure and categorical headers for the
-                      properties ismeasure, iscategoricalwithvalues and
-                      isundifferentiated
-    - iscategorical : returns True since it is the class CategoricalHeader
-    - __eq__ : compares all the fields of the headers
-               (returns True if all the fields are the same)
-               it can be used by writting header1 == header2
-    - getncolumns : gives the number of columns
-                    (1 for MeasureHeader, 0 to n for CategoricalHeader)
-    - getunits : gives the list of the unit used for each column
-                 ('no unit' is returned for each column with no specified unit)
-    - getallunits : gives the list of conversion table for each column
-                ('no unit' is returned for each column with no specified unit)
-    - disp : gives the main attributes of a Header
-    - getvalue : (self, nline, column = None)
-                 gives the value located at the line nline and at the column
-                 column (defined by it's label or it's number) or the fist one.
-                 Since we use pyhton, we have decided that to access the first
-                 element of the column, nline must be equal to 0.
-    - get_itemname :  (self, nline)
-                nline can here be an integer or a list of integer.
-                the function returns the corresponding values of the first
-                column
-    - copy : creates a copy of the categorical header
+    
+    - n_elem :
+        number of element in the column(s)/ number of samples number of lines
+        of values
+    - iscategorical :
+        differentiate measure and categorical headers for the properties
+        ismeasure, iscategoricalwithvalues and isundifferentiated
+    - iscategorical :
+        returns True since it is the class CategoricalHeader
+    - __eq__ :
+        compares all the fields of the headers (returns True if all the
+        fields are the same) it can be used by writting header1 == header2
+    - getncolumns :
+        gives the number of columns (1 for MeasureHeader, 0 to n for
+        CategoricalHeader)
+    - getunits :
+        gives the list of the unit used for each column ('no unit' is returned
+        for each column with no specified unit)
+    - getallunits :
+        gives the list of conversion table for each column ('no unit' is
+        returned for each column with no specified unit)
+    - disp :
+        gives the main attributes of a Header
+    - getvalue(nline, column = None) : 
+        gives the value located at the line nline and at the column column
+        (defined by it's label or it's number) or the fist one. Since we use
+        pyhton, we have decided that to access the first element of the
+        column, nline must be equal to 0.
+    - get_itemname(nline) :
+        nline can here be an integer or a list of integer. The function
+        returns the corresponding values of the first column
+    - copy :
+        creates a copy of the categorical header
     
     (other methods)
-    - add_column : (column_descriptor, values)
-                    column_descriptor must be of type str or
-                    DimensionDescription
-                    values must be of type pandas.core.series.Series
-                    this method allows to created a new categorical header from
-                    the attributes of a previous categorical haeder, while
-                    adding a new column
-                    (it can be usefull for selections or to add colors)
-    - update_categoricalheader : (flag, ind, values)
-                                 flags can be : 'all', 'new', 'chg', 'chg&new'
-                                 'chg&rm', 'remove', 'perm'
-                                 idn indicates were the changes take place
-                                 values contains the new values
-                                 allows filters to create a new categorical
-                                 header from the current one, with some changes
-                                 in the values
-    - mergelines : (ind)
-                    When merging some data, the corresponding header's lines
-                    must be merged as well. Mergelines returns for each column
-                    all the encountered values with no repetitions in the from
-                    of a pandas Serie
+    
+    - add_column(column_descriptor, values) :
+        column_descriptor must be of type str or DimensionDescription
+        values must be of type pandas.core.series.Series this method allows
+        to created a new categorical header from the attributes of a previous
+        categorical haeder, while adding a new column (it can be usefull for
+        selections or to add colors)
+    - update_categoricalheader(flag, ind, values) :
+        flags can be : 'all', 'new', 'chg', 'chg&new', 'chg&rm', 'remove',
+        'perm'
+        
+        idn indicates were the changes take place
+        
+        values contains the new values
+        
+        This method allows filters to create a new categorical header from
+        the current one, with some changes in the values
+    - mergelines(ind) :
+        When merging some data, the corresponding header's lines must be 
+        merged as well. Mergelines returns for each column all the
+        encountered values with no repetitions in the from of a pandas Serie.
+        
     Example
     --------
+    
     (with values)
+    
          label : 'fruits'
+         
          column_descriptors : (list of DimensionDescriptors, simplified here)
+         
              1/ label : 'fruits', dimensiontype : 'string', no unit
+             
              2/ label : 'prices', dimensiontype : 'numeric', unit : 'euros/kg'
+             
              3/ label : 'color', dimensiontype : 'string', no unit
+             
          n_elem : 4
+         
          values :
+             
              [['apple', 0.5, 'red' ]
+             
              ['pear', 0.75, 'green']
+             
              ['banana', 0.66, 'yellow']
+             
              ['cherry', 0.89, 'red']]
              
                         
@@ -722,26 +755,37 @@ class CategoricalHeader(Header):
                                    
                          fruits |  prices  | color
                         ____________________________
-                          apple |    0.5   |  red    
-                          pear  |   0.75   |  green
+                         apple |    0.5   |  red    
+                          
+                         pear  |   0.75   |  green
+                          
                          banana |   0.66   |  yellow
+                         
                          cherry |   0.89   |  red
 
     (undifferentiated)
+    
          label : 'fruits'
-         column_descriptors : (list of DimensionDescriptors, simplified here)
-                              []
+         
+         column_descriptors : (list of DimensionDescriptors, simplified here) :
+         []
+         
          n_elem : 4
+         
          values : None
+         
             
-                         fruits
+                       'fruits'
                                    
-                        |fruits |
-                        |_______|
-                        |   1   |    
-                        |   2   |
-                        |   3   |
-                        |   4   |
+                        fruits 
+                         
+                        1    
+                        
+                        2   
+                        
+                        3   
+                        
+                        4  
  
     """
     
@@ -750,7 +794,6 @@ class CategoricalHeader(Header):
                  column_descriptors = None,
                  n_elem = None,
                  values = None):
-        
         """Constructor of the class CategoricalHeader"""
         #label is not optional and must be of type string
         #label can be different from the labels of the columns
@@ -994,7 +1037,7 @@ class CategoricalHeader(Header):
                                   values = newvalues))
         
     def update_categoricalheader(self, flag, ind, values):
-        """udates the values of a categorical header"""
+        """updates the values of a categorical header"""
         #flag 'all' : all the values can change, they are all given
         #in values argument of type pandas DataFrame
         if (flag == 'all'):
