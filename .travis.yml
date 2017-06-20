@@ -5,4 +5,4 @@ cache: pip
 install:
   - pip install pandas
 script:
-  - python XPLOR/tests.py
+  - python xplor/tests.py
