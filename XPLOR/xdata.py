@@ -62,8 +62,8 @@ class DimensionDescription:
     """ This class aims at defining a dimension.
     
     This class allows to define a dimension with a name, a type ('numeric,
-    'logical', 'string', 'color' or 'mixed'), and possibly a unit for numerical 
-    dimensions.
+    'logical', 'string', 'color' or 'mixed'), and possibly a unit for 
+    numerical dimensions.
     
     Parameters
     ----------
@@ -74,8 +74,8 @@ class DimensionDescription:
                      'mixed'
      
      unit : type : string or list, optional (default value = None)
-            One can define only the unit (e.g. mm) or the conversions as well
-            in the form of a list (e.g. ['mm', 10**(-3), 'm', 1])
+            One can define only the unit (e.g. mm) or the conversions as 
+            well in the form of a list (e.g. ['mm', 10**(-3), 'm', 1])
      
      
     Attributes
@@ -283,56 +283,70 @@ class Header(ABC):
      
     Attributes
     ----------
-    - label : name of the dimension
-    - column_descriptors : list of the DimensionDescription of each of the 
-                           columns of values
+    - label :
+        name of the dimension (type str)
+    - column_descriptors :
+        list of the DimensionDescription of each of the columns of values
     
     Properties
     ----------
-    - ismeasure : true if the header is a MeasureHeader instance, false if it
-                  is a CategoricalHeader instance
-    - iscategoricalwithvalues : true if it is an instance of CategoricalHeader
-                                and that values is not None. If it is a
-                                categorical header but with no column or a
-                                measure header, it is false.
-    - isundifferentiated : true if it is a categorical header with no values
-                      (not iscategoricalwithvalues)
+    - ismeasure :
+        true if the header is a MeasureHeader instance, false if it is a
+        CategoricalHeader instance
+    - iscategoricalwithvalues :
+        true if it is an instance of CategoricalHeader and that values is not
+        None. If it is a categorical header but with no column or a measure
+        header, it is false.
+    - isundifferentiated :
+        true if it is a categorical header with no values
+        (not iscategoricalwithvalues)
       
     Methods
     -------           
-    (abstract methods)    
-    - n_elem : number of element in the column(s)/ number of samples
-    - iscategorical : differentiate measure and categorical headers for the
-                      properties ismeasure, iscategoricalwithvalues and
-                      isundifferentiated
-    - __eq__ : compares all the fields of the headers
-               (returns True if all the fields are the same)
-               it can be used by writting header1 == header2
-    - getncolumns : gives the number of columns
-                    (1 for MeasureHeader, 0 to n for CategoricalHeader)
-    - getunits : gives the list of the unit used for each column
-                 ('no unit' is returned for each column with no specified unit)
-    - getallunits : gives the list of conversion table for each column
-                ('no unit' is returned for each column with no specified unit)
-    - disp : gives the main attributes of a Header
-    - getvalue : (self, nline, column = None)
-                 gives the value located at the line nline and at the column
-                 column (defined by it's label or it's number) or the fist one.
-                 Since we use pyhton, we have decided that to access the first
-                 element of the column, nline must be equal to 0.
-    - get_itemname :  (self, nline)
-                nline can here be an integer or a list of integer.
-                the function returns the corresponding values of the first
-                column
-    - copy : creates a copy of the header
+    (abstract methods)
+    
+    - n_elem :
+        number of element in the column(s)/ number of samples
+    - iscategorical :
+        differentiate measure and categorical headers for the properties
+        ismeasure, iscategoricalwithvalues and isundifferentiated
+    - __eq__ :
+        compares all the fields of the headers (returns True if all the 
+        fields are the same) it can be used by writting header1 == header2
+    - getncolumns :
+        gives the number of columns (1 for MeasureHeader, 0 to n for
+        CategoricalHeader)
+    - getunits :
+        gives the list of the unit used for each column ('no unit' is 
+        returned for each column with no specified unit)
+    - getallunits :
+        gives the list of conversion table for each column ('no unit' is
+        returned for each column with no specified unit)
+    - disp :
+        gives the main attributes of a Header
+    - getvalue :
+        (self, nline, column = None)
+        gives the value located at the line nline and at the column column
+        (defined by it's label or it's number) or the fist one. Since we use
+        pyhton, we have decided that to access the first element of the
+        column, nline must be equal to 0.
+    - get_itemname : 
+        (self, nline)
+        nline can here be an integer or a list of integer. The function
+        returns the corresponding values of the first column.
+    - copy :
+        creates a copy of the header
                 
     (non abstract method)
-    - check_header_update: (self, flag, ind, newheader)
-                            flag : 'all', 'chgdim', 'new', 'remove', 'chg',
-                                   'perm','chg&new' or 'chg&rm'
-                            ind : numpy.array of shape (n,)
-                            basics checks when updating data and giving a new
-                            header
+    
+    - check_header_update:
+        (self, flag, ind, newheader)
+        flag : 'all', 'chgdim', 'new', 'remove', 'chg', 'perm','chg&new' or
+        'chg&rm'  
+            
+        ind : numpy.array of shape (n,)
+        
+        basics checks when updating data and giving a new header
         
     Examples
     --------
@@ -340,13 +354,19 @@ class Header(ABC):
          label : 'fruits'
          column_descriptors : (list of DimensionDescriptors, simplified here)
              1/ label : 'fruits', dimensiontype : 'string', no unit
+             
              2/ label : 'prices', dimensiontype : 'numeric', unit : 'euros/kg'
+             
              3/ label : 'color', dimensiontype : 'string', no unit
+             
          n_elem : 4
          values :
              [['apple', 0.5, 'red' ]
+             
              ['pear', 0.75, 'green']
+             
              ['banana', 0.66, 'yellow']
+             
              ['cherry', 0.89, 'red']]
              
                         
@@ -354,47 +374,69 @@ class Header(ABC):
                                    
                          fruits |  prices  | color
                         ____________________________
-                          apple |    0.5   |  red    
-                          pear  |   0.75   |  green
+                        
+                         apple  |    0.5   |  red   
+                          
+                         pear   |   0.75   |  green
+                          
                          banana |   0.66   |  yellow
+                         
                          cherry |   0.89   |  red
+                         
         
     CategorialHeader: (undifferentiated)
          label : 'fruits'
-         column_descriptors : (list of DimensionDescriptors)
-                 None
+         
+         column_descriptors : (list of DimensionDescriptors) : None
+                 
          n_elem : 4
+         
          values : None
             
-                         fruits
+                       'fruits'
                                    
-                        |fruits |
-                        |_______|
-                        |   1   |    
-                        |   2   |
-                        |   3   |
-                        |   4   |
-        
+                        fruits 
+                         
+                        1    
+                        
+                        2   
+                        
+                        3   
+                        
+                        4   
+    
     MeasureHeader:
         label : 'x'
+        
         column_descriptors : (list of one DimensionDescription)
+        
             label : 'x', 
+            
             dimensiontype : 'numeric',
+            
             unit : 'mm',
-            allunits : [{unit : 'mm', 'value' : 10**(-3)},
-                         {unit : 'm', 'value' : 1}]
+            
+            allunits : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
+            'value' : 1}]
+            
         n-elem : 4
+        
         start : 1
+        
         scale : 2
         
-                                     x
+                                   'x'
                                     
-                                   | x |
-                                   |___|
-                                   | 1 |
-                                   | 3 |
-                                   | 5 |
-                                   | 7 |
+                                    x 
+    
+                                    
+                                    1 
+                                   
+                                    3 
+                                   
+                                    5 
+                                   
+                                    7 
      
     """
     #Attributes label and column_descriptors can be seen but not modified
@@ -2215,9 +2257,110 @@ class Xdata:
                 newxdata._data[tuple(newdata)] = sliceofdata            
             return (newxdata, flag)
             
+        elif flag == 'chg&rm':
+            #lets first check dataslices
+            if not isinstance(dataslices, list):
+                raise Exception ("dataslices must be a list of the lines to "
+                                 "change")
+            #now lets check ind
+            if not isinstance(ind, list):
+                raise Exception ("ind must be the list of the list of indices "
+                                 "of the lines to be changed and the list of "
+                                 "the lines to be removed")
+            elif isinstance(ind[0], list):
+                if len(ind) != 2 :
+                    raise Exception ("ind must be the list of indices of the "
+                                     "lines to be changed")
+                elif not ((ind[1] is None) | isinstance(ind[1], list)):
+                    raise Exception ("the list of new lines to add must be "
+                                     "empty,, None or the list of the indices")
+                ind = ind[0]
+            #now lets check the modified header and check that the length of 
+            #the arguments is coherent
+            if not isinstance(modified_header, Header):
+                raise Exception("modified_header must be of type Header")
+            elif modified_header.ismeasure != oldheader.ismeasure |\
+            modified_header.isundifferentiated != oldheader.isundifferentiated:
+                raise Exception("header can't change its type with flag "
+                "'chg&new'")
+            if (modified_header.n_elem != \
+                oldheader.n_elem + len(dataslices[1])):
+                    raise Exception ("the number of elements added in a "
+                                     "dimension must be the same in data and "
+                                     "in the header")
+            if modified_header.iscategoricalwithvalues:
+                if oldheader.getncolumns() != modified_header.getncolumns():
+                    raise Exception ("'chg&new' flag can't change the number "
+                                     "of columns of the header")
+                elif oldheader.getallunits() != modified_header.getallunits():
+                    raise Exception ("'chg&new' flag can't change the units")
+                elif oldheader.label != modified_header.label:
+                    raise Exception("'chg&new' flag can't change labels")
+                for i in range(oldheader.getncolumns()):
+                    if oldheader.column_descriptors[i].label != \
+                       modified_header.column_descriptors[i].label:
+                        raise Exception("'chg&new' flag can't change labels")
+            #note : we didn't check that the values haven't changed for the 
+            #lines that are not supposed to be modified in order to fasten the
+            #update for huge sets of data. Such changes are usually done by
+            #filters, that are tested to do the right thing
+            if len(ind) != len(dataslices[0]):
+                raise Exception ("all changed slices must be given new values")
             
-            
-#        elif flag == 'chg&rm':
+            newxdata = self.copy()
+            newxdata._headers[dim] = modified_header
+            shape = list(self.shape())
+            shape[dim] += len(dataslices)
+            newdataarray = np.zeros(tuple(shape))
+            olddata = [slice(None, None, None)] * ND
+            olddata[dim] = slice(0, self._headers[dim].n_elem, None)
+            newxdata._data = newdataarray
+            #lets copy the 'old' values
+            newxdata._data[tuple(olddata)] = self.data
+            #and change the lines before adding the new ones
+            changeslice  = [slice(None,None,None)] * ND
+            for i in range(len(ind)):
+                changeslice[dim] = ind[i]
+                if not isinstance(ind[i], int):
+                    raise Exception("all indices must be of type int")
+                elif not isinstance(dataslices[0][i], np.ndarray):
+                    raise Exception("all dataslices must be of type "
+                                    "numpy.ndarray")
+                elif len(dataslices[0][i].shape) != (len(self.data.shape) -1):
+                    raise Exception ("dataslice doesn't have a correct shape")
+                for j in range(len(dataslices[0][i].shape)):
+                    if j<dim:
+                        if dataslices[0][i].shape[j] != self.data.shape[j]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                    if j>dim:
+                        if dataslices[0][i].shape[j] != self.data.shape[j + 1]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                #slices and indices are correct, lets modify the data
+                newxdata._data[tuple(changeslice)] = dataslices[0][i]
+            #now lets add the new lines
+            for i in range(len(dataslices[1])):
+                if not isinstance(dataslices[1][i], np.ndarray):
+                    raise Exception("all dataslices must be of type "
+                                    "numpy.ndarray")
+                elif len(dataslices[1][i].shape) != (len(self.data.shape) -1):
+                    raise Exception ("dataslice doesn't have a correct shape")
+                for j in range(len(dataslices[1][i].shape)):
+                    if j<dim:
+                        if dataslices[1][i].shape[j] != self.data.shape[j]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                    if j>dim:
+                        if dataslices[1][i].shape[j] != self.data.shape[j + 1]:
+                            raise Exception ("dataslice doesn't have a correct"
+                                             " number of elements")
+                
+                newdata = olddata
+                newdata[dim] = self._headers[dim].n_elem + i
+                sliceofdata = np.array([dataslices[1][i]])
+                newxdata._data[tuple(newdata)] = sliceofdata            
+            return (newxdata, flag)
 #        elif flag == 'perm':
         #all accepted flags with this method are already taken care of
         #flag argument is either not a flag or not one accepted by this method
