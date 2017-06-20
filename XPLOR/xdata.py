@@ -1544,18 +1544,22 @@ class MeasureHeader(Header):
     #private property but with get access   
     @property
     def iscategorical(self):
+        """MeasureHeader instances are all not categorical"""
         return False
     
     @property
     def start(self):
+        """int or float, first value of the dimension"""
         return self._start
     
     @property
     def scale(self):
+        """interval between the values of this dimension"""
         return self._scale
     
     @property
     def n_elem(self):
+        """number of elements in the dimension"""
         return self._n_elem 
 
     
@@ -1691,83 +1695,101 @@ class Xdata:
     
     Parameters
     ----------     
-    - name : name of the dataset (str)
-    - data : N dimensional array with the data itself
-    - headers : list of the headers describing each of the N dimensions
-    - unit : simple unit or list of conversion
+    - name :
+        name of the dataset (type str)
+    - data :
+        N dimensional numpy array with the data itself
+    - headers :
+        list of the headers describing each of the N dimensions
+    - unit :
+        simple unit or list of conversion
     
     Attributes
     ----------
-    - data : N dimensional numpy.array with the data itself
-    - headers : list of the headers describing each of the N dimensions
-    - name : name of the dataset (str)
-    - data_descriptor : DimensionDescription instance describing the dataset
+    - data :
+        N dimensional numpy.ndarray with the data itself
+    - headers :
+        list of the headers describing each of the N dimensions
+    - name :
+        name of the dataset (type str)
+    - data_descriptor :
+        DimensionDescription instance describing the dataset
     
     Methods
     -------
-    - getndimensions : gives the number of dimensions of xdata
-                      (it corresponds to the number of headers)
-    - shape : gives the shape of the data
-             (it corresponds to the number of elements for each dimension)
-    - copy : creates a copy of a Xdata instance
-    - update_data : (newdata)
-                    Simply changing some values in data by giving a whole new
-                    numpy array. Thoses changes can change the length of
-                    measure headers or categorical headers tht are
-                    undifferentiated.
-                    This method returns a new Xdata instance.
-    - update_xdata : (flag, dim, ind, dataslices, modified_header)
-                     - flag : *'chgdata' to only chage some data (it can
-                              modifie the length of measure headers and
-                              undifferentiated headers but not
-                              categoricalwithvalues headers)
-                              this flag is not supposed to be used: to simply
-                              change the data, one must use update_data.
-                              However, the flag can be 'all' but with no new
-                              header, in witch case, we transform it to the
-                              'chgdata' flag (this is why it is tolerated as
-                              an arrgument as well)
-                              *'all' to change the data and modifie the header
-                              (possible modifications are given for
-                              modified_header)
-                              *'chg' to change some lines of a header and
-                              corresponding data
-                              *'new' to add lines in a dimension
-                              *'remove' to remove some lines
-                              *'chg&new' to change and add some lines
-                              *'chg&rm' to change and remove some lines
-                              *'perm' to permute some lines
-                     - dim : (int) number of the modified header
-                     - ind : (list of int) indices of lines that are changing
-                     - dataslices : new values for the modified lines
-                     - modified_header : same header as before but with a few
-                                         changes (adding columns, lines,
-                                         changing values depending of the type
-                                         of header)
-                     This method allows to update a header and the
-                     corresponding data, the shape of data migth be modifed but
-                     the dimensions are still representing the same thing
-                     (DimensionDescriptions are not changed, (except for
-                     dimensiontype that migth become 'mixed' if some lines are
-                     merged)).
-                     It returns a new data instance.
-    - modify_dimensions : (flag, dim, newdata, newheaders)
-                          -flag : 'global' to change everything,
-                                  'chgdim' to change one dimension/dimensions,
-                                  'insertdim' to insert a dimension/dimensions,
-                                  'rmdim' to remove a dimension/dimensions,
-                                  or 'permdim' to permute the dimensions
-                          -dim : list of the dimensions to be changed
-                          -newdata : full numpy.array with the whole data
-                                    (except for flag 'permdim')
-                          -newheaders : list of the new headers
-                          This methods allows to modify the structure of a
-                          Xdata instance, i.e. to modify the
-                          DimensionDescriptions in the list of headers
-                          (and therefore the data) new headers do not represent
-                          the same thing as before. This method aslo allows to
-                          change the number of dimensions.
-                          It returns a new Xdata instance.
+    - getndimensions :
+        gives the number of dimensions of xdata (it corresponds to the
+        number of headers)
+    - shape :
+        gives the shape of the data (it corresponds to the number of elements
+        for each dimension)
+    - copy :
+        creates a copy of a Xdata instance
+    - update_data(newdata) :
+        Simply changing some values in data by giving a whole new numpy array.
+        Thoses changes can change the length of measure headers or categorical
+        headers tht are undifferentiated. This method returns a new Xdata
+        instance.
+    - update_xdata(flag, dim, ind, dataslices, modified_header) :
+        - flag
+            - 'chgdata' to only chage some data (it can modifie the length of
+              measure headers and undifferentiated headers but not
+              categoricalwithvalues headers), this flag is not supposed to be
+              used: to simply change the data, one must use update_data.
+              However, the flag can be 'all' but with no new header, in witch
+              case, we transform it to the 'chgdata' flag (this is why it is
+              tolerated as an arrgument as well)
+        
+            - 'all' to change the data and modifie the header (possible
+              modifications are given for modified_header)
+               
+            - 'chg' to change some lines of a header and corresponding data
+               
+            - 'new' to add lines in a dimension
+               
+            - 'remove' to remove some lines
+               
+            - 'chg&new' to change and add some lines
+               
+            - 'chg&rm' to change and remove some lines
+               
+            - 'perm' to permute some lines
+               
+       - dim : (int) number of the modified header
+       
+       - ind : (list of int) indices of lines that are changing
+       
+       - dataslices : new values for the modified lines
+       
+       - modified_header : same header as before but with a few changes
+       (adding columns, lines, changing values depending of the type of
+       header).
+       
+       This method allows to update a header and the corresponding data,
+       the shape of data migth be modifed but the dimensions are still
+       representing the same thing(DimensionDescriptions are not changed,
+       (except for dimensiontype that migth become 'mixed' if some lines are
+       merged)).It returns a new data instance.
+    - modify_dimensions(flag, dim, newdata, newheaders):
+        - flag
+            - 'global' to change everything,
+            - 'chgdim' to change one dimension/dimensions,
+            - 'insertdim' to insert a dimension/dimensions,
+            - 'rmdim' to remove a dimension/dimensions,
+            - 'permdim' to permute the dimensions
+                                  
+        - dim : list of the dimensions to be changed
+        
+        - newdata : full numpy.array with the whole data (except for flag
+        'permdim')
+                                    
+        - newheaders : list of the new headers
+        
+        This methods allows to modify the structure of a Xdata instance, i.e.
+        to modify the DimensionDescriptions in the list of headers (and
+        therefore the data) new headers do not represent the same thing as
+        before. This method aslo allows to change the number of dimensions.
+        It returns a new Xdata instance.
     
     
     Example
@@ -1784,81 +1806,124 @@ class Xdata:
     Therefore, headers will be a list of the 3 headers given below:
         
         - time is a MeasureHeader:
+            
         label : 't'
+        
         column_descriptors : (list of one DimensionDescription)
+        
             label : 't', 
+            
             dimensiontype : 'numeric',
+            
             unit : 'ms',
+            
             allunits : [{unit : 'ms', 'value' : 10**(-3)},
-                         {unit : 's', 'value' : 1}]
+            {unit : 's', 'value' : 1}]
+            
         n-elem : 3000
+        
         start : 0
+        
         scale : 2
         
-                                     t
+                                   't'
                                     
-                                   | t |
-                                   |___|
-                                   | 0 |
-                                   | 2 |
-                                   | 4 |
-                                   | 6 |
-                                   .....
+                                    t 
+                                   
+                                    0
+                                    
+                                    2 
+                                    
+                                    4 
+                                    
+                                    6 
+                                    
+                                   ...
                                    
         - repetition is a CategoricalHeader that is undifferentiated
          label : 'repetitions'
+         
          column_descriptors : (list of DimensionDescriptors, simplified here)
-                              []
+         []
+         
          n_elem : 8
+         
          values : None
+         
             
-                         repetitions
+                        'repetitions'
                                    
-                        |repetitions |
-                        |____________|
-                        |     0      |
-                        |     1      |
-                        |     2      |
-                        |     3      |
-                        |     4      |
-                        |     5      |
-                        |     6      |
-                        |     7      |
+                        repetitions 
+                        
+                        0 
+                        
+                        1  
+                        
+                        2  
+                        
+                        3  
+                        
+                        4 
+                        
+                        5
+                        
+                        6  
+                        
+                        7      
         
         - child is a CategoricalHeader with values (because we can store some
         complementary informatios)
+        
          label : 'child'
+         
          column_descriptors : (list of DimensionDescriptors, simplified here)
+         
              1/ label : 'name', dimensiontype : 'string', no unit
+             
              2/ label : 'age', dimensiontype : 'numeric', unit : 'year old'
+             
              3/ label : 'gender', dimensiontype : 'string', no unit
+             
          n_elem : 5
+         
          values :
+             
+             
              [['Emily', 8, 'female' ]
              ['Paul', 7, 'male']
+             
              ['Helen', 9, 'female']
+             
              ['Lily', 7, 'female']
+             
              ['James', 9, 'male']]
+             
              
                         
                                    child
                                    
                           name  |  age  | gender
                          _________________________
-                          Emily |   8   |  female    
+                          Emily |   8   |  female  
+                          
                           Paul  |   7   |  male
+                          
                           Helen |   9   |  female
+                          
                           Lily  |   7   |  female
+                          
                           James |   9   |  male
+                          
         
         Now we have our list of headers, of length 3.
         
         
         The corresponding data is 3D array containing the values of the higth
-        of the ball at all time for each of the children's throw.
+        of the ball at all time for each of the children's throw. It is
+        described (dimensiontype and unit) in data_descriptor.
         
-        All we miss is the name of this set of data and headers :
-            "higth of the throw of a ball"
+        All we miss is the name of this set of data and headers : "higth of
+        the throw of a ball"
         
     """
     def __init__(self,
@@ -1891,29 +1956,31 @@ class Xdata:
     
     @property
     def name(self):
+        """name of the data with the complementary informations stored in
+        headers and data_descriptor"""
         return self._name
     
     @property
     def headers(self):
-        "list of the headers for each dimension"
+        """list of the headers for each dimension"""
         return self._headers
     
     @property
     def data(self):
-        "ND numpy.array of numerical data"
+        """ND numpy.array of numerical data"""
         return self._data
     
     @property
     def data_descriptor(self):
-        "DimensionDescription instance to describe the content of data"
+        """DimensionDescription instance to describe the content of data"""
         return self._data_descriptor
             
     def getndimensions(self):
-        "gives the number of dimensions of the data"
+        """gives the number of dimensions of the data"""
         return len(self.headers)
     
     def shape(self):
-        "gives the number of element in each dimension"
+        """gives the number of element in each dimension"""
         return self.data.shape
     
     def copy(self):
