@@ -1051,11 +1051,27 @@ class MyTestCase(unittest.TestCase):
                                                    fruits)
         self.assertEqual(flag, 'perm')
         self.assertEqual(permxdata.shape(), (5, 3, 4))
-        print(permxdata.data)
-        print(setofdata.data)
         self.assertEqual(permxdata.data[2][0][0], setofdata.data[2][0][0])
         self.assertEqual(permxdata.data[0][0][2], setofdata.data[0][0][2])
         self.assertEqual(permxdata.data[0][2][1], setofdata.data[0][2][3])
+        
+        print("Test 9: testing the modify_dimensions method")
+        #flag 'global
+        (globalxdata, flag) = setofdata.modify_dimensions('global',
+                                                          None,
+                                                          np.random.rand(4, 5),
+                                                          [fruits, t])
+        self.assertEqual(flag, 'global')
+        self.assertEqual(globalxdata.name, setofdata.name)
+        self.assertEqual(globalxdata.data_descriptor.allunits,
+                         setofdata.data_descriptor.allunits)
+        self.assertEqual(globalxdata.headers[0], fruits)
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'global', 'yummy', np.random.rand(4, 5), [fruits, t])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'global', None, np.random.rand(4, 5), [fruits])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'global', None, 'yummy', [fruits, t])
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):

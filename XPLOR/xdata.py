@@ -2536,6 +2536,32 @@ class Xdata:
         # flag argument is either not a flag or not one accepted by this method
         raise Exception("flag must be 'all', 'chg', 'new', 'remove', 'perm' "
         "'chg&new' or 'chg&rm'")
+        
+    
+    def modify_dimensions(self, flag, dim, newdata, newheaders):
+        """creates a new Xdata instance with changes for the dimensions"""
+        if flag == 'global':
+            #lets first check that dim is coherent
+            if (not dim is None) and dim != []:
+                raise Exception ("for a 'global' flag, everything is replaced,"
+                                 " dim must be empty")
+            #other checks will be done in the constructor
+            if self.data_descriptor.allunits is None:
+                unit = None
+            else:
+                unit = []
+                for i in self.data_descriptor.allunits:
+                    unit.append(i['unit'])
+                    unit.append(i['value']) 
+            newxdata = Xdata(self.name, newdata, newheaders, unit)
+            return (newxdata, flag)
+                    
+#        elif flag == 'chgdim':
+#        elif flag == 'insertdim':
+#        elif flag == 'rmdim':
+#        elif flag == 'permdim':
+        raise Exception("flag must be 'global', 'chgdim', 'insertdim', "
+                        "'rmdim', or 'permdim'")
 
         
 def createDimensionDescription(label, column = None):
