@@ -1006,7 +1006,43 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, setofdata.update_xdata,
                           'chg&new', 2, [[0, 1], None],
                           [slices, slices], 'yummy')
-        
+        # flag 'chg&rm' (not all exceptions are tested)
+        chgandrmfruits = fruits.update_categoricalheader('chg&rm',
+                                                          [[0,1], [3]],
+                                                          series)
+        (chgandrmxdata, flag) = setofdata.update_xdata('chg&rm',
+                                                        2,
+                                                        [[0, 1], [3]],
+                                                        slices,
+                                                        chgandrmfruits)
+        self.assertEqual(flag, 'chg&rm')
+        self.assertEqual(chgandrmxdata.shape(), (5, 3, 3))
+        self.assertEqual(chgandrmxdata.data[0][0][2], setofdata.data[0][0][2])
+        self.assertEqual(chgandrmxdata.data[0][0][0], slices[0][0][0])
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 'yummy'], [3]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], ['yummy']],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], [3]],
+                          'yummy', chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], [3]],
+                          slices, 'yummy')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1, 2], [3]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], [3, 2]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 5], [3]],
+                          slices, chgandrmfruits)
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
