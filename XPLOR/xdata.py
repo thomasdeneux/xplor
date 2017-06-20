@@ -67,45 +67,61 @@ class DimensionDescription:
     
     Parameters
     ----------
-    label : type : string (e.g. 'time')
-            name for the dimension
+    - label :
+        name for the dimension
+        (type str (e.g. 'time'))
+    - dimensiontype :
+        values : 'numeric', 'logical', 'string', 'color' or 'mixed'    
+    - unit :
+        One can define only the unit (e.g. mm) or the conversions as well in
+        the form of a list (e.g. ['mm', 10**(-3), 'm', 1]).
+        
+        (type str or list)
+        
+        optional (default value = None)
+ 
     
-     dimensiontype : values : 'numeric', 'logical', 'string', 'color' or 
-                     'mixed'
-     
-     unit : type : string or list, optional (default value = None)
-            One can define only the unit (e.g. mm) or the conversions as 
-            well in the form of a list (e.g. ['mm', 10**(-3), 'm', 1])
-     
-     
     Attributes
     ----------
-    label : name of the dimension
-    dimensiontype : 'numeric', 'logical', 'string', 'color' or 'mixed'
-    unit : currently used unit
-    allunit : list for unit conversions
+    - label :
+        name of the dimension
+        (type str)
+    - dimensiontype :
+        'numeric', 'logical', 'string', 'color' or 'mixed'
+    - unit :
+        currently used unit
+        (type str)
+    - allunit :
+        list of dictionaries for unit conversions
       
     Methods
     -------
-    set_dimtype_to_mixed : changing the dimensiontype to 'mixed' if adding
-                           values that are not of the correct dimensiontype
-                           (merging lines for instance)
-    copy : to copy a DimensionDescription instance
+    - set_dimtype_to_mixed :
+        changing the dimensiontype to 'mixed' if adding values that are not
+        of the correct dimensiontype (merging lines for instance)
+    - copy :
+        to copy a DimensionDescription instance
+        
     (static methods)
-    infertype (x, getdefaultvalue=False) :
-              gives the dimensiontype of the x element and possibly the
-              associated defaultvalue
-    defaultvalue (dimensiontype) : gives the default value associated to 
-              a certain dimensiontype
+    
+    - infertype(x, getdefaultvalue=False) :
+        gives the dimensiontype of the x element and possibly the associated
+        defaultvalue
+    - defaultvalue(dimensiontype) :
+        gives the default value associated to a certain dimensiontype
+        
     Examples
     --------
-     DimensionDescription(label,type,unit)
     
-     tlabel = DimensionDescription('time','numeric',['s, 1, 'ms', 10**(-3),
-                                               'min', 60, 'hour', 3600])
-     clabel = DimensionDescription('condition','string')
+     t = DimensionDescription('time','numeric',['s, 1, 'ms', 10**(-3),
+     'min', 60, 'hour', 3600])
+    
+     c = DimensionDescription('condition','string')
      
-     Note : 'color' DimensionDescription are using RGB 3-tupple
+    Note
+    ----
+     
+    DimensionDescription of dimension type 'color' are using RGB 3-tupple
      
     """
     
@@ -184,21 +200,26 @@ class DimensionDescription:
     #modified outside of the class (only get methods, no setters).
     @property
     def label(self):
+        """name for the dimension (type str (e.g. 'time'))"""
         return self._label
     
     @property
     def dimensiontype(self):
+        """'numeric', 'logical', 'string', 'color' or 'mixed'"""
         return self._dimensiontype
     
     @property
     def unit(self):
+        """currently used unit (type str)"""
         return self._unit
     
     @property
     def allunits(self):
+        """conversion table (type list of dict)"""
         return self._allunits
     
     def set_dimtype_to_mixed(self):
+        """change the dimensiontype to mixed"""
         self._dimensiontype = 'mixed'
         
     def copy(self):
