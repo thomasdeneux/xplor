@@ -90,8 +90,6 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, xdata.DimensionDescription, 'prices',
                           'numeric', [1, 's', 0.001, 'ms'])
         self.assertRaises(Exception, xdata.DimensionDescription, 'prices',
-                          'numeric', ['s', '1', 'ms', '0.001'])
-        self.assertRaises(Exception, xdata.DimensionDescription, 'prices',
                           'numeric', ['s', 0.001, 'ms', 0.000001])
         self.assertRaises(Exception, xdata.DimensionDescription, 'prices',
                           'numeric', {'s' : 1})
@@ -570,13 +568,14 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, fruits.mergelines, [0, 1, 23])
         self.assertRaises(Exception, fruits.mergelines, [-2])
         #testing the result
-        colors = pd.Series([(0, 0, 0), (0, 0, 0), (0, 0, 0), (8, 8, 8)])
+        colors = pd.Series([xdata.Color((0, 0, 0)), xdata.Color((0, 0, 0)),
+                            xdata.Color((0, 0, 0)), xdata.Color((8, 8, 8))])
         newfruits = fruits.add_column('display', colors)
         series = newfruits.mergelines([0, 3])
         self.assertEqual(series[0], ['apple', 'cherry'])
         self.assertEqual(series[1], [0.5, 0.89])
         self.assertEqual(series[2], ['red'])
-        self.assertEqual(series[3], (4, 4, 4))
+        self.assertEqual(series[3], xdata.Color((4, 4, 4)))
         print("Test 16: testing the copy method")
         copyfruits = fruits2.copy()
         #testing that chaging one is not changing the other
