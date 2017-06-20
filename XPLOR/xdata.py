@@ -2128,7 +2128,7 @@ class Xdata:
                 if modified_header != oldheader:
                     raise Exception ("measure headers and undifferentiated "
                                      "ones can't be modified by a flag 'chg'")
-            else: #then it's a categoricalwithvaalues header
+            else: #then it's a categoricalwithvalues header
                 if oldheader.n_elem != modified_header.n_elem:
                     raise Exception("'chg' flag can't change the number of "
                                     "elements in the dimension")
@@ -2474,14 +2474,66 @@ class Xdata:
                         if dataslices[i].shape[j] != self.data.shape[j + 1]:
                             raise Exception ("dataslice doesn't have a correct"
                                              " number of elements")
-                #slices and indices are correct, lets modify the data
+                # slices and indices are correct, lets modify the data
                 newxdata._data[tuple(changeslice)] = dataslices[i]
-            #now lets remove the lines we don't want to keep
+            # now lets remove the lines we don't want to keep
             newxdata._data = np.delete(newxdata._data, ind[1], dim)                
             return (newxdata, flag)
-#        elif flag == 'perm':
-        #all accepted flags with this method are already taken care of
-        #flag argument is either not a flag or not one accepted by this method
+        elif flag == 'perm':
+            # dataslices must be None, because all the values will be
+            # calculated from the permutation
+            if not dataslices is None:
+                raise Exception("dataslices must be None for a 'perm' flag")
+            # now let's check the Header
+            if not isinstance(modified_header, Header):
+                raise Exception("modified_header must be of type Header")
+            elif (modified_header.ismeasure | \
+                 modified_header.isundifferentiated):
+                if modified_header != oldheader:
+                    raise Exception ("measure headers and undifferentiated "
+                                     "ones can't be modified by a flag 'perm'")
+            else: #then it's a categoricalwithvalues header
+                if oldheader.n_elem != modified_header.n_elem:
+                    raise Exception("'perm' flag can't change the number of "
+                                    "elements in the dimension")
+                elif oldheader.getncolumns() != modified_header.getncolumns():
+                    raise Exception ("'perm' flag can't change the number of "
+                                     "columns of the header")
+                elif oldheader.getallunits() != modified_header.getallunits():
+                    raise Exception ("'perm' flag can't change the units")
+                elif oldheader.label != modified_header.label:
+                    raise Exception("'perm' flag can't change labels")
+                for i in range(oldheader.getncolumns()):
+                    if oldheader.column_descriptors[i].label != \
+                       modified_header.column_descriptors[i].label:
+                        raise Exception("'perm' flag can't change labels")
+            #note : we didn't check that the values haven't changed for the 
+            #lines that are not supposed to be modified in order to fasten the
+            #update for huge sets of data. Such changes are usually done by
+            #filters, that are tested to do the right thing
+            
+            # now lets check that ind is a permutation of the indices of the
+            # lines
+            if len(ind) != self.headers[dim].n_elem:
+                raise Exception ("ind is not a permutation of the indices")
+            for i in range(self.headers[dim].n_elem):
+                if not i in ind:
+                    raise Exception ("ind is not a permutation of the indices")
+            #now lets permute the data and replace the header
+            newxdata = self.copy()
+            newxdata._headers[dim] = modified_header
+            permuteslice  = [slice(None,None,None)] * ND
+            oldslice =  [slice(None,None,None)] * ND                 
+            for i in range(len(ind)):
+                if i != ind[i]:
+                    # this test saves some time if not all the lines are
+                    # permuted
+                    permuteslice[dim]  = ind[i]
+                    oldslice[dim] = i
+                    newxdata._data[permuteslice] = self.data[oldslice]
+            return (newxdata, flag)    
+        # all accepted flags with this method are already taken care of
+        # flag argument is either not a flag or not one accepted by this method
         raise Exception("flag must be 'all', 'chg', 'new', 'remove', 'perm' "
         "'chg&new' or 'chg&rm'")
 

@@ -1043,6 +1043,19 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, setofdata.update_xdata,
                           'chg&rm', 2, [[0, 5], [3]],
                           slices, chgandrmfruits)
+        # flag 'perm' (not all exceptions are tested)
+        (permxdata, flag) = setofdata.update_xdata('perm',
+                                                   2,
+                                                   [0, 3, 2, 1],
+                                                   None,
+                                                   fruits)
+        self.assertEqual(flag, 'perm')
+        self.assertEqual(permxdata.shape(), (5, 3, 4))
+        print(permxdata.data)
+        print(setofdata.data)
+        self.assertEqual(permxdata.data[2][0][0], setofdata.data[2][0][0])
+        self.assertEqual(permxdata.data[0][0][2], setofdata.data[0][0][2])
+        self.assertEqual(permxdata.data[0][2][1], setofdata.data[0][2][3])
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
