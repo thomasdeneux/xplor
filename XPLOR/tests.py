@@ -502,12 +502,9 @@ class MyTestCase(unittest.TestCase):
                           'chg&rm', [1, 2], series)
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'chg&rm', [[1,2], []], 'yummy')
-        #testing for flag 'chgdim'
+        #testing for not a flag or a flag that is not accepted by the method
         self.assertRaises(Exception, fruits.update_categoricalheader,
                           'chgdim', [], [])
-        #testing for not a flag
-        self.assertRaises(Exception, fruits.update_categoricalheader,
-                          'yummy', [], [])
         print("Test 13: testing check_header_update method")
         #this method is a test itself, it does not return anything, it only
         #raises exceptions when there is an obvious problem (not a good name,
@@ -824,6 +821,241 @@ class MyTestCase(unittest.TestCase):
         datacopy = setofdata.copy()
         self.assertEqual(datacopy.data_descriptor.allunits, 
                         setofdata.data_descriptor.allunits)
+        print("Test 7: testing the update_data method")
+        newdata1 = np.random.rand(5, 3, 4)
+        udsetofdata1 = setofdata.update_data(newdata1)
+        newdata2 = np.random.rand(10, 8, 4)
+        udsetofdata2 = setofdata.update_data(newdata2)
+        self.assertEqual(udsetofdata1.getndimensions(), 3)
+        self.assertEqual(udsetofdata2.getndimensions(), 3)
+        self.assertEqual(udsetofdata1.shape(), (5, 3, 4))
+        self.assertEqual(udsetofdata2.shape(), (10, 8, 4))
+        self.assertEqual(udsetofdata1.headers[0].n_elem, 5)
+        self.assertEqual(udsetofdata2.headers[0].n_elem, 10)
+        self.assertEqual(udsetofdata1.headers[1].n_elem, 3)
+        self.assertEqual(udsetofdata2.headers[1].n_elem, 8)
+        self.assertEqual(udsetofdata1.headers[2].n_elem, 4)
+        self.assertEqual(udsetofdata2.headers[2].n_elem, 4)
+        self.assertRaises(Exception,
+                          setofdata.update_data,
+                          np.random.rand(5, 3, 4, 5))
+        self.assertRaises(Exception,
+                          setofdata.update_data,
+                          np.random.rand(5, 3, 9))
+        print("Test 8: testing the update_xdata method")
+        #if dim is not an int of out of range, it raises an exception
+        series = [pd.Series(['kiwi', 0.95, 'brown']), 
+                  pd.Series(['blueberry', '1.20', 'blue'])]
+        newfruits = fruits.update_categoricalheader('chg', [1, 3], series)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 'yummy', None, newdata1, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 4, None, newdata1, newfruits)
+        #flag 'all' that should be a 'chgdata' flag (because the header
+        #hasn't changed)
+        (alltochgdataxdata, flag) = setofdata.update_xdata('all',
+                                                           1,
+                                                           None,
+                                                           newdata1,
+                                                           undifferentiated)
+        self.assertEqual(flag, 'chgdata')
+        self.assertEqual(alltochgdataxdata.data[0][0][0], newdata1[0][0][0])
+        self.assertEqual(setofdata.data[0][0][0], data[0][0][0])
+        
+        #flag 'all'  (not all exceptions are tested)
+        (allxdata, flag) = setofdata.update_xdata('all',
+                                                  2,
+                                                  None,
+                                                  newdata1,
+                                                  newfruits)
+        self.assertEqual(flag, 'all')
+        self.assertEqual(allxdata.headers[2].values[0][1], 'kiwi')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, 'yummy', newdata1, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], newdata1, 'yummy')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], 'yummy', newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], np.random.rand(5, 3, 4, 2), newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], np.random.rand(5, 8, 4), newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'all', 2, [1], np.random.rand(5, 3, 7), newfruits)
+        #flag 'chgdata'
+        (chgdataxdata, flag) = setofdata.update_xdata('chgdata',
+                                                      1,
+                                                      None,
+                                                      newdata1,
+                                                      None)
+        self.assertEqual(flag, 'chgdata')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 'yummy', None, newdata1, None)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 0, 'yummy', newdata1, None)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 0, None, 'yummy', None)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chgdata', 0, None, newdata1, newfruits)
+        #flag 'chg'  (not all exceptions are tested)
+        slices = [np.random.rand(5, 3), np.random.rand(5, 3)]
+        (chgxdata, flag) = setofdata.update_xdata('chg',
+                                                  2,
+                                                  [1, 3],
+                                                  slices,
+                                                  newfruits)
+        self.assertEqual(chgxdata.data[3][0][1], slices[0][3][0])
+        self.assertEqual(flag, 'chg')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 0, [0, 1], slices,
+                          xdata.MeasureHeader('time', 0.6, 5, 2, 
+                                              column_descriptors = time))
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 0, [0, 1], slices, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0, 1], slices, t)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, 0, slices, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0, 1], 'yummy', newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0, 1, 2], slices, newfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [0], [np.random.rand(5, 4)], fruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg', 3, [1, 3], slices, 
+                          fruits.update_categoricalheader('new', None, series))
+        #flag 'new'  (not all exceptions are tested)
+        addfruits = fruits.update_categoricalheader('new', None, series)
+        (newxdata, flag) = setofdata.update_xdata('new',
+                                                  2,
+                                                  None,
+                                                  slices,
+                                                  addfruits)
+        self.assertEqual(newxdata.data[0][0][0], setofdata.data[0][0][0])
+        self.assertEqual(newxdata.data[0][0][5], slices[1][0][0])
+        self.assertEqual(flag, 'new')
+        self.assertEqual(newxdata.shape(), (5, 3, 6))
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 0, None, slices, addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, 'yummy', slices, addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, None, slices[0], addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, None, 'yummy', addfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'new', 2, None, slices, 'yummy')
+        #flag 'remove' (not all exceptions are tested)
+        rmfruits = fruits.update_categoricalheader('remove', [1, 3], None)
+        (rmxdata, flag) = setofdata.update_xdata('remove',
+                                                  2,
+                                                  [1, 3],
+                                                  None,
+                                                  rmfruits)
+        self.assertEqual(flag, 'remove')
+        self.assertEqual(rmxdata.shape(), (5, 3, 2))
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1], None, rmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 0, [1,3], None, rmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1,3], None, 'yummy')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1,'yummy'], None, rmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'remove', 2, [1,3], [1,3], rmfruits)
+        #flag 'chg&new' (not all exceptions are tested)
+        chgandnewfruits = fruits.update_categoricalheader('chg&new',
+                                                          [[0,1], None],
+                                                          [series, series])
+        (chgandnewxdata, flag) = setofdata.update_xdata('chg&new',
+                                                        2,
+                                                        [0, 1],
+                                                        [slices, slices],
+                                                        chgandnewfruits)
+        self.assertEqual(flag, 'chg&new')
+        self.assertEqual(chgandnewxdata.shape(), (5, 3, 6))
+        self.assertEqual(chgandnewxdata.data[0][0][5], slices[1][0][0])
+        self.assertEqual(chgandnewxdata.data[0][0][2], setofdata.data[0][0][2])
+        self.assertEqual(chgandnewxdata.data[0][0][0], slices[0][0][0])
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], 'yummy'],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 'yummy'], None],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1, 3], None],
+                          [slices, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          'yummy', chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [series, slices], chgandnewfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [slices, slices], fruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&new', 2, [[0, 1], None],
+                          [slices, slices], 'yummy')
+        # flag 'chg&rm' (not all exceptions are tested)
+        chgandrmfruits = fruits.update_categoricalheader('chg&rm',
+                                                          [[0,1], [3]],
+                                                          series)
+        (chgandrmxdata, flag) = setofdata.update_xdata('chg&rm',
+                                                        2,
+                                                        [[0, 1], [3]],
+                                                        slices,
+                                                        chgandrmfruits)
+        self.assertEqual(flag, 'chg&rm')
+        self.assertEqual(chgandrmxdata.shape(), (5, 3, 3))
+        self.assertEqual(chgandrmxdata.data[0][0][2], setofdata.data[0][0][2])
+        self.assertEqual(chgandrmxdata.data[0][0][0], slices[0][0][0])
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 'yummy'], [3]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], ['yummy']],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], [3]],
+                          'yummy', chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], [3]],
+                          slices, 'yummy')
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1, 2], [3]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 1], [3, 2]],
+                          slices, chgandrmfruits)
+        self.assertRaises(Exception, setofdata.update_xdata,
+                          'chg&rm', 2, [[0, 5], [3]],
+                          slices, chgandrmfruits)
+        # flag 'perm' (not all exceptions are tested)
+        (permxdata, flag) = setofdata.update_xdata('perm',
+                                                   2,
+                                                   [0, 3, 2, 1],
+                                                   None,
+                                                   fruits)
+        self.assertEqual(flag, 'perm')
+        self.assertEqual(permxdata.shape(), (5, 3, 4))
+        print(permxdata.data)
+        print(setofdata.data)
+        self.assertEqual(permxdata.data[2][0][0], setofdata.data[2][0][0])
+        self.assertEqual(permxdata.data[0][0][2], setofdata.data[0][0][2])
+        self.assertEqual(permxdata.data[0][2][1], setofdata.data[0][2][3])
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
