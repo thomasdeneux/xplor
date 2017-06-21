@@ -1,7 +1,7 @@
 """xdata module is a module to define data in the form of an ND array
 XPLOR dataset is contained in a N dimensional array. The array contains the 
 data itself, but the array also has headers. The headers contains this
-informations about each of the dimensions : names, types, units, scale, ...
+information about each of the dimensions : names, types, units, scale, ...
 This module uses : 
         pandas as pd
         numpy as np
@@ -10,23 +10,24 @@ This module uses :
 There are 3 classes in this module:
     
     - DimensionDescription : for a specific dimension, DimensionDescription 
-                        stores a label,a dimensiontype ('numeric', 'logical',
+                        stores a label,a dimension_type ('numeric', 'logical',
                         'string', or 'mixed'), possibly a unit and the 
                         corresponding conversion table.
                         
-                        It allows to determine the dimensiontype of an element,
-                        and access the default value of a given dimensiontype.
+                        It allows to determine the dimension_type of an
+                        element, and access the default value of a given
+                        dimension_type.
                         
                         
     - Header : abstract class (subclasses are CategoricalHeader 
-               and MeasureHeader). Headers contains informations about a
+               and MeasureHeader). Headers contains information about a
                dimension of the NDimensional data, such as a general label,
                the number of element, the description of the
                dimension/subdimensions, and allows to access the values to
                display on the axis.
                
     - CategoricalHeader : CategoricalHeader is a subclass of Header. It is used
-                          to caracterize a dimension in which the data has no
+                          to characterize a dimension in which the data has no
                           regular organisation. It usually is a list of
                           elements. However, such elements can have interesting
                           features of different types. That's why such features
@@ -34,8 +35,8 @@ There are 3 classes in this module:
                           DimensionDescription object.
                           
     - MeasureHeader : MeasureHeader is a subclass of Header. It is used for
-                      data aquired by equally spaced sample in a continous
-                      dimension such as time or space. In wich case, their is
+                      data acquired by equally spaced sample in a continuous
+                      dimension such as time or space. In which case, there is
                       only one subdimension (i.e. only one column).
                       
     - Xdata : TODO
@@ -50,13 +51,69 @@ There are 3 classes in this module:
 
 import pandas as pd
 import numpy as np
-#itemgetter is used to sort a list of dictionary
+# itemgetter is used to sort a list of dictionaries
 from operator import itemgetter
-#Header is abstract, subclasses are MeasureHeader and CategoricalHeader
+# Header is abstract, subclasses are MeasureHeader and CategoricalHeader
 from abc import ABC, abstractmethod
 from pprint import pprint
 
-        
+
+class Color:
+    """ Defines colors.
+
+    This class allows defining colors, either as RGB values or using
+    predefined strings.
+
+    Parameters
+    ----------
+    rgb : either a 3-tuple with 3 integers between 0 and 255,
+                or a predefined string predefined strings are 'black',
+                'white', 'red', 'green', 'purple', 'cyan', 'magenta'
+
+    Attributes
+    ----------
+    rgb : a 3-tuple with 3 integers between 0 and 255
+
+    """
+
+    def __init__(self, rgb):
+        if isinstance(rgb, str):
+            if rgb == 'black':
+                self.rgb = [0, 0, 0]
+            elif rgb == 'white':
+                self.rgb = [255, 255, 255]
+            elif rgb == 'red':
+                self.rgb = [255, 0, 0]
+            elif rgb == 'green':
+                self.rgb = [0, 255, 0]
+            elif rgb == 'blue':
+                self.rgb = [0, 0, 255]
+            elif rgb == 'purple':
+                self.rgb = [255, 255, 0]
+            elif rgb == 'cyan':
+                self.rgb = [0, 255, 255]
+            elif rgb == 'magenta':
+                self.rgb = [255, 0, 255]
+            else:
+                raise Exception("String argument is not a recognized color "
+                                "name.")
+        else:
+            try:
+                self.rgb = [int(x) for x in rgb]
+                if len(self.rgb) != 3:
+                    raise Exception()
+                for i in range(3):
+                    x = self.rgb[i]
+                    if x < 0 or x > 255:
+                        raise Exception()
+            except:
+                raise Exception("Argument must be either a 3-element color "
+                                "definition or a string color name.")
+
+    def __eq__(self, other):
+        return self.rgb == other.rgb
+
+
 class DimensionDescription:
     
     """ This class aims at defining a dimension.
@@ -70,8 +127,8 @@ class DimensionDescription:
     - label :
         name for the dimension
         (type str (e.g. 'time'))
-    - dimensiontype :
-        values : 'numeric', 'logical', 'string', 'color' or 'mixed'    
+    - dimension_type :
+        can be 'numeric', 'logical', 'string', 'color' or 'mixed'
     - unit :
         One can define only the unit (e.g. mm) or the conversions as well in
         the form of a list (e.g. ['mm', 10**(-3), 'm', 1]).
@@ -86,29 +143,28 @@ class DimensionDescription:
     - label :
         name of the dimension
         (type str)
-    - dimensiontype :
+    - dimension_type :
         'numeric', 'logical', 'string', 'color' or 'mixed'
     - unit :
         currently used unit
         (type str)
     - allunit :
         list of dictionaries for unit conversions
-      
+
     Methods
     -------
     - set_dimtype_to_mixed :
-        changing the dimensiontype to 'mixed' if adding values that are not
-        of the correct dimensiontype (merging lines for instance)
+        changing the dimension_type to 'mixed' if adding values that are not
+        of the correct dimension_type (merging lines for instance)
     - copy :
         to copy a DimensionDescription instance
         
     (static methods)
-    
     - infertype(x, getdefaultvalue=False) :
-        gives the dimensiontype of the x element and possibly the associated
+        gives the dimension_type of the x element and possibly the associated
         defaultvalue
-    - defaultvalue(dimensiontype) :
-        gives the default value associated to a certain dimensiontype
+    - defaultvalue(dimension_type) :
+        gives the default value associated to a certain dimension_type
         
     Examples
     --------
@@ -121,92 +177,92 @@ class DimensionDescription:
     Note
     ----
      
-    DimensionDescription of dimension type 'color' are using RGB 3-tupple
-     
+    DimensionDescription of dimension type 'color' are Color objects
+
     """
-    
-    
+
     def __init__(self, 
                  label,
-                 dimensiontype,
-                 unit = None):
+                 dimension_type,
+                 unit=None):
         """Constructor of the class DimensionDescription"""
         
-        #Checking the arguments'types, raise an exception if it's not correct.
-        #The label must be a string.
-        if (not isinstance(label,str)):
+        # Checking arguments and setting properties.
+
+        # label must be a string
+        if not isinstance(label, str):
             raise Exception('label must be a string')
         self._label = label
-        #The dimensiontype must be 'numeric', 'logical', 'string, or 'mixed'.
-        if not (dimensiontype in ['numeric', 'logical', 'string', 'color',
-        'mixed']):
-            raise Exception("a dimensiontype must be 'numeric', 'logical',"
-            "'string', 'color' or 'mixed'")
-        self._dimensiontype = dimensiontype
-        #The unit is not compulsary (None for no unit).
-        #However, only 'numeric' dimensions can have a unit.
-        if (unit != None) & (dimensiontype != 'numeric'):
+
+        # dimension_type must be 'numeric', 'logical', 'string, or 'mixed'
+        if not (dimension_type in ['numeric', 'logical', 'string', 'color',
+                                   'mixed']):
+            raise Exception("a dimension_type must be 'numeric', 'logical',"
+                            "'string', 'color' or 'mixed'")
+        self._dimension_type = dimension_type
+
+        # only 'numeric' dimensions can have a unit, and this is not mandatory
+        if unit is None:
+            self._unit = None
+            self._all_units = None
+        elif dimension_type != 'numeric':
             raise Exception("only numeric DimensionDescriptions can have a"
-            " unit")
-        #The unit can be given in the form of a string ...
-        elif (isinstance(unit,str)):
+                            " unit")
+        # the unit can be given in the form of a string ...
+        elif isinstance(unit, str):
             self._unit = unit
-            self._allunits = [{'unit' : unit, 'value' : 1.0}]
-        #..or in the form of a list of linked units and conversion coefficients
-        elif unit==[]:
+            self._all_units = [{'unit': unit, 'value': 1.0}]
+        # ...or in the form of a list of linked units and conversion
+        # coefficients
+        elif not unit:  # pythonic way of checking whether a list is empty,
+            # by using the implicit booleanness
             raise Exception("there must be at least one unit")
-        elif (isinstance(unit,list)):
-            lengthlist = len(unit)
-            if lengthlist%2 != 0:
+        elif isinstance(unit, list):
+            list_length = len(unit)
+            if list_length % 2 != 0:
                 raise Exception("unit must be a string with the unit symbol or"
                                 " a list of the symbols of the unit followed"
                                 "by the conversion indicator"
                                 " (e.g. ['mm', 10**(-3), 'm', 1]")
-            #One of the units must be the reference.
-            #That means that one conversion coefficient must be equal to one.
-            Reference = False
-            self._allunits = []
-            for i in range (0,lengthlist,2):
-                #The name of the unit is always a string.
-                if not isinstance(unit[i],str):
-                    raise Exception("unit names must be strings")
-                #The coefficient for conversion must be int or float.
-                if not (isinstance(unit[i+1],float)) | \
-                       (isinstance(unit[i+1],int)):
-                    raise Exception("conversion coeffs must be of type float "
-                    "or int")
-                d = {'unit' : unit[i], 'value' : float(unit[i+1])}
-                self._allunits += [d]
-                if unit[i+1] == 1:
-                    #A reference unit has been defined.
-                    Reference = True
-                    self._unit = unit[i]
-            if not Reference:
+            # One of the units must be the reference.
+            # That means that one conversion coefficient must be equal to one.
+            reference = False
+            self._all_units = []
+            for i in range(0, list_length, 2):
+                # assign pairs of items to unit (string) and value (float)
+                try:
+                    d = {'unit': str(unit[i]), 'value': float(unit[i+1])}
+                except:
+                    raise Exception("unit name must be a string and conversion"
+                                    " coefficient must be a numerical scalar")
+                self._all_units += [d]
+                # take the first unit with value 1 has reference
+                if d['value'] == 1 and not reference:
+                    reference = True
+                    self._unit = d['unit']
+            if not reference:
                 raise Exception("one of the conversion coefficients must be "
-                "equal to one to define a reference")
-            #The list of units with conversion coefficients is sorted.
-            self._allunits.sort(key=itemgetter('value'))
-        #Checking if the type of unit is either str, list or if it is None.
-        elif (unit != None):
-            raise Exception("unit must be a string with the unit symbol or a "
-            "list  of the symbols of the unit followed by the conversion "
-            "indicator (e.g. ['mm', 10**(-3), 'm', 1]")
+                                "equal to one to define a reference")
+            # sort the list of units according conversion coefficients
+            self._all_units.sort(key=itemgetter('value'))
+        # Checking if the type of unit is either str, list or if it is None.
         else:
-            self._unit = None
-            self._allunits = None
+            raise Exception("unit must be a string with the unit symbol or a "
+                            "list  of the symbols of the unit followed by "
+                            "the conversion indicator (e.g. "
+                            "['mm', 10**(-3), 'm', 1])")
                 
-                
-    #Attributes label, dimensiontype, unit and allunits can be seen but not 
-    #modified outside of the class (only get methods, no setters).
+    # Attributes label, dimension_type, unit and all_units can be seen but not
+    # modified outside of the class (only get methods, no setters).
     @property
     def label(self):
         """name for the dimension (type str (e.g. 'time'))"""
         return self._label
     
     @property
-    def dimensiontype(self):
+    def dimension_type(self):
         """'numeric', 'logical', 'string', 'color' or 'mixed'"""
-        return self._dimensiontype
+        return self._dimension_type
     
     @property
     def unit(self):
@@ -214,75 +270,62 @@ class DimensionDescription:
         return self._unit
     
     @property
-    def allunits(self):
+    def all_units(self):
         """conversion table (type list of dict)"""
-        return self._allunits
+        return self._all_units
     
     def set_dimtype_to_mixed(self):
-        """change the dimensiontype to mixed"""
-        self._dimensiontype = 'mixed'
+        """change the dimension_type to mixed"""
+        self._dimension_type = 'mixed'
         
     def copy(self):
         """copy a DimensionDescription instance"""
-        if self.allunits is None:
-            unit = None
-        else:
-            unit = []
-            for i in self.allunits:
-                unit.append(i['unit'])
-                unit.append(i['value'])
-        return DimensionDescription(self.label,
-                                    self.dimensiontype,
-                                    unit)
+        obj = DimensionDescription(self.label, self.dimension_type)
+        obj._unit = self._unit
+        obj._all_units = self._all_units
+        return obj
+
     @staticmethod
     def infertype(x, getdefaultvalue=False):
-        """infertype is a static method to access the dimensiontype of an
+        """infertype is a static method to access the dimension_type of an
         element x and if required, the associated default value"""
-        dimtype = 'mixed'
-        if isinstance(x,bool):
+        if isinstance(x, bool):
             dimtype = 'logical'
-        elif isinstance(x,str):
+        elif isinstance(x, str):
             dimtype = 'string'
         elif type(x) in [int, float, complex, np.float64, np.int64]:
             dimtype = 'numeric'
-        elif isinstance(x, tuple):
-            if len(x)==3 :
-                if ((type(x[0]) == type(x[1]) == type(x[2]) == int) & \
-                ((x[0] < 256) & (x[1] < 256) & (x[2] < 256)) & \
-                ((x[0] >= 0) & (x[1] >= 0) & (x[2] >= 0))):
-                    dimtype = 'color'               
+        elif isinstance(x, Color):
+            dimtype = 'color'
+        else:
+            dimtype = 'mixed'
         if getdefaultvalue:
-            return (dimtype,DimensionDescription.defaultvalue(dimtype))
+            return dimtype, DimensionDescription.defaultvalue(dimtype)
         else:
             return dimtype
-    
-    #Calculating a default value for the differents dimensiontypes.
+
+    # Calculating a default value for the differents dimension_types.
     @staticmethod
-    def defaultvalue(dimensiontype):
+    def defaultvalue(dimension_type):
         """defaultvalue is a static method to access the default value of a
-        given dimensiontype"""
-        if dimensiontype == 'numeric':
+        given dimension_type"""
+        if dimension_type == 'numeric':
             return 0
-        elif dimensiontype == 'logical':
+        elif dimension_type == 'logical':
             return False
-        elif dimensiontype == 'string':
+        elif dimension_type == 'string':
             return ''
-        elif dimensiontype == 'color':
-            return (0, 149, 182)
-            #it is a nice color, different from that of the background
-        elif dimensiontype == 'mixed':
+        elif dimension_type == 'color':
+            return Color((0, 149, 182))
+            # it is a nice color, different from that of the background
+        elif dimension_type == 'mixed':
             return None
         else:
             raise Exception("This function only gives the default value for"
-            " the following types: 'numeric', 'logical', 'string', 'color' or"
-            " 'mixed'")
+                            " the following types: 'numeric', 'logical', "
+                            "'string', 'color' or 'mixed'")
 
 
-
-
-
-
-    
 class Header(ABC):
     """ This abstract class allows the creation of headers for the different 
     dimensions of a dataset.
@@ -295,8 +338,8 @@ class Header(ABC):
     have interesting features of different types. That's why such features are 
     stored in columns, each of them described by a DimensionDescription object.
     A MeasureHeader is used for data aquired with regular intervals in a
-    continous dimension such as time or space. In wich case, there is only one
-    subdimension (i.e. only one column witch is not stored).
+    continuous dimension such as time or space. In which case, there is only
+    one subdimension (i.e. only one column witch is not stored).
     
     
     Parameters
@@ -308,44 +351,41 @@ class Header(ABC):
         name of the dimension (type str)
     - column_descriptors :
         list of the DimensionDescription of each of the columns of values
-    
-    Properties
-    ----------
-    - ismeasure :
+    - is_measure :
         true if the header is a MeasureHeader instance, false if it is a
         CategoricalHeader instance
-    - iscategoricalwithvalues :
+    - is_categorical_with_values :
         true if it is an instance of CategoricalHeader and that values is not
         None. If it is a categorical header but with no column or a measure
         header, it is false.
-    - isundifferentiated :
+    - is_undifferentiated :
         true if it is a categorical header with no values
-        (not iscategoricalwithvalues)
-      
+        (not is_categorical_with_values)
+
     Methods
     -------           
     (abstract methods)
     
     - n_elem :
         number of element in the column(s)/ number of samples
-    - iscategorical :
+    - is_categorical :
         differentiate measure and categorical headers for the properties
-        ismeasure, iscategoricalwithvalues and isundifferentiated
+        is_measure, is_categorical_with_values and is_undifferentiated
     - __eq__ :
         compares all the fields of the headers (returns True if all the 
         fields are the same) it can be used by writting header1 == header2
-    - getncolumns :
+    - get_n_columns :
         gives the number of columns (1 for MeasureHeader, 0 to n for
         CategoricalHeader)
-    - getunits :
+    - get_units :
         gives the list of the unit used for each column ('no unit' is 
         returned for each column with no specified unit)
-    - getallunits :
+    - get_all_units :
         gives the list of conversion table for each column ('no unit' is
         returned for each column with no specified unit)
     - disp :
         gives the main attributes of a Header
-    - getvalue :
+    - get_value :
         (self, nline, column = None)
         gives the value located at the line nline and at the column column
         (defined by it's label or it's number) or the fist one. Since we use
@@ -374,11 +414,11 @@ class Header(ABC):
      CategorialHeader: (with values)
          label : 'fruits'
          column_descriptors : (list of DimensionDescriptors, simplified here)
-             1/ label : 'fruits', dimensiontype : 'string', no unit
+             1/ label : 'fruits', dimension_type : 'string', no unit
              
-             2/ label : 'prices', dimensiontype : 'numeric', unit : 'euros/kg'
+             2/ label : 'prices', dimension_type : 'numeric', unit : 'euros/kg'
              
-             3/ label : 'color', dimensiontype : 'string', no unit
+             3/ label : 'color', dimension_type : 'string', no unit
              
          n_elem : 4
          values :
@@ -433,11 +473,11 @@ class Header(ABC):
         
             label : 'x', 
             
-            dimensiontype : 'numeric',
+            dimension_type : 'numeric',
             
             unit : 'mm',
             
-            allunits : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
+            all_units : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
             'value' : 1}]
             
         n-elem : 4
@@ -460,8 +500,18 @@ class Header(ABC):
                                     7 
      
     """
-    #Attributes label and column_descriptors can be seen but not modified
-    #outside of the class (only get methods, no setters).
+
+    # Define an abstract constructor which will not be used, but serves for
+    # the the code analyzer to learn the attributes mandatory for a Header
+    # class
+    @abstractmethod
+    def __init__(self):
+        self._label = None
+        self._column_descriptors = None
+        self._n_elem = None
+
+    # Attributes label and column_descriptors can be seen but not modified
+    # outside of the class (only get methods, no setters).
     @property
     def label(self):
         """general label of the header"""
@@ -472,90 +522,86 @@ class Header(ABC):
         """list of DimensionDescription instances describing each column"""
         return self._column_descriptors
     
-    #Properties ismeasure, isundifferentiated, iscategoricalwithvalues help to
-    #differenciate different types of headers faster in other modules
+    # Properties is_measure, is_undifferentiated, is_categorical_with_values
+    #  help to differentiate different types of headers faster in other modules
     @property
-    def ismeasure(self):
-        """fast way to differenciate measure headers from categorical ones"""
-        return not self.iscategorical
+    def is_measure(self):
+        """fast way to differentiate measure headers from categorical ones"""
+        return not self.is_categorical
     
     @property    
-    def iscategoricalwithvalues(self):
+    def is_categorical_with_values(self):
         """fast way to test if a header is categorical with values
         (ie list of elements)"""
-        return self.iscategorical and self.getncolumns()>0
+        return self.is_categorical and self.get_n_columns() > 0
 
     @property    
-    def isundifferentiated(self):
+    def is_undifferentiated(self):
         """fast way to test if a header is categorical with no values"""
-        return self.iscategorical and self.getncolumns()==0
+        return self.is_categorical and self.get_n_columns() == 0
                 
-    #method
-    def check_header_update(self, flag, ind, newheader):
+    # Methods
+    def check_header_update(self, flag, ind, new_header):
         """basics checks when updating data and giving a new header"""
-        #check types of parameters
-        if not isinstance(newheader, Header):
-            raise Exception("newheader must be a header")
-        elif not flag in ['all', 'chgdim', 'new', 'remove', 'chg', 'chg&new',
-                          'chg&rrm', 'perm']:
-            raise Exception("flags can be : 'all', 'chgdim', 'new', 'remove', "
-            "'chg', 'chg&new' or 'chg&rm'")
-        elif not isinstance(ind, np.array):
-            raise Exception ("ind must be of type numpy.array")
-        elif len(ind.shape) != 1:
-            raise Exception("ind must be of shape (n,)")
-        if flag != 'chgdim':
-            #only 'chgdim' flags allow to change the type of the header
-            # and/or change the various labels
-            
-            #check that the types are coherent
-            if self.iscategorical != newheader.iscategorical:
-                raise Exception("both headers must be of same type")
-            #check that labels are preserved
-            if self._label != newheader._label:
-                raise Exception ("both headers must have the same label")
-            for column in range (len(self._column_descriptors)):
-                if self._column_descriptors[column].label != \
-                    newheader._column_descriptores[column].label:
-                        raise Exception ("sublabels are not preserved")
-            #only 'all' and 'chgdim' flag allows to change n_elem as we want
-            if flag == 'new':
-                if newheader.n_elem != self._n_elem + ind.size:
-                    raise Exception ("the new headers has the wrong number of "
-                                     "elements")
-            elif flag == 'chg' | flag == 'perm':
-                if newheader.n_elem != self._n_elem:
-                    raise Exception ("both headers must have the same number "
-                                         "of elements")
-            elif flag == 'remove':
-                if newheader.n_elem != self._n_elem - ind.size:
-                    raise Exception ("the new headers has the wrong number of "
-                                     "elements")
-            #'chg&new' and 'chg&rm' flags impose ind to be an array of array
-            #with the first element being the array of indices to be changed
-            #and the second element being an array of new indices
-            elif flag == 'chg&new':
-                if newheader.n_elem != self._n_elem + ind[0][1].size:
-                    raise Exception ("the new headers has the wrong number of "
-                                     "elements")
-            elif flag == 'chg&rm':
-                if newheader.n_elem != self._n_elem + ind[0][1].size:
-                    raise Exception ("the new headers has the wrong number of "
-                                     "elements")
-    
-    
-    
-    
-    #abstract methods
+        # check types of parameters
+        if not isinstance(new_header, Header):
+            raise Exception("new_header must be a header")
+
+        # 'chgdim' flag allows any change!
+        if flag == 'chgdim':
+            return
+
+        # check that the types are coherent
+        if self.is_categorical != new_header.is_categorical:
+            raise Exception("both headers must be of same type")
+
+        # check that labels are preserved
+        if new_header._label != self._label:
+            raise Exception("both headers must have the same label")
+
+        # check that column descriptors are preserved (note that there can
+        # be additional columns though)
+        if new_header._column_descriptors[:len(self._column_descriptors)] !=\
+                self._column_descriptors:
+            raise Exception("sub-labels are not preserved")
+
+        # only 'all' and 'chgdim' flag allows to change n_elem as we want
+        if flag == 'new':
+            if new_header.n_elem != self._n_elem + len(ind):
+                raise Exception("the new headers has the wrong number of "
+                                "elements")
+        elif flag in ['chg' 'perm']:
+            if new_header.n_elem != self._n_elem:
+                raise Exception("both headers must have the same number "
+                                "of elements")
+        elif flag == 'remove':
+            if new_header.n_elem != self._n_elem - len(ind):
+                raise Exception("the new headers has the wrong number of "
+                                "elements")
+        # 'chg&new' and 'chg&rm' flags impose ind to be an array of array
+        # with the first element being the array of indices to be changed
+        # and the second element being an array of new indices
+        elif flag == 'chg&new':
+            if new_header.n_elem != self._n_elem + len(ind[1]):
+                raise Exception("the new headers has the wrong number of "
+                                "elements")
+        elif flag == 'chg&rm':
+            if new_header.n_elem != self._n_elem + len(ind[0]):
+                raise Exception("the new headers has the wrong number of "
+                                "elements")
+        else:
+            raise Exception("Unknown flag")
+
+    # abstract methods
     @abstractmethod
     def n_elem(self):
         """gives the the number of elements/samples in that dimension"""
         pass
    
     @abstractmethod
-    def iscategorical(self):
-        """used for the properties ismeasure, iscategoricalwithvalues and
-        isundifferentiated, fast way to differenciate categorical and measure
+    def is_categorical(self):
+        """used for the properties is_measure, is_categorical_with_values and
+        is_undifferentiated, fast way to differenciate categorical and measure
         headers"""
         pass
     
@@ -565,17 +611,17 @@ class Header(ABC):
         pass
     
     @abstractmethod
-    def getncolumns(self):
+    def get_n_columns(self):
         """returns the number of columns"""
         pass
 
     @abstractmethod
-    def getunits(self):
+    def get_units(self):
         """gives a list of the units of all the columns"""
         pass
     
     @abstractmethod
-    def getallunits(self):
+    def get_all_units(self):
         """gives a list of the conversion tables for the units of all the
         columns"""
         pass
@@ -586,7 +632,7 @@ class Header(ABC):
         pass
     
     @abstractmethod
-    def getvalue(self, line, column = None):
+    def get_value(self, line, column=None):
         """get the value of the line of number line of the column column
         (defined by it's label or number) or the first column"""
         pass
@@ -603,9 +649,8 @@ class Header(ABC):
         pass
 
 
-
 class CategoricalHeader(Header):
-    """ This class allows the creation of a header for a categorical dimensions
+    """ This class allows the creation of a header for a categorical dimension
     of a dataset.
     
     CategoricalHeader is used for categorical dimensions of a dataset. This
@@ -617,8 +662,8 @@ class CategoricalHeader(Header):
     DimensionDescription objects stored in column_descriptorss to describe each
     of the features. For each feature, values can be given (e.g. for 'fruits'
     values would be 'apple', 'pear', 'blueberry', 'watermelon'...) or be a list
-    of numbers. The first case corresponds to 'iscategoricalwithvalues', the
-    second to 'isundifferentiated'
+    of numbers. The first case corresponds to 'is_categorical_with_values', the
+    second to 'is_undifferentiated'
     
     
     
@@ -670,26 +715,26 @@ class CategoricalHeader(Header):
     - n_elem :
         number of element in the column(s)/ number of samples number of lines
         of values
-    - iscategorical :
+    - is_categorical :
         differentiate measure and categorical headers for the properties
-        ismeasure, iscategoricalwithvalues and isundifferentiated
-    - iscategorical :
+        is_measure, is_categorical_with_values and is_undifferentiated
+    - is_categorical :
         returns True since it is the class CategoricalHeader
     - __eq__ :
         compares all the fields of the headers (returns True if all the
         fields are the same) it can be used by writting header1 == header2
-    - getncolumns :
+    - get_n_columns :
         gives the number of columns (1 for MeasureHeader, 0 to n for
         CategoricalHeader)
-    - getunits :
+    - get_units :
         gives the list of the unit used for each column ('no unit' is returned
         for each column with no specified unit)
-    - getallunits :
+    - get_all_units :
         gives the list of conversion table for each column ('no unit' is
         returned for each column with no specified unit)
     - disp :
         gives the main attributes of a Header
-    - getvalue(nline, column = None) : 
+    - get_value(nline, column = None) : 
         gives the value located at the line nline and at the column column
         (defined by it's label or it's number) or the fist one. Since we use
         pyhton, we have decided that to access the first element of the
@@ -732,11 +777,11 @@ class CategoricalHeader(Header):
          
          column_descriptors : (list of DimensionDescriptors, simplified here)
          
-             1/ label : 'fruits', dimensiontype : 'string', no unit
+             1/ label : 'fruits', dimension_type : 'string', no unit
              
-             2/ label : 'prices', dimensiontype : 'numeric', unit : 'euros/kg'
+             2/ label : 'prices', dimension_type : 'numeric', unit : 'euros/kg'
              
-             3/ label : 'color', dimensiontype : 'string', no unit
+             3/ label : 'color', dimension_type : 'string', no unit
              
          n_elem : 4
          
@@ -791,16 +836,16 @@ class CategoricalHeader(Header):
     
     def __init__(self,
                  label,
-                 column_descriptors = None,
-                 n_elem = None,
-                 values = None):
+                 column_descriptors=None,
+                 n_elem=None,
+                 values=None):
         """Constructor of the class CategoricalHeader"""
-        #label is not optional and must be of type string
-        #label can be different from the labels of the columns
+        # label is not optional and must be of type string
+        # label can be different from the labels of the columns
         if not (isinstance(label,str)):
             raise Exception("The header's label must be of type str")
         self._label = label
-        #if values is None, so is column_descriptors, but we must have n_elem
+        # if values is None, so is column_descriptors, but we must have n_elem
         if values is None:
             if n_elem is None:
                 raise Exception("if no value is given, n_elem must be given")
@@ -813,20 +858,20 @@ class CategoricalHeader(Header):
             self._column_descriptors = None
         elif not isinstance(values, pd.core.frame.DataFrame):
             raise Exception("values must be a pandas DataFrame")
-        else :
-            #values is a DataFrame
-            #we have to check that it has the correct shape
-            #however, labels of the dataframe will not be taken into
-            #consideration correspond
+        else:
+            # values is a DataFrame
+            # we have to check that it has the correct shape
+            # however, labels of the dataframe will not be taken into
+            # consideration correspond
             if isinstance(n_elem, int):
                 if not n_elem == values.shape[0]:
                     raise Exception("n_elem is not coherent with shape of "
                                     "values")
             elif not n_elem is None:
                 raise Exception("n_elem must but of type int")
-            #n_elem is either not given or correspond to the number of lines of
-            #the dataframe
-            #let's check that values and column_descriptors are size coherent
+            # n_elem is either not given or correspond to the number of 
+            # lines of the dataframe
+            # let's check that values and column_descriptors are size coherent
             if isinstance(column_descriptors, str) | \
                          isinstance(column_descriptors, DimensionDescription):
                 column_descriptors = [column_descriptors]
@@ -834,7 +879,7 @@ class CategoricalHeader(Header):
                 raise Exception ("column_descriptors must be of type str, "
                                  "DimensionDescription or a list of such "
                                  "elements")
-            #column_descriptors is now a list
+            # column_descriptors is now a list
             if len(column_descriptors) != values.shape[1]:
                 raise Exception ("column_descriptors and values must have the "
                                  "same length")
@@ -847,12 +892,12 @@ class CategoricalHeader(Header):
                                                values[i])
                     self._column_descriptors += [dimdescription]
                 elif isinstance(column_descriptors[i], DimensionDescription):
-                    d = column_descriptors[i].dimensiontype
+                    d = column_descriptors[i].dimension_type
                     if d != 'mixed':
                         for e in range (values.shape[0]):
-                            #/!\dataframe[column][line]
+                            # /!\dataframe[column][line]
                             if DimensionDescription.infertype(values[i][e]) != d:
-                                raise Exception("dimensiontypes of "
+                                raise Exception("dimension_types of "
                                                 "column_descriptors must be "
                                                 "coherent with the data in "
                                                 "values")
@@ -863,7 +908,7 @@ class CategoricalHeader(Header):
                                     "DimensionDescription")
         
 
-    #private property but with get access
+    # private property but with get access
     @property
     def n_elem(self):
         """number of elements/samples in that dimension, line number of values
@@ -871,7 +916,7 @@ class CategoricalHeader(Header):
         return self.values.shape[0]
    
     @property
-    def iscategorical(self):
+    def is_categorical(self):
         """CategoricalHeader instances are all categorical"""
         return True
     
@@ -880,19 +925,19 @@ class CategoricalHeader(Header):
         """values is a pandas DataFrame"""
         return self._values
     
-    #methods
+    # methods
     def __eq__(self, other):
         """Override the default Equals behavior"""
-        #the two headers must have the same type
+        # the two headers must have the same type
         if not isinstance(other, CategoricalHeader):
             return False
-        #the label must be the same
+        # the label must be the same
         if self._label != other._label:
             return False
-        #the column_descriptors must be the same
-        if self.iscategoricalwithvalues != other.iscategoricalwithvalues:
+        # the column_descriptors must be the same
+        if self.is_categorical_with_values != other.is_categorical_with_values:
                 return False
-        if self.iscategoricalwithvalues:
+        if self.is_categorical_with_values:
             if len(self._column_descriptors) != len(other._column_descriptors):
                     return False
             for i in range (len(self._column_descriptors)) :
@@ -900,14 +945,14 @@ class CategoricalHeader(Header):
                 otherdescriptor = other._column_descriptors[i]
                 if selfdescriptor.label != otherdescriptor.label :
                     return False
-                if selfdescriptor.dimensiontype != \
-                otherdescriptor.dimensiontype :
+                if selfdescriptor.dimension_type != \
+                otherdescriptor.dimension_type :
                     return False
                 if selfdescriptor.unit != otherdescriptor.unit :
                     return False
-                if selfdescriptor.allunits != otherdescriptor.allunits :
+                if selfdescriptor.all_units != otherdescriptor.all_units :
                     return False
-        #the content of values must be the same
+        # the content of values must be the same
         if self._values.shape != other._values.shape :
             return False
         for column in range (self._values.shape[1]):
@@ -916,16 +961,16 @@ class CategoricalHeader(Header):
                     return False
         return True
         
-    def getncolumns(self):
+    def get_n_columns(self):
         """returns the number of columns"""
         if self._column_descriptors is None:
             return 0
         return (len(self._column_descriptors))
 
-    def getunits(self):
+    def get_units(self):
         """gives a list of the units of all the columns"""
         units = []
-        if self.getncolumns() == 0:
+        if self.get_n_columns() == 0:
             return ([])
         else:
             for dimensiondescription in self._column_descriptors:
@@ -935,34 +980,34 @@ class CategoricalHeader(Header):
                     units += [dimensiondescription.unit]
             return units
     
-    def getallunits(self):
+    def get_all_units(self):
         """gives a list of the conversion tables for the units of all the
         columns"""
-        allunits = []
-        if self.getncolumns() == 0:
+        all_units = []
+        if self.get_n_columns() == 0:
             return ([])
         for dimensiondescription in self._column_descriptors:
             if dimensiondescription.unit == None:
-                allunits += ['no unit']
+                all_units += ['no unit']
             else:
-                allunits += [dimensiondescription.allunits]
-        return allunits
+                all_units += [dimensiondescription.all_units]
+        return all_units
     
     def disp(self):
         """display some information about the haeder"""
-        print ("CategoricalHeader : " + self._label)
-        print ("columns:")
+        print("CategoricalHeader : " + self._label)
+        print("columns:")
         columns = self._column_descriptors
-        for i in range (self.getncolumns()):
+        for i in range (self.get_n_columns()):
             label = str(columns[i].label)
             if columns[i].unit == None :
                 unit = ''
             else:
                 unit = ' ('+ columns[i].unit+ ')'
-            print (label + unit)
+            print(label + unit)
         print("n_elem :" + str(self.n_elem))
     
-    def getvalue(self, line, column = None):
+    def get_value(self, line, column = None):
         """get the value of the line of number line of the column defined by 
         column"""
         if not isinstance(line, int):
@@ -972,16 +1017,16 @@ class CategoricalHeader(Header):
         if column is None :
             column = 0
         if isinstance(column, int):
-            if column == 0 and self.getncolumns() == 0:
-                #nline must be 0 to have the first elem of a list in python.
+            if column == 0 and self.get_n_columns() == 0:
+                # nline must be 0 to have the first elem of a list in python.
                 return (line)
-            if column >= self.getncolumns() | column < 0:
+            if column >= self.get_n_columns() | column < 0:
                 raise Exception("column is a str or an int in [0, n_col[")
             return (self._values[column][line])
         elif not isinstance(column, str):
             raise Exception ("column is either the label of a column or it's"
             "number (int)")
-        #if it is a string
+        # if it is a string
         count = 0
         for dimdescriptor in self._column_descriptors:
             if dimdescriptor.label == column:
@@ -993,18 +1038,18 @@ class CategoricalHeader(Header):
     def get_itemname(self, line):
         """get the value(s) of the line(s) in nline (it can be an int or a list
         of int), of the first column"""
-        #this function is the same for both the headers, but it could be
-        #modified to choose witch column we want for categorical headers
+        # this function is the same for both the headers, but it could be
+        # modified to choose witch column we want for categorical headers
         if isinstance(line, int):
             if line >= self.n_elem| line < 0:
                 raise Exception("nline must be in [0, n_elem[")
-            return (self.getvalue(line))
+            return (self.get_value(line))
         elif isinstance(line, list):
             itemnames = []
             for n in line:
                 if not isinstance(n,int):
                     raise Exception("all line numbers must be integers")
-                itemnames += [self.getvalue(n)]
+                itemnames += [self.get_value(n)]
             return itemnames
         raise Exception("nline must be an int or a list of int")
     
@@ -1021,13 +1066,13 @@ class CategoricalHeader(Header):
             raise Exception("column_descriptor must be of type str or "
                             "DimensionDescription")
         else:
-            #if it was a given DimensionDescriptor, let's check that the
-            #dimensiontype correspond to that of the values
-            dimensiontype = column_descriptor.dimensiontype
-            if dimensiontype != 'mixed':
+            # if it was a given DimensionDescriptor, let's check that the
+            # dimension_type correspond to that of the values
+            dimension_type = column_descriptor.dimension_type
+            if dimension_type != 'mixed':
                 for i in values:
-                    if DimensionDescription.infertype(i) != dimensiontype:
-                        raise Exception ("the dimensiontype of the "
+                    if DimensionDescription.infertype(i) != dimension_type:
+                        raise Exception ("the dimension_type of the "
                                          "DimensionDescription must correspond"
                                          " to that of the values")
         column_descriptors = self._column_descriptors + [column_descriptor]
@@ -1039,9 +1084,9 @@ class CategoricalHeader(Header):
         
     def update_categoricalheader(self, flag, ind, values):
         """updates the values of a categorical header"""
-        #flag 'all' : all the values can change, they are all given
-        #in values argument of type pandas DataFrame
-        if (flag == 'all'):
+        # flag 'all' : all the values can change, they are all given
+        # in values argument of type pandas DataFrame
+        if flag == 'all':
             if (ind is None) | (ind ==[]) | (ind == range(self.n_elem)):
                 if not isinstance(values, pd.core.frame.DataFrame):
                     raise Exception("values must be a pandas DataFrame")
@@ -1050,9 +1095,9 @@ class CategoricalHeader(Header):
                     "columns")
                 column_descriptors = self._column_descriptors
                 for j in range(values.shape[1]):
-                    if column_descriptors[j].dimensiontype != 'mixed':
+                    if column_descriptors[j].dimension_type != 'mixed':
                         for i in range(values.shape[0]):
-                            if column_descriptors[j].dimensiontype != \
+                            if column_descriptors[j].dimension_type != \
                             DimensionDescription.infertype (values[j][i]):
                                 column_descriptors[j].set_dimtype_to_mixed()
                                 i = values.shape[0]
@@ -1062,8 +1107,8 @@ class CategoricalHeader(Header):
             else:
                 raise Exception("ind must be empty or the list of all the "
                                 "indices that have changed")
-        #flag 'new' : adding new lines, some of wich can be the merging of many
-        #lines
+        # flag 'new' : adding new lines, some of wich can be the merging of 
+        # many lines
         elif flag == 'new':
             if (ind is None) | (isinstance(ind, list)):
                    if not isinstance(values, list):
@@ -1073,7 +1118,7 @@ class CategoricalHeader(Header):
                    if new_descriptors is None:
                        new_descriptors = []
                    for s in values:
-                       j = self.getncolumns()
+                       j = self.get_n_columns()
                        if not isinstance(s, pd.core.series.Series):
                            raise Exception("values must be a list of pandas "
                                            "Serie")
@@ -1082,7 +1127,7 @@ class CategoricalHeader(Header):
                                            " same number of elements that the "
                                            "number of column of the header")
                        for i in range(j):
-                           dimtype = new_descriptors[i].dimensiontype
+                           dimtype = new_descriptors[i].dimension_type
                            if  (dimtype != 'mixed') | \
                            (dimtype != DimensionDescription.infertype(s[i])):
                                new_descriptors[i].set_dimtype_to_mixed()
@@ -1094,7 +1139,7 @@ class CategoricalHeader(Header):
             else :
                 raise Exception("ind must be empty or the list of all the "
                                 "indices that have changed")
-        #flag 'chg' : changing some lines (keep the same number of lines)
+        # flag 'chg' : changing some lines (keep the same number of lines)
         elif flag == 'chg':
             if not isinstance(ind, list):
                 raise Exception ("ind must be the list of the indicices of the"
@@ -1106,7 +1151,7 @@ class CategoricalHeader(Header):
                 raise Exception ("values and ind must have the same length")
             newvalues = self._values.copy()
             new_descriptors = self.column_descriptors
-            j = self.getncolumns()
+            j = self.get_n_columns()
             for i in range(len(ind)):
                 if not isinstance (ind[i], int):
                     raise Exception ("ind must be the list of the indicices of"
@@ -1121,7 +1166,7 @@ class CategoricalHeader(Header):
                                      "element as the number of column of the "
                                      "header")
                 for c in range(j):
-                    dimtype = new_descriptors[c].dimensiontype
+                    dimtype = new_descriptors[c].dimension_type
                     if  (dimtype != 'mixed') | \
                     (dimtype != DimensionDescription.infertype(values[i][c])):
                         new_descriptors[i].set_dimtype_to_mixed()    
@@ -1129,7 +1174,7 @@ class CategoricalHeader(Header):
             return CategoricalHeader (self._label,
                                       new_descriptors,
                                       values = newvalues)
-        #flag 'remove' : suppress some lines
+        # flag 'remove' : suppress some lines
         elif flag == 'remove':
             if not isinstance(ind, list):
                 raise Exception ("ind must be the list of the indicices of the"
@@ -1149,7 +1194,7 @@ class CategoricalHeader(Header):
             return CategoricalHeader (self._label,
                                       self._column_descriptors,
                                       values = newvalues)
-        #flag 'perm' : change the lines order
+        # flag 'perm' : change the lines order
         elif flag == 'perm':
             if (not values is None) & (values != []):
                 raise Exception ("no new values can be given when only "
@@ -1169,7 +1214,7 @@ class CategoricalHeader(Header):
             return CategoricalHeader(self._label,
                                      self._column_descriptors,
                                      values = newvalues)
-        #flag 'chg&new' : combination of 'chg' and 'new'
+        # flag 'chg&new' : combination of 'chg' and 'new'
         elif flag == 'chg&new':
             if not isinstance(ind, list):
                 raise Exception ("ind must be a list of the list of the "
@@ -1188,13 +1233,13 @@ class CategoricalHeader(Header):
                 indchg = ind[0]
             else:
                 indchg = ind
-            #let's first change the lines that needs to be changed...    
+            # let's first change the lines that needs to be changed...    
             if len(values[0]) != len(indchg):
                 raise Exception ("all the lines to be changed must be given "
                                  "a value")
             newvalues = self._values.copy()
             new_descriptors = self.column_descriptors
-            j = self.getncolumns()
+            j = self.get_n_columns()
             for i in range(len(indchg)):
                 if not isinstance (indchg[i], int):
                     raise Exception ("all indices must be of type int")
@@ -1208,12 +1253,12 @@ class CategoricalHeader(Header):
                                      "element as the number of column of the "
                                      "header")
                 for c in range(j):
-                    dimtype = new_descriptors[c].dimensiontype
+                    dimtype = new_descriptors[c].dimension_type
                     if  (dimtype != 'mixed') | \
                     (dimtype != DimensionDescription.infertype(values[0][i][c])):
                         new_descriptors[i].set_dimtype_to_mixed()    
                 newvalues.iloc[indchg[i]] = values[0][i]
-            #...now let's add the new lines
+            # ...now let's add the new lines
             for s in values[1]:
                 if not isinstance(s, pd.core.series.Series):
                     raise Exception("values must be a list of pandas Serie")
@@ -1222,7 +1267,7 @@ class CategoricalHeader(Header):
                                     "number of elements that the number of "
                                     "column of the header")
                 for i in range(j):
-                    dimtype = new_descriptors[i].dimensiontype
+                    dimtype = new_descriptors[i].dimension_type
                     if  (dimtype != 'mixed') | \
                     (dimtype != DimensionDescription.infertype(s[i])):
                         new_descriptors[i].set_dimtype_to_mixed()    
@@ -1230,7 +1275,7 @@ class CategoricalHeader(Header):
             return CategoricalHeader (self._label,
                                       new_descriptors,
                                       values = newvalues) 
-        #flag 'chg&rm' : combination of 'chg' and 'rm'
+        # flag 'chg&rm' : combination of 'chg' and 'rm'
         elif flag == 'chg&rm':
             if not isinstance(ind, list):
                 raise Exception ("ind must be a list of the list of the "
@@ -1245,13 +1290,13 @@ class CategoricalHeader(Header):
                       isinstance(ind[1], list)):
                 raise Exception ("values must containes the values to change "
                                  "and the values to add in two lists")
-            #let's first change the lines that needs to be changed...    
+            # let's first change the lines that needs to be changed...    
             if len(values) != len(ind[0]):
                 raise Exception ("all the lines to be changed must be given "
                                  "a value")
             newvalues = self._values.copy()
             new_descriptors = self.column_descriptors
-            j = self.getncolumns()
+            j = self.get_n_columns()
             for i in range(len(ind[0])):
                 if not isinstance (ind[0][i], int):
                     raise Exception ("all indices must be of type int")
@@ -1265,12 +1310,12 @@ class CategoricalHeader(Header):
                                      "element as the number of column of the "
                                      "header")
                 for c in range(j):
-                    dimtype = new_descriptors[c].dimensiontype
+                    dimtype = new_descriptors[c].dimension_type
                     if  (dimtype != 'mixed') | \
                     (dimtype != DimensionDescription.infertype(values[i][c])):
                         new_descriptors[i].set_dimtype_to_mixed()    
                 newvalues.iloc[ind[0][i]] = values[i]
-            #...now let's remove the unwanted lines
+            # ...now let's remove the unwanted lines
             for i in ind[1]:
                 if not isinstance(i, int):
                     raise Exception("all indicies must be of type int")
@@ -1282,7 +1327,8 @@ class CategoricalHeader(Header):
             return CategoricalHeader (self._label,
                                       new_descriptors,
                                       values = newvalues)
-        #all the accepted flags were listed before, so the argument is not valid  
+        # all the accepted flags were listed before, so the argument is not 
+        # valid  
         raise Exception("the given flag must be 'all', 'perm', 'chg', 'new'"
                         " 'remove', 'chg&new', or 'chg&rm'")
         
@@ -1304,16 +1350,16 @@ class CategoricalHeader(Header):
                 if not (self._values[j][i] in merge[j]):
                     merge[j].append(self._values[j][i])
         for j in range(ncol):
-            if self._column_descriptors[j].dimensiontype == 'color':
+            if self._column_descriptors[j].dimension_type == 'color':
                 red = 0
                 green = 0
                 blue = 0
                 for i in (merge[j]):
-                    red += i[0]
-                    green += i[1]
-                    blue += i[2]
+                    red += i.rgb[0]
+                    green += i.rgb[1]
+                    blue += i.rgb[2]
                 n = len(merge[j])
-                merge[j]= (red/n, green/n, blue/n)
+                merge[j]= Color((red/n, green/n, blue/n))
         return pd.Series(merge)
     
     def copy(self):
@@ -1406,24 +1452,24 @@ class MeasureHeader(Header):
     
     - n_elem :
         number of element in the column(s)/ number of samples
-    - iscategorical :
+    - is_categorical :
         differentiate measure and categorical headers for the properties
-        ismeasure, iscategoricalwithvalues and isundifferentiated    
+        is_measure, is_categorical_with_values and is_undifferentiated    
     - __eq__ :
         compares all the fields of the headers (returns True if all the
         fields are the same) it can be used by writting header1 == header2
-    - getncolumns :
+    - get_n_columns :
         gives the number of columns (1 for MeasureHeader, 0 to n for
         CategoricalHeader)
-    - getunits :
+    - get_units :
         gives the list of the unit used for each column ('no unit' is
         returned for each column with no specified unit)
-    - getallunits :
+    - get_all_units :
         gives the list of conversion table for each column ('no unit' is
         returned for each column with no specified unit)
     - disp :
         gives the main attributes of a Header
-    - getvalue(nline, column = None) :
+    - get_value(nline, column = None) :
         gives the value located at the line nline and at the column column
         (defined by it's label or it's number) or the fist one.Since we use
         pyhton, we have decided that to access the first element of the
@@ -1449,11 +1495,11 @@ class MeasureHeader(Header):
         
             label : 'x', 
             
-            dimensiontype : 'numeric',
+            dimension_type : 'numeric',
             
             unit : 'mm',
             
-            allunits : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
+            all_units : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
             'value' : 1}]
     
         n-elem : 4
@@ -1489,23 +1535,23 @@ class MeasureHeader(Header):
                  column_descriptors = None):
         
         """Constructor of the class MeasureHeader"""
-        #label must be of type str
+        # label must be of type str
         if  not isinstance(label,str):
             raise Exception("label must be of type str")
         self._label = label
-        #start must be of type int or float
+        # start must be of type int or float
         if not (isinstance(start, float) | isinstance(start, int)):
             raise Exception("start must be of type float or int")
         self._start = float(start)
-        #n_elem must be of type int
+        # n_elem must be of type int
         if not isinstance(n_elem, int):
             raise Exception ("n_elem must be of type int")
         self._n_elem = n_elem
-        #scale must be of type int or float
+        # scale must be of type int or float
         if not (isinstance(scale, float) | isinstance(scale, int)):
             raise Exception("scale must be of type float or int")
         self._scale = float(scale)
-        #case with a column_descriptors parameter
+        # case with a column_descriptors parameter
         if isinstance(column_descriptors, DimensionDescription):
             if column_descriptors.label != label:
                 raise Exception ("the general label and the label from the"
@@ -1526,14 +1572,14 @@ class MeasureHeader(Header):
             self._column_descriptors = [dimdescription]
         elif isinstance(unit,str) | isinstance(unit,list):
             if checkbank:
-                allunits = check_bank(unit)
-                if allunits is None:
+                all_units = check_bank(unit)
+                if all_units is None:
                     dimdescription = DimensionDescription(label,
                                                       'numeric',
                                                       unit)
                 else:
                     units = []
-                    for dico in allunits:
+                    for dico in all_units:
                         units += [dico['unit'], dico['value']]
                 dimdescription = DimensionDescription(label,
                                                       'numeric',
@@ -1545,9 +1591,9 @@ class MeasureHeader(Header):
             raise Exception ("unit must be a str or a list")
 
 
-    #private property but with get access   
+    # private property but with get access   
     @property
-    def iscategorical(self):
+    def is_categorical(self):
         """MeasureHeader instances are all not categorical"""
         return False
     
@@ -1567,10 +1613,10 @@ class MeasureHeader(Header):
         return self._n_elem 
 
     
-    #methods
+    # methods
     def __eq__(self, other):
         """Override the default Equals behavior"""
-        #the two headers must have the same type
+        # the two headers must have the same type
         if not isinstance(other, MeasureHeader):
             return False
         if self._label != other._label:
@@ -1585,41 +1631,41 @@ class MeasureHeader(Header):
         otherdescriptor = other._column_descriptors[0]
         if selfdescriptor.label != otherdescriptor.label :
             return False
-        if selfdescriptor.dimensiontype != otherdescriptor.dimensiontype :
+        if selfdescriptor.dimension_type != otherdescriptor.dimension_type :
             return False
         if selfdescriptor.unit != otherdescriptor.unit :
             return False
-        if selfdescriptor.allunits != otherdescriptor.allunits :
+        if selfdescriptor.all_units != otherdescriptor.all_units :
             return False
         return True
         
-    def getncolumns(self):
+    def get_n_columns(self):
         """returns the number of columns"""
         return (1)    
     
-    def getunits(self):
+    def get_units(self):
         """gives the unit if it exist, in the form of a list to be compatible
         with CategoricalHeaders"""
         if self._column_descriptors[0].unit == None:
             return (['no unit'])
         return ([self._column_descriptors[0].unit])
     
-    def getallunits(self):
+    def get_all_units(self):
         """gives the conversion tables in the form of a list with a single
         element to be compatible with Categorical headers"""
         if self._column_descriptors[0].unit == None:
             return (['no unit'])
-        return ([self._column_descriptors[0].allunits])
+        return ([self._column_descriptors[0].all_units])
     
     def disp(self):
         """display some information about the haeder"""
         print ("MeasureHeader : " + self._label)
-        print ("unit : " + self.getunits()[0])
+        print ("unit : " + self.get_units()[0])
         print ("start : " + str(self._start))
         print ("scale : " + str(self._scale))
         print ("n_elem : " + str(self._n_elem))
     
-    def getvalue(self, line, column = None):
+    def get_value(self, line, column = None):
         """get the value of the line of number line of the first column"""
         if not (column is None or column == 0):
             raise Exception ("Measure headers have only one column, column"
@@ -1628,8 +1674,8 @@ class MeasureHeader(Header):
             raise Exception("line must be of type int")
         if line >= self._n_elem or line < 0:
             raise Exception("line must be in [0, n_elem[")
-        #Since we use pyhton, we have decided that to access the first element
-        #of the column, line must be equal to 0.
+        # Since we use pyhton, we have decided that to access the first element
+        # of the column, line must be equal to 0.
         return (self._start + line * self._scale)
     
     def get_itemname(self, nline):
@@ -1638,7 +1684,7 @@ class MeasureHeader(Header):
         if isinstance(nline, int):
             if nline >= self._n_elem | nline < 0:
                 raise Exception("nline must be in [0, n_elem[")
-            return (self.getvalue(nline))
+            return (self.get_value(nline))
         elif isinstance(nline, list):
             itemnames = []
             for n in nline:
@@ -1646,7 +1692,7 @@ class MeasureHeader(Header):
                     raise Exception("all line numbers must be integers")
                 elif n >= self._n_elem | n < 0:
                     raise Exception("nline must be in [0, n_elem[")
-                itemnames += [self.getvalue(n)]
+                itemnames += [self.get_value(n)]
             return itemnames
         raise Exception("nline must be an int or a list of int")
         
@@ -1721,7 +1767,7 @@ class Xdata:
     
     Methods
     -------
-    - getndimensions :
+    - get_n_dimensions :
         gives the number of dimensions of xdata (it corresponds to the
         number of headers)
     - shape :
@@ -1772,7 +1818,7 @@ class Xdata:
        This method allows to update a header and the corresponding data,
        the shape of data migth be modifed but the dimensions are still
        representing the same thing(DimensionDescriptions are not changed,
-       (except for dimensiontype that migth become 'mixed' if some lines are
+       (except for dimension_type that migth become 'mixed' if some lines are
        merged)).It returns a new data instance.
     - modify_dimensions(flag, dim, newdata, newheaders):
         - flag
@@ -1817,11 +1863,11 @@ class Xdata:
         
             label : 't', 
             
-            dimensiontype : 'numeric',
+            dimension_type : 'numeric',
             
             unit : 'ms',
             
-            allunits : [{unit : 'ms', 'value' : 10**(-3)},
+            all_units : [{unit : 'ms', 'value' : 10**(-3)},
             {unit : 's', 'value' : 1}]
             
         n-elem : 3000
@@ -1882,11 +1928,11 @@ class Xdata:
          
          column_descriptors : (list of DimensionDescriptors, simplified here)
          
-             1/ label : 'name', dimensiontype : 'string', no unit
+             1/ label : 'name', dimension_type : 'string', no unit
              
-             2/ label : 'age', dimensiontype : 'numeric', unit : 'year old'
+             2/ label : 'age', dimension_type : 'numeric', unit : 'year old'
              
-             3/ label : 'gender', dimensiontype : 'string', no unit
+             3/ label : 'gender', dimension_type : 'string', no unit
              
          n_elem : 5
          
@@ -1924,7 +1970,7 @@ class Xdata:
         
         The corresponding data is 3D array containing the values of the higth
         of the ball at all time for each of the children's throw. It is
-        described (dimensiontype and unit) in data_descriptor.
+        described (dimension_type and unit) in data_descriptor.
         
         All we miss is the name of this set of data and headers : "higth of
         the throw of a ball"
@@ -1936,11 +1982,11 @@ class Xdata:
                  headers,
                  unit):
         """Constructor of the class Xdata"""
-        #name must be a string
+        # name must be a string
         if not isinstance(name, str):
             raise Exception ("name must be of type str")
         self._name = name
-        #data must be a numpy array and headers a list with the same length
+        # data must be a numpy array and headers a list with the same length
         if not isinstance(data, np.ndarray):
             raise Exception ("data must be of type numpy.ndarray")
         elif not isinstance(headers, list):
@@ -1955,7 +2001,7 @@ class Xdata:
                 raise Exception ("the number of elements must be the same in "
                                  "the data and in the header")
         self._headers = headers
-        #unit must allow creation of a DimensionDescription instance
+        # unit must allow creation of a DimensionDescription instance
         if isinstance(unit, str) | isinstance(unit, list) | (unit is None):
             self._data_descriptor = DimensionDescription(name, 'numeric', unit)
         else:
@@ -1982,7 +2028,7 @@ class Xdata:
         """DimensionDescription instance to describe the content of data"""
         return self._data_descriptor
             
-    def getndimensions(self):
+    def get_n_dimensions(self):
         """gives the number of dimensions of the data"""
         return len(self.headers)
     
@@ -1996,11 +2042,11 @@ class Xdata:
         headers = []
         for h in self.headers:
             headers.append(h.copy())
-        if self.data_descriptor.allunits is None:
+        if self.data_descriptor.all_units is None:
             unit = None
         else:
             unit = []
-            for i in self.data_descriptor.allunits:
+            for i in self.data_descriptor.all_units:
                 unit.append(i['unit'])
                 unit.append(i['value'])
         return Xdata(self.name, data, headers, unit)
@@ -2010,7 +2056,7 @@ class Xdata:
         headers as before (except for the length of some measure headers and
         undiferentiated headers)"""
         #checking the number of dimension
-        if len(newdata.shape) != self.getndimensions() :
+        if len(newdata.shape) != self.get_n_dimensions() :
             raise Exception("update_data method does not allow to change the "
                             "number of dimensions, please use "
                             "modify_dimensions method instead")
@@ -2018,13 +2064,13 @@ class Xdata:
         #if it has changed, make sure this change is allowed
         #if so, update the header
         newxdata = self.copy()
-        for dim in range(self.getndimensions()):
+        for dim in range(self.get_n_dimensions()):
             if newdata.shape[dim] != self.headers[dim].n_elem :
                 oldh = newxdata.headers[dim]
-                if self.headers[dim].iscategoricalwithvalues:
+                if self.headers[dim].is_categorical_with_values:
                     raise Exception ("categorical headers with values can't "
                                      "have new not defined elements")
-                elif self.headers[dim].isundifferentiated:
+                elif self.headers[dim].is_undifferentiated:
                     n = newdata.shape[dim] - self.headers[dim].n_elem
                     if n > 0:
                         values = [pd.Series([])] * n
@@ -2052,9 +2098,9 @@ class Xdata:
         corresponding header"""
         if not isinstance(dim, int):
             raise Exception ("dim is of type int")
-        elif (dim < 0) | (dim >= self.getndimensions()):
+        elif (dim < 0) | (dim >= self.get_n_dimensions()):
             raise Exception ("dim must correspond to an existing dimension")
-        ND = self.getndimensions()
+        ND = self.get_n_dimensions()
         oldheader = self.headers[dim]
         #for flag 'all' : the whole content of the header has been modified
         #dataslices is a numpy array with all the data
@@ -2089,11 +2135,11 @@ class Xdata:
                     elif modified_header.label != oldheader.label:
                         raise Exception ("label of the header can't be changed"
                                          " with this method")
-                    elif self.headers[dim].ismeasure:
+                    elif self.headers[dim].is_measure:
                         if modified_header.unit != oldheader.unit:
                             raise Exception ("flag 'all' can't change the unit"
                             " of the header")
-                        elif modified_header.allunits != oldheader.allunits:
+                        elif modified_header.all_units != oldheader.all_units:
                             raise Exception ("flag 'all' can't change the unit"
                             " of the header")
                 else:
@@ -2130,8 +2176,8 @@ class Xdata:
             #lets first check the header
             if not isinstance(modified_header, Header):
                 raise Exception("modified_header must be of type Header")
-            elif (modified_header.ismeasure | \
-                 modified_header.isundifferentiated):
+            elif (modified_header.is_measure | \
+                 modified_header.is_undifferentiated):
                 if modified_header != oldheader:
                     raise Exception ("measure headers and undifferentiated "
                                      "ones can't be modified by a flag 'chg'")
@@ -2139,14 +2185,14 @@ class Xdata:
                 if oldheader.n_elem != modified_header.n_elem:
                     raise Exception("'chg' flag can't change the number of "
                                     "elements in the dimension")
-                elif oldheader.getncolumns() != modified_header.getncolumns():
+                elif oldheader.get_n_columns() != modified_header.get_n_columns():
                     raise Exception ("'chg' flag can't change the number of "
                                      "columns of the header")
-                elif oldheader.getallunits() != modified_header.getallunits():
+                elif oldheader.get_all_units() != modified_header.get_all_units():
                     raise Exception ("'chg' flag can't change the units")
                 elif oldheader.label != modified_header.label:
                     raise Exception("'chg' flag can't change labels")
-                for i in range(oldheader.getncolumns()):
+                for i in range(oldheader.get_n_columns()):
                     if oldheader.column_descriptors[i].label != \
                        modified_header.column_descriptors[i].label:
                         raise Exception("'chg' flag can't change labels")
@@ -2165,7 +2211,7 @@ class Xdata:
                 raise Exception("dataslices must have the same number of "
                                 "element as ind")     
             newxdata = self.copy()
-            changeslice  = [slice(None,None,None)] * (self.getndimensions())
+            changeslice  = [slice(None,None,None)] * (self.get_n_dimensions())
             for i in range(len(ind)):
                 changeslice[dim] = ind[i]
                 if not isinstance(ind[i], int):
@@ -2217,22 +2263,22 @@ class Xdata:
             #now we check the header
             if not isinstance(modified_header, Header):
                 raise Exception("modified_header must be of type Header")
-            elif modified_header.ismeasure != oldheader.ismeasure |\
-            modified_header.isundifferentiated != oldheader.isundifferentiated:
+            elif modified_header.is_measure != oldheader.is_measure |\
+            modified_header.is_undifferentiated != oldheader.is_undifferentiated:
                 raise Exception("header can't change its type with flag 'new'")
             if (modified_header.n_elem != oldheader.n_elem + len(dataslices)):
                     raise Exception ("the number of elements added in a "
                                      "dimension must be the same in data and "
                                      "in the header")
-            if modified_header.iscategoricalwithvalues:
-                if oldheader.getncolumns() != modified_header.getncolumns():
+            if modified_header.is_categorical_with_values:
+                if oldheader.get_n_columns() != modified_header.get_n_columns():
                     raise Exception ("'new' flag can't change the number of "
                                      "columns of the header")
-                elif oldheader.getallunits() != modified_header.getallunits():
+                elif oldheader.get_all_units() != modified_header.get_all_units():
                     raise Exception ("'new' flag can't change the units")
                 elif oldheader.label != modified_header.label:
                     raise Exception("'new' flag can't change labels")
-                for i in range(oldheader.getncolumns()):
+                for i in range(oldheader.get_n_columns()):
                     if oldheader.column_descriptors[i].label != \
                        modified_header.column_descriptors[i].label:
                         raise Exception("'new' flag can't change labels")
@@ -2270,23 +2316,23 @@ class Xdata:
             #now lets check the header and its number of elements
             if not isinstance(modified_header, Header):
                 raise Exception("modified_header must be of type Header")
-            elif modified_header.ismeasure != oldheader.ismeasure |\
-            modified_header.isundifferentiated != oldheader.isundifferentiated:
+            elif modified_header.is_measure != oldheader.is_measure |\
+            modified_header.is_undifferentiated != oldheader.is_undifferentiated:
                 raise Exception("header can't change its type with flag "
                 "'remove'")
             if (modified_header.n_elem != oldheader.n_elem - len(ind)):
                     raise Exception ("the number of elements removed in a "
                                      "dimension must be the same in data and "
                                      "in the header")
-            if modified_header.iscategoricalwithvalues:
-                if oldheader.getncolumns() != modified_header.getncolumns():
+            if modified_header.is_categorical_with_values:
+                if oldheader.get_n_columns() != modified_header.get_n_columns():
                     raise Exception ("'remove' flag can't change the number of"
                                      " columns of the header")
-                elif oldheader.getallunits() != modified_header.getallunits():
+                elif oldheader.get_all_units() != modified_header.get_all_units():
                     raise Exception ("'remove' flag can't change the units")
                 elif oldheader.label != modified_header.label:
                     raise Exception("'remove' flag can't change labels")
-                for i in range(oldheader.getncolumns()):
+                for i in range(oldheader.get_n_columns()):
                     if oldheader.column_descriptors[i].label != \
                        modified_header.column_descriptors[i].label:
                         raise Exception("'remove' flag can't change labels")
@@ -2331,8 +2377,8 @@ class Xdata:
             #the arguments is coherent
             if not isinstance(modified_header, Header):
                 raise Exception("modified_header must be of type Header")
-            elif modified_header.ismeasure != oldheader.ismeasure |\
-            modified_header.isundifferentiated != oldheader.isundifferentiated:
+            elif modified_header.is_measure != oldheader.is_measure |\
+            modified_header.is_undifferentiated != oldheader.is_undifferentiated:
                 raise Exception("header can't change its type with flag "
                 "'chg&new'")
             if (modified_header.n_elem != \
@@ -2340,15 +2386,15 @@ class Xdata:
                     raise Exception ("the number of elements added in a "
                                      "dimension must be the same in data and "
                                      "in the header")
-            if modified_header.iscategoricalwithvalues:
-                if oldheader.getncolumns() != modified_header.getncolumns():
+            if modified_header.is_categorical_with_values:
+                if oldheader.get_n_columns() != modified_header.get_n_columns():
                     raise Exception ("'chg&new' flag can't change the number "
                                      "of columns of the header")
-                elif oldheader.getallunits() != modified_header.getallunits():
+                elif oldheader.get_all_units() != modified_header.get_all_units():
                     raise Exception ("'chg&new' flag can't change the units")
                 elif oldheader.label != modified_header.label:
                     raise Exception("'chg&new' flag can't change labels")
-                for i in range(oldheader.getncolumns()):
+                for i in range(oldheader.get_n_columns()):
                     if oldheader.column_descriptors[i].label != \
                        modified_header.column_descriptors[i].label:
                         raise Exception("'chg&new' flag can't change labels")
@@ -2431,8 +2477,8 @@ class Xdata:
             #the arguments is coherent
             if not isinstance(modified_header, Header):
                 raise Exception("modified_header must be of type Header")
-            elif modified_header.ismeasure != oldheader.ismeasure |\
-            modified_header.isundifferentiated != oldheader.isundifferentiated:
+            elif modified_header.is_measure != oldheader.is_measure |\
+            modified_header.is_undifferentiated != oldheader.is_undifferentiated:
                 raise Exception("header can't change its type with flag "
                 "'chg&rm'")
             if (modified_header.n_elem != \
@@ -2440,15 +2486,15 @@ class Xdata:
                     raise Exception ("the number of elements removed in a "
                                      "dimension must be the same in data and "
                                      "in the header")
-            if modified_header.iscategoricalwithvalues:
-                if oldheader.getncolumns() != modified_header.getncolumns():
+            if modified_header.is_categorical_with_values:
+                if oldheader.get_n_columns() != modified_header.get_n_columns():
                     raise Exception ("'chg&rm' flag can't change the number "
                                      "of columns of the header")
-                elif oldheader.getallunits() != modified_header.getallunits():
+                elif oldheader.get_all_units() != modified_header.get_all_units():
                     raise Exception ("'chg&rm' flag can't change the units")
                 elif oldheader.label != modified_header.label:
                     raise Exception("'chg&rm' flag can't change labels")
-                for i in range(oldheader.getncolumns()):
+                for i in range(oldheader.get_n_columns()):
                     if oldheader.column_descriptors[i].label != \
                        modified_header.column_descriptors[i].label:
                         raise Exception("'chg&rm' flag can't change labels")
@@ -2494,8 +2540,8 @@ class Xdata:
             # now let's check the Header
             if not isinstance(modified_header, Header):
                 raise Exception("modified_header must be of type Header")
-            elif (modified_header.ismeasure | \
-                 modified_header.isundifferentiated):
+            elif (modified_header.is_measure | \
+                 modified_header.is_undifferentiated):
                 if modified_header != oldheader:
                     raise Exception ("measure headers and undifferentiated "
                                      "ones can't be modified by a flag 'perm'")
@@ -2503,14 +2549,14 @@ class Xdata:
                 if oldheader.n_elem != modified_header.n_elem:
                     raise Exception("'perm' flag can't change the number of "
                                     "elements in the dimension")
-                elif oldheader.getncolumns() != modified_header.getncolumns():
+                elif oldheader.get_n_columns() != modified_header.get_n_columns():
                     raise Exception ("'perm' flag can't change the number of "
                                      "columns of the header")
-                elif oldheader.getallunits() != modified_header.getallunits():
+                elif oldheader.get_all_units() != modified_header.get_all_units():
                     raise Exception ("'perm' flag can't change the units")
                 elif oldheader.label != modified_header.label:
                     raise Exception("'perm' flag can't change labels")
-                for i in range(oldheader.getncolumns()):
+                for i in range(oldheader.get_n_columns()):
                     if oldheader.column_descriptors[i].label != \
                        modified_header.column_descriptors[i].label:
                         raise Exception("'perm' flag can't change labels")
@@ -2671,7 +2717,7 @@ def createDimensionDescription(label, column = None):
     pandas.core.series.Series.
     
     If column is None, the DimensionDescription instance will be of
-    dimensiontype 'mixed' by default.
+    dimension_type 'mixed' by default.
     
     When using this function, no unit is specified, so
     dimensiondescription.unit will be None.
@@ -2682,7 +2728,7 @@ def createDimensionDescription(label, column = None):
         label for the DimensionDescription instance
         (type str)
     - column :
-        values to determine the dimensiontype of the DimensionDescription
+        values to determine the dimension_type of the DimensionDescription
         (type pandas.core.series.Series, shape (n,1))
     """
     if not isinstance(label,str):
@@ -2694,18 +2740,18 @@ def createDimensionDescription(label, column = None):
         raise Exception("column must be of type pandas.core.series.Series")
     elif len(column.shape) != 1:
         raise Exception("column must be of shape (n,1)")
-    #if a table of value is given, we must determine the dimensiontype
+    #if a table of value is given, we must determine the dimension_type
     #we must check all the elements to make sure it is not a 'mixed' type
-    dimensiontype =  DimensionDescription.infertype(column[0])
+    dimension_type =  DimensionDescription.infertype(column[0])
     notmixed = True
     i = 0
     while notmixed and i < column.shape[0]:
-          if dimensiontype == DimensionDescription.infertype(column[i]):
+          if dimension_type == DimensionDescription.infertype(column[i]):
               i += 1
           else:
               notmixed = False
     if notmixed:
-        return (DimensionDescription(label, dimensiontype))
+        return (DimensionDescription(label, dimension_type))
     return (DimensionDescription(label, 'mixed'))
 
 
@@ -2722,3 +2768,16 @@ def disp(obj):
         pprint(vars(obj))
     except:
         pprint(obj)
+        
+if __name__ == '__main__':
+    c = MeasureHeader('toto',1,25,3,'s')
+
+
+    class MyHeader:
+        def __init__(self, label):
+            self._label = label
+
+        def check_header_update(self, new_header:MyHeader):
+            # check that labels are preserved
+            if new_header._label != self._label:
+                raise Exception("new header must have the same label")

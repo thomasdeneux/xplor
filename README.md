@@ -1,3 +1,5 @@
 # xplor
 Multi-Dimensional Data Visualization
-Using Travis
+
+(tested using Travis)
+
