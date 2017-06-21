@@ -1075,8 +1075,8 @@ class MyTestCase(unittest.TestCase):
                                                           [fruits, t])
         self.assertEqual(flag, 'global')
         self.assertEqual(globalxdata.name, setofdata.name)
-        self.assertEqual(globalxdata.data_descriptor.allunits,
-                         setofdata.data_descriptor.allunits)
+        self.assertEqual(globalxdata.data_descriptor.all_units,
+                         setofdata.data_descriptor.all_units)
         self.assertEqual(globalxdata.headers[0], fruits)
         self.assertRaises(Exception, setofdata.modify_dimensions,
                           'global', 'yummy', np.random.rand(4, 5), [fruits, t])

@@ -6,6 +6,7 @@ def test_native():
     import vispy
     vispy.test()
 
+
 def test_signal():
 
 

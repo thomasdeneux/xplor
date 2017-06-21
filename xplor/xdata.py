@@ -541,7 +541,7 @@ class Header(ABC):
         return self.is_categorical and self.get_n_columns() == 0
                 
     # Methods
-    def check_header_update(self, flag, ind, new_header):
+    def check_header_update(self, flag, ind, new_header: 'Header'):
         """basics checks when updating data and giving a new header"""
         # check types of parameters
         if not isinstance(new_header, Header):
@@ -2599,11 +2599,11 @@ class Xdata:
                 raise Exception ("for a 'global' flag, everything is replaced,"
                                  " dim must be empty")
             #other checks will be done in the constructor
-            if self.data_descriptor.allunits is None:
+            if self.data_descriptor.all_units is None:
                 unit = None
             else:
                 unit = []
-                for i in self.data_descriptor.allunits:
+                for i in self.data_descriptor.all_units:
                     unit.append(i['unit'])
                     unit.append(i['value']) 
             newxdata = Xdata(self.name, newdata, newheaders, unit)
@@ -2617,11 +2617,11 @@ class Xdata:
                                     "newheaders")
                 for i in range(len(dim)):
                     headers[dim[i]] = newheaders[i].copy()
-                if self.data_descriptor.allunits is None:
+                if self.data_descriptor.all_units is None:
                     unit = None
                 else:
                     unit = []
-                    for i in self.data_descriptor.allunits:
+                    for i in self.data_descriptor.all_units:
                         unit.append(i['unit'])
                         unit.append(i['value']) 
                 newxdata = Xdata(self.name, newdata, headers, unit)
@@ -2640,11 +2640,11 @@ class Xdata:
                     # of range, the new element will just be appened at the
                     # end of the xdata element
                     headers.insert(dim[i], newheaders[i])
-                if self.data_descriptor.allunits is None:
+                if self.data_descriptor.all_units is None:
                     unit = None
                 else:
                     unit = []
-                    for i in self.data_descriptor.allunits:
+                    for i in self.data_descriptor.all_units:
                         unit.append(i['unit'])
                         unit.append(i['value']) 
                 newxdata = Xdata(self.name, newdata, headers, unit)
@@ -2657,17 +2657,17 @@ class Xdata:
                                  "must be given")
             try:
                 headers = []
-                if len(dim) != self.getndimensions() - len(newdata.shape):
+                if len(dim) != self.get_n_dimensions() - len(newdata.shape):
                     raise Exception("dim must the number of dimensions to "
                                     "remove")
                 for i in range(len(self.headers)):
                     if not i in dim:
                         headers.append(self.headers[i].copy())
-                if self.data_descriptor.allunits is None:
+                if self.data_descriptor.all_units is None:
                     unit = None
                 else:
                     unit = []
-                    for i in self.data_descriptor.allunits:
+                    for i in self.data_descriptor.all_units:
                         unit.append(i['unit'])
                         unit.append(i['value']) 
                 newxdata = Xdata(self.name, newdata, headers, unit)
@@ -2691,11 +2691,11 @@ class Xdata:
                 newdata = np.transpose(self.data, dim)
             # if newheaders or newdata is given, it's not checked in order to
             # save some computation time
-            if self.data_descriptor.allunits is None:
+            if self.data_descriptor.all_units is None:
                 unit = None
             else:
                 unit = []
-                for i in self.data_descriptor.allunits:
+                for i in self.data_descriptor.all_units:
                     unit.append(i['unit'])
                     unit.append(i['value'])
             try:
