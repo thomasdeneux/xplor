@@ -818,9 +818,21 @@ class MyTestCase(unittest.TestCase):
         print("Test 5: testing shape method")
         self.assertEqual(setofdata.shape(), (5, 3, 4))
         print("Test 6: testing copy method")
-        datacopy = setofdata.copy()
-        self.assertEqual(datacopy.data_descriptor.allunits, 
+        xdatacopy = setofdata.copy()
+        self.assertEqual(xdatacopy.data_descriptor.allunits, 
                         setofdata.data_descriptor.allunits)
+        series = [pd.Series(['kiwi', 0.95, 'brown']), 
+                  pd.Series(['blueberry', '1.20', 'blue'])]
+        addfruits = fruits.update_categoricalheader('new', None, series)
+        slices = [np.random.rand(5, 3), np.random.rand(5, 3)]
+        (xdatacopy, flag) = setofdata.update_xdata('new',
+                                                   2,
+                                                   None,
+                                                   slices,
+                                                   addfruits)
+        self.assertEqual(xdatacopy.shape(), (5, 3, 6))
+        self.assertEqual(setofdata.shape(), (5, 3, 4))
+        self.assertEqual(setofdata.headers[2], fruits)                
         print("Test 7: testing the update_data method")
         newdata1 = np.random.rand(5, 3, 4)
         udsetofdata1 = setofdata.update_data(newdata1)
@@ -843,9 +855,7 @@ class MyTestCase(unittest.TestCase):
                           setofdata.update_data,
                           np.random.rand(5, 3, 9))
         print("Test 8: testing the update_xdata method")
-        #if dim is not an int of out of range, it raises an exception
-        series = [pd.Series(['kiwi', 0.95, 'brown']), 
-                  pd.Series(['blueberry', '1.20', 'blue'])]
+        #if dim is not an int of out of range, it raises an exception 
         newfruits = fruits.update_categoricalheader('chg', [1, 3], series)
         self.assertRaises(Exception, setofdata.update_xdata,
                           'all', 'yummy', None, newdata1, newfruits)
@@ -898,7 +908,6 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, setofdata.update_xdata,
                           'chgdata', 0, None, newdata1, newfruits)
         #flag 'chg'  (not all exceptions are tested)
-        slices = [np.random.rand(5, 3), np.random.rand(5, 3)]
         (chgxdata, flag) = setofdata.update_xdata('chg',
                                                   2,
                                                   [1, 3],
