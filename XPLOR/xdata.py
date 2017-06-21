@@ -960,6 +960,7 @@ class CategoricalHeader(Header):
             else:
                 unit = ' ('+ columns[i].unit+ ')'
             print (label + unit)
+        print("n_elem :" + str(self.n_elem))
     
     def getvalue(self, line, column = None):
         """get the value of the line of number line of the column defined by 
@@ -1069,6 +1070,8 @@ class CategoricalHeader(Header):
                        raise Exception("values must be a list of pandas Serie")
                    newvalues = self._values.copy()
                    new_descriptors = self.column_descriptors
+                   if new_descriptors is None:
+                       new_descriptors = []
                    for s in values:
                        j = self.getncolumns()
                        if not isinstance(s, pd.core.series.Series):
@@ -1082,7 +1085,8 @@ class CategoricalHeader(Header):
                            dimtype = new_descriptors[i].dimensiontype
                            if  (dimtype != 'mixed') | \
                            (dimtype != DimensionDescription.infertype(s[i])):
-                               new_descriptors[i].set_dimtype_to_mixed()    
+                               new_descriptors[i].set_dimtype_to_mixed()
+                               
                        newvalues = newvalues.append(s, ignore_index=True)
                    return CategoricalHeader (self._label,
                                              new_descriptors,
@@ -1944,9 +1948,12 @@ class Xdata:
         elif len(headers) != len(data.shape):
             raise Exception ("each dimension must be described by a header")
         self._data = data
-        for h in headers:
-            if not isinstance(h, Header):
+        for h in range(len(headers)):
+            if not isinstance(headers[h], Header):
                 raise Exception ("headers must only contain header elements")
+            if headers[h].n_elem != data.shape[h]:
+                raise Exception ("the number of elements must be the same in "
+                                 "the data and in the header")
         self._headers = headers
         #unit must allow creation of a DimensionDescription instance
         if isinstance(unit, str) | isinstance(unit, list) | (unit is None):
@@ -2558,12 +2565,12 @@ class Xdata:
                     
         elif flag == 'chgdim':
             try:
-                headers = self.headers.copy
+                headers = self.headers.copy()
                 if len(dim) != len(newheaders):
                     raise Exception("dim must have the same length as "
                                     "newheaders")
                 for i in range(len(dim)):
-                    headers[dim[i]] = newheaders[i]
+                    headers[dim[i]] = newheaders[i].copy()
                 if self.data_descriptor.allunits is None:
                     unit = None
                 else:
@@ -2578,11 +2585,14 @@ class Xdata:
                     
         elif flag == 'insertdim':
             try:
-                headers = self.headers.copy
+                headers = self.headers.copy()
                 if len(dim) != len(newheaders):
                     raise Exception("dim must have the same length as "
                                     "newheaders")
                 for i in range(len(dim)):
+                    # like the insert method for lists, if the index is out 
+                    # of range, the new element will just be appened at the
+                    # end of the xdata element
                     headers.insert(dim[i], newheaders[i])
                 if self.data_descriptor.allunits is None:
                     unit = None
@@ -2596,14 +2606,17 @@ class Xdata:
             except:
                 raise Exception("incorrect arguments")
         elif flag == 'rmdim':
+            if not (newheaders is None or newheaders == []):
+                raise Exception ("when removing dimensions, no new dimension "
+                                 "must be given")
             try:
                 headers = []
-                if len(dim) != len(newheaders):
-                    raise Exception("dim must have the same length as "
-                                    "newheaders")
+                if len(dim) != self.getndimensions() - len(newdata.shape):
+                    raise Exception("dim must the number of dimensions to "
+                                    "remove")
                 for i in range(len(self.headers)):
                     if not i in dim:
-                        headers.append(self.headers[i].copy)
+                        headers.append(self.headers[i].copy())
                 if self.data_descriptor.allunits is None:
                     unit = None
                 else:
@@ -2627,7 +2640,7 @@ class Xdata:
             if newheaders is None:
                 newheaders = []
                 for d in dim:
-                    newheaders.append(self.headers[d].copy)
+                    newheaders.append(self.headers[d].copy())
             if newdata is None:
                 newdata = np.transpose(self.data, dim)
             # if newheaders or newdata is given, it's not checked in order to
@@ -2640,7 +2653,7 @@ class Xdata:
                     unit.append(i['unit'])
                     unit.append(i['value'])
             try:
-                newxdata = Xdata(self.name, newdata, headers, unit)
+                newxdata = Xdata(self.name, newdata, newheaders, unit)
                 return (newxdata, flag)
             except:
                 raise Exception("arguments are not valid")

@@ -578,7 +578,6 @@ class MyTestCase(unittest.TestCase):
         copyfruits = fruits2.copy()
         #testing that chaging one is not changing the other
         copyfruits = copyfruits.add_column('display', colors)
-        print(fruits2.column_descriptors[2].dimensiontype)
         copyfruits.update_categoricalheader('new',
                                             None,
                                             [pd.Series(['kiwi',
@@ -1065,7 +1064,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(permxdata.data[0][2][1], setofdata.data[0][2][3])
         
         print("Test 9: testing the modify_dimensions method")
-        #flag 'global'
+        # flag 'global' (not all exceptions are tested)
         (globalxdata, flag) = setofdata.modify_dimensions('global',
                                                           None,
                                                           np.random.rand(4, 5),
@@ -1081,6 +1080,82 @@ class MyTestCase(unittest.TestCase):
                           'global', None, np.random.rand(4, 5), [fruits])
         self.assertRaises(Exception, setofdata.modify_dimensions,
                           'global', None, 'yummy', [fruits, t])
+        # flag 'chgdim' (not all exceptions are tested)
+        header = xdata.CategoricalHeader('label', n_elem = 3)
+        (chgdim, flag) = setofdata.modify_dimensions('chgdim',
+                                                     [2],
+                                                     np.random.rand(5, 3, 3),
+                                                     [header])
+        self.assertEqual(flag, 'chgdim')
+        self.assertEqual(chgdim.shape(), (5, 3, 3))
+        self.assertEqual(chgdim.headers[2], header)
+        header = header.update_categoricalheader('new', None, [pd.Series()])
+        self.assertEqual(header.n_elem, 4)
+        self.assertEqual(chgdim.headers[2].n_elem, 3)
+        #n_elem of header has been modified from 3 to 4
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'chgdim', [2], np.random.rand(5, 3, 3), [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'chgdim', [2, 0], np.random.rand(5, 3, 4), [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'chgdim', [2], np.random.rand(5, 3, 4, 3), [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'chgdim', [2], np.random.rand(5, 3, 4), ['yummy'])
+        # flag 'insertdim' (not all exceptions are tested)
+        (insertdim, flag) = setofdata.modify_dimensions('insertdim',
+                                                        [1],
+                                                        np.random.rand(5,
+                                                                       4,
+                                                                       3,
+                                                                       4),
+                                                        [header])
+        self.assertEqual(flag, 'insertdim')
+        self.assertEqual(insertdim.shape(), (5, 4, 3, 4))
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'insertdim', [1], np.random.rand(5, 3, 4, 4),
+                          [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'insertdim', 1, np.random.rand(5, 4, 3, 4),
+                          [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'insertdim', [1, 2], np.random.rand(5, 4, 3, 4),
+                          [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'insertdim', [1], np.random.rand(5, 4, 3, 4, 6),
+                          [header])
+        # flag 'rmdim' (not all exceptions are tested)
+        (rmdim, flag) = setofdata.modify_dimensions('rmdim',
+                                                    [1],
+                                                    np.random.rand(5, 4),
+                                                    None)
+        self.assertEqual(flag, 'rmdim')
+        self.assertEqual(rmdim.shape(), (5, 4))
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'rmdim', [1], np.random.rand(5, 4), [header])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'rmdim', [1], np.random.rand(5, 4, 2), None)
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'rmdim', [1, 0], np.random.rand(5, 4), None)
+        # flag 'permdim' (not all exceptions are tested)
+        (permdim, flag) = setofdata.modify_dimensions('permdim',
+                                                      [1, 0, 2],
+                                                      None,
+                                                      None)
+        self.assertEqual(flag, 'permdim')
+        self.assertEqual(permdim.shape(), (3, 5, 4))
+        self.assertEqual(permdim.headers[0], undifferentiated)
+        self.assertEqual(permdim.headers[1], t)
+        self.assertEqual(permdim.headers[2], fruits)
+        self.assertEqual(permdim.data[0][0][0], setofdata.data[0][0][0])
+        self.assertEqual(permdim.data[2][1][3], setofdata.data[1][2][3])
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'permdim', [0, 0, 0], None, None)
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'permdim', [0, 1, 2, 3], None, None)
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'permdim', [0, 2, 1], 'yummy', None)
+        self.assertRaises(Exception, setofdata.modify_dimensions,
+                          'permdim', [0, 2, 1], np.random.rand(5, 5, 3), None)
         print("\n")
     
     def test_xdata_module_createDimensionDescription_function(self):
