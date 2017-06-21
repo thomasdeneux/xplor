@@ -2556,10 +2556,96 @@ class Xdata:
             newxdata = Xdata(self.name, newdata, newheaders, unit)
             return (newxdata, flag)
                     
-#        elif flag == 'chgdim':
-#        elif flag == 'insertdim':
-#        elif flag == 'rmdim':
-#        elif flag == 'permdim':
+        elif flag == 'chgdim':
+            try:
+                headers = self.headers.copy
+                if len(dim) != len(newheaders):
+                    raise Exception("dim must have the same length as "
+                                    "newheaders")
+                for i in range(len(dim)):
+                    headers[dim[i]] = newheaders[i]
+                if self.data_descriptor.allunits is None:
+                    unit = None
+                else:
+                    unit = []
+                    for i in self.data_descriptor.allunits:
+                        unit.append(i['unit'])
+                        unit.append(i['value']) 
+                newxdata = Xdata(self.name, newdata, headers, unit)
+                return (newxdata, flag)
+            except:
+                raise Exception("incorrect arguments")
+                    
+        elif flag == 'insertdim':
+            try:
+                headers = self.headers.copy
+                if len(dim) != len(newheaders):
+                    raise Exception("dim must have the same length as "
+                                    "newheaders")
+                for i in range(len(dim)):
+                    headers.insert(dim[i], newheaders[i])
+                if self.data_descriptor.allunits is None:
+                    unit = None
+                else:
+                    unit = []
+                    for i in self.data_descriptor.allunits:
+                        unit.append(i['unit'])
+                        unit.append(i['value']) 
+                newxdata = Xdata(self.name, newdata, headers, unit)
+                return (newxdata, flag)
+            except:
+                raise Exception("incorrect arguments")
+        elif flag == 'rmdim':
+            try:
+                headers = []
+                if len(dim) != len(newheaders):
+                    raise Exception("dim must have the same length as "
+                                    "newheaders")
+                for i in range(len(self.headers)):
+                    if not i in dim:
+                        headers.append(self.headers[i].copy)
+                if self.data_descriptor.allunits is None:
+                    unit = None
+                else:
+                    unit = []
+                    for i in self.data_descriptor.allunits:
+                        unit.append(i['unit'])
+                        unit.append(i['value']) 
+                newxdata = Xdata(self.name, newdata, headers, unit)
+                return (newxdata, flag)
+            except:
+                raise Exception("incorrect arguments")
+        elif flag == 'permdim':
+            # lets first check that dim is a permutation of the dimensions
+            if len(dim) != len(self.headers):
+                raise Exception ("dim is not a permutation of the dimensions")
+            for i in range(len(self.headers)):
+                if not i in dim:
+                    raise Exception ("dim is not a permutation of the "
+                                     "dimensions")
+            # now lets build the headers and the data if they are not given
+            if newheaders is None:
+                newheaders = []
+                for d in dim:
+                    newheaders.append(self.headers[d].copy)
+            if newdata is None:
+                newdata = np.transpose(self.data, dim)
+            # if newheaders or newdata is given, it's not checked in order to
+            # save some computation time
+            if self.data_descriptor.allunits is None:
+                unit = None
+            else:
+                unit = []
+                for i in self.data_descriptor.allunits:
+                    unit.append(i['unit'])
+                    unit.append(i['value'])
+            try:
+                newxdata = Xdata(self.name, newdata, headers, unit)
+                return (newxdata, flag)
+            except:
+                raise Exception("arguments are not valid")
+        # all accepted flags with this method are already taken care of
+        # flag argument is either not a flag or not one accepted by this method        
         raise Exception("flag must be 'global', 'chgdim', 'insertdim', "
                         "'rmdim', or 'permdim'")
 

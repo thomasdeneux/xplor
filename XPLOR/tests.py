@@ -1056,7 +1056,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(permxdata.data[0][2][1], setofdata.data[0][2][3])
         
         print("Test 9: testing the modify_dimensions method")
-        #flag 'global
+        #flag 'global'
         (globalxdata, flag) = setofdata.modify_dimensions('global',
                                                           None,
                                                           np.random.rand(4, 5),
