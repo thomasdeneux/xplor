@@ -1,0 +1,581 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to xplor’s documentation! &#8212; xplor 3.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-xplor-s-documentation">
+<h1>Welcome to xplor&#8217;s documentation!<a class="headerlink" href="#welcome-to-xplor-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-xdata-defining-a-data-structure">
+<h2>Module xdata : defining a data structure<a class="headerlink" href="#module-xdata-defining-a-data-structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xdata">
+<span id="xdata-module"></span><h3>xdata module:<a class="headerlink" href="#module-xdata" title="Permalink to this headline">¶</a></h3>
+<p>xdata module is a module to define a structure to store the data in the
+form of an N dimensional array as well as the description of the data and each
+of the dimensions (names, types, units, scale, ...)</p>
+<dl class="docutils">
+<dt>This module uses :</dt>
+<dd><ul class="first last simple">
+<li>pandas as pd</li>
+<li>numpy as np</li>
+<li>operator</li>
+<li>abc</li>
+</ul>
+</dd>
+</dl>
+<p>There are 6 classes in this module:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>Color :</dt>
+<dd>This class allows defining colors, either as RGB values or using
+predefined strings.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>DimensionDescription :</dt>
+<dd>For a specific dimension, DimensionDescription stores a label,a
+dimension_type (&#8216;numeric&#8217;, &#8216;logical&#8217;, &#8216;string&#8217;, or &#8216;mixed&#8217;), possibly a
+unit and the corresponding conversion table.
+It allows to determine the dimension_type of an element, and access the
+default value of a given dimension_type.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Header :</dt>
+<dd>Abstract class (subclasses are CategoricalHeader and MeasureHeader).
+Headers contains information about a dimension of the NDimensional
+data, such as a general label, the number of element, the description
+of the dimension/subdimensions, and allows to access the values to
+display on the axis.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>CategoricalHeader :</dt>
+<dd>CategoricalHeader is a subclass of Header. It is used to characterize
+a dimension in which the data has no regular organisation. It usually
+is a list of elements. However, such elements can have interesting
+features of different types. That&#8217;s why such features are stored in
+columns, each of them described by a DimensionDescription object.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>MeasureHeader :</dt>
+<dd>MeasureHeader is a subclass of Header. It is used for data acquired by
+equally spaced sample in a continuous dimension such as time or space.
+In which case, there is only one subdimension (i.e. only one column).</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Xdata :</dt>
+<dd>Xdata is used to store the data. Xdata is a container for an ND
+(N dimensional) array with all the values/data, as well as all of the
+headers describing each of the N dimensions, stored in a list. Xdata
+also has the name of the whole set of data and a data_descriptor
+attribute to describe the data.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="color-class">
+<h3>Color class:<a class="headerlink" href="#color-class" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="xdata.Color">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">Color</code><span class="sig-paren">(</span><em>rgb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#Color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.Color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines colors.</p>
+<p>This class allows defining colors, either as RGB values or using
+predefined strings.</p>
+<p>Parameters</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>rgb :</dt>
+<dd>Either a 3-tuple with 3 integers between 0 and 255, or a predefined
+string. Predefined strings are &#8216;black&#8217;, &#8216;white&#8217;, &#8216;red&#8217;, &#8216;green&#8217;,
+&#8216;blue&#8217;, &#8216;yellow&#8217;, &#8216;cyan&#8217;, &#8216;magenta&#8217;</dd>
+</dl>
+</li>
+</ul>
+<p>Attributes</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>rgb :</dt>
+<dd>3-tuple with 3 integers between 0 and 255</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="dimensiondescription-class">
+<h3>DimensionDescription class:<a class="headerlink" href="#dimensiondescription-class" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="xdata.DimensionDescription">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">DimensionDescription</code><span class="sig-paren">(</span><em>label</em>, <em>dimension_type</em>, <em>unit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#DimensionDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.DimensionDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class aims at defining a dimension.</p>
+<p>This class allows to define a dimension with a name, a type (&#8216;numeric,
+&#8216;logical&#8217;, &#8216;string&#8217;, &#8216;color&#8217; or &#8216;mixed&#8217;), and possibly a unit for 
+numerical dimensions.</p>
+<p>Parameters</p>
+<ul>
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd><p class="first last">name for the dimension
+(type str (e.g. &#8216;time&#8217;))</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>dimension_type :</dt>
+<dd><p class="first last">can be &#8216;numeric&#8217;, &#8216;logical&#8217;, &#8216;string&#8217;, &#8216;color&#8217; or &#8216;mixed&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>unit :</dt>
+<dd><p class="first">One can define only the unit (e.g. mm) or the conversions as well in
+the form of a list (e.g. [&#8216;mm&#8217;, 10**(-3), &#8216;m&#8217;, 1]).</p>
+<p>(type str or list)</p>
+<p class="last">optional (default value = None)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Attributes</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd>name of the dimension
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>dimension_type :</dt>
+<dd>&#8216;numeric&#8217;, &#8216;logical&#8217;, &#8216;string&#8217;, &#8216;color&#8217; or &#8216;mixed&#8217;</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>unit :</dt>
+<dd>currently used unit
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>allunit :</dt>
+<dd>list of dictionaries for unit conversions</dd>
+</dl>
+</li>
+</ul>
+<p>Methods</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>set_dimtype_to_mixed :</dt>
+<dd>changing the dimension_type to &#8216;mixed&#8217; if adding values that are not
+of the correct dimension_type (merging lines for instance)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd>to copy a DimensionDescription instance</dd>
+</dl>
+</li>
+</ul>
+<p>(static methods)</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>infertype(x, getdefaultvalue=False) :</dt>
+<dd>gives the dimension_type of the x element and possibly the associated
+defaultvalue</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>defaultvalue(dimension_type) :</dt>
+<dd>gives the default value associated to a certain dimension_type</dd>
+</dl>
+</li>
+</ul>
+<p>Examples</p>
+<blockquote>
+<div><p>t = DimensionDescription(&#8216;time&#8217;,&#8217;numeric&#8217;,[&#8216;s, 1, &#8216;ms&#8217;, 10**(-3),
+&#8216;min&#8217;, 60, &#8216;hour&#8217;, 3600])</p>
+<p>c = DimensionDescription(&#8216;condition&#8217;,&#8217;string&#8217;)</p>
+</div></blockquote>
+<p>Note</p>
+<p>DimensionDescription of dimension type &#8216;color&#8217; are Color objects</p>
+</dd></dl>
+
+</div>
+<div class="section" id="header-abstract-class">
+<h3>Header abstract class:<a class="headerlink" href="#header-abstract-class" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="xdata.Header">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">Header</code><a class="reference internal" href="_modules/xdata.html#Header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.Header" title="Permalink to this definition">¶</a></dt>
+<dd><p>This abstract class allows the creation of headers for the different 
+dimensions of a dataset.</p>
+<p>Header is an abstract class that has two subclasses: CategoricalHeader and
+MeasureHeader.
+A Header object fully describes a dimension.
+A CategoricalHeader is used for data with  no regular organisation.
+It usually correspond to a list of elements. However,  such elements can
+have interesting features of different types. That&#8217;s why such features are 
+stored in columns, each of them described by a DimensionDescription object.
+A MeasureHeader is used for data aquired with regular intervals in a
+continuous dimension such as time or space. In which case, there is only
+one subdimension (i.e. only one column witch is not stored).</p>
+<p>Attributes</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd>name of the dimension (type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column_descriptors :</dt>
+<dd>list of the DimensionDescription of each of the columns of values</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_measure :</dt>
+<dd>true if the header is a MeasureHeader instance, false if it is a
+CategoricalHeader instance</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical_with_values :</dt>
+<dd>true if it is an instance of CategoricalHeader and that values is not
+None. If it is a categorical header but with no column or a measure
+header, it is false.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_undifferentiated :</dt>
+<dd>true if it is a categorical header with no values
+(not is_categorical_with_values)</dd>
+</dl>
+</li>
+</ul>
+<p>Methods</p>
+<p>(abstract methods)</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>n_elem :</dt>
+<dd>number of element in the column(s)/ number of samples</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical :</dt>
+<dd>differentiate measure and categorical headers for the properties
+is_measure, is_categorical_with_values and is_undifferentiated</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>__eq__ :</dt>
+<dd>compares all the fields of the headers (returns True if all the 
+fields are the same) it can be used by writting header1 == header2</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_n_columns :</dt>
+<dd>gives the number of columns (1 for MeasureHeader, 0 to n for
+CategoricalHeader)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_units :</dt>
+<dd>gives the list of the unit used for each column (&#8216;no unit&#8217; is 
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_all_units :</dt>
+<dd>gives the list of conversion table for each column (&#8216;no unit&#8217; is
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>disp :</dt>
+<dd>gives the main attributes of a Header</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_value :</dt>
+<dd>(self, nline, column = None)
+gives the value located at the line nline and at the column column
+(defined by it&#8217;s label or it&#8217;s number) or the fist one. Since we use
+pyhton, we have decided that to access the first element of the
+column, nline must be equal to 0.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_itemname</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"></span><dd>(self, nline)
+nline can here be an integer or a list of integer. The function
+returns the corresponding values of the first column.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd>creates a copy of the header</dd>
+</dl>
+</li>
+</ul>
+<p>(non abstract method)</p>
+<ul>
+<li><dl class="first docutils">
+<dt>check_header_update:</dt>
+<dd><p class="first">(self, flag, ind, newheader)
+flag : &#8216;all&#8217;, &#8216;chgdim&#8217;, &#8216;new&#8217;, &#8216;remove&#8217;, &#8216;chg&#8217;, &#8216;perm&#8217;,&#8217;chg&amp;new&#8217; or
+&#8216;chg&amp;rm&#8217;</p>
+<p>ind : numpy.array of shape (n,)</p>
+<p class="last">basics checks when updating data and giving a new header</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Examples</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>CategorialHeader: (with values)</dt>
+<dd><p class="first">label : &#8216;fruits&#8217;</p>
+<dl class="docutils">
+<dt>column_descriptors</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(list of DimensionDescriptors, simplified here)</span><dd><p class="first">1/ label : &#8216;fruits&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+<p>2/ label : &#8216;prices&#8217;, dimension_type : &#8216;numeric&#8217;, unit : &#8216;euros/kg&#8217;</p>
+<p class="last">3/ label : &#8216;color&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+</dd>
+</dl>
+<p>n_elem : 4</p>
+<dl class="last docutils">
+<dt>values :</dt>
+<dd><p class="first">[[&#8216;apple&#8217;, 0.5, &#8216;red&#8217; ]</p>
+<blockquote class="last">
+<div><p>[&#8216;pear&#8217;, 0.75, &#8216;green&#8217;]</p>
+<p>[&#8216;banana&#8217;, 0.66, &#8216;yellow&#8217;]</p>
+<p>[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
+<blockquote>
+<div><blockquote>
+<div>&#8216;fruits&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="40%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">fruits</th>
+<th class="head">prices</th>
+<th class="head">color</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>apple</td>
+<td>0.5</td>
+<td>red</td>
+</tr>
+<tr class="row-odd"><td>pear</td>
+<td>0.75</td>
+<td>green</td>
+</tr>
+<tr class="row-even"><td>banana</td>
+<td>0.66</td>
+<td>yellow</td>
+</tr>
+<tr class="row-odd"><td>cherry</td>
+<td>0.89</td>
+<td>red</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>CategorialHeader: (undifferentiated)</dt>
+<dd><p class="first">label : &#8216;fruits&#8217;</p>
+<p>column_descriptors : (list of DimensionDescriptors) : None</p>
+<p>n_elem : 4</p>
+<p>values : None</p>
+<blockquote class="last">
+<div><blockquote>
+<div>&#8216;fruits&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">fruits</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+</tr>
+<tr class="row-even"><td>3</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd>
+<dt>MeasureHeader:</dt>
+<dd><p class="first">label : &#8216;x&#8217;</p>
+<p>column_descriptors : (list of one DimensionDescription)</p>
+<blockquote>
+<div><p>label : &#8216;x&#8217;,</p>
+<p>dimension_type : &#8216;numeric&#8217;,</p>
+<p>unit : &#8216;mm&#8217;,</p>
+<p>all_units : [{unit : &#8216;mm&#8217;, &#8216;value&#8217; : 10**(-3)}, {unit : &#8216;m&#8217;,
+&#8216;value&#8217; : 1}]</p>
+</div></blockquote>
+<p>n-elem : 4</p>
+<p>start : 1</p>
+<dl class="last docutils">
+<dt>scale</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">2</span><dd><p class="first">&#8216;x&#8217;</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">x</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+</tr>
+<tr class="row-even"><td>5</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to xplor&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#module-xdata-defining-a-data-structure">Module xdata : defining a data structure</a><ul>
+<li><a class="reference internal" href="#module-xdata">xdata module:</a></li>
+<li><a class="reference internal" href="#color-class">Color class:</a></li>
+<li><a class="reference internal" href="#dimensiondescription-class">DimensionDescription class:</a></li>
+<li><a class="reference internal" href="#header-abstract-class">Header abstract class:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Elodie Ikkache, Thomas Deneux.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

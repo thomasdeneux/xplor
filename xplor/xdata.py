@@ -1,45 +1,53 @@
-"""xdata module is a module to define data in the form of an ND array
-XPLOR dataset is contained in a N dimensional array. The array contains the 
-data itself, but the array also has headers. The headers contains this
-information about each of the dimensions : names, types, units, scale, ...
-This module uses : 
-        pandas as pd
-        numpy as np
-        operator
-        abc
-There are 3 classes in this module:
+"""xdata module is a module to define a structure to store the data in the
+form of an N dimensional array as well as the description of the data and each
+of the dimensions (names, types, units, scale, ...)
+
+
+This module uses :
+    - pandas as pd
+    - numpy as np
+    - operator
+    - abc
+
+
+There are 6 classes in this module:
     
-    - DimensionDescription : for a specific dimension, DimensionDescription 
-                        stores a label,a dimension_type ('numeric', 'logical',
-                        'string', or 'mixed'), possibly a unit and the 
-                        corresponding conversion table.
+    - Color :
+        This class allows defining colors, either as RGB values or using
+        predefined strings.
+
+    - DimensionDescription :
+        For a specific dimension, DimensionDescription stores a label,a
+        dimension_type ('numeric', 'logical', 'string', or 'mixed'), possibly a
+        unit and the corresponding conversion table.
+        It allows to determine the dimension_type of an element, and access the
+        default value of a given dimension_type.
                         
-                        It allows to determine the dimension_type of an
-                        element, and access the default value of a given
-                        dimension_type.
-                        
-                        
-    - Header : abstract class (subclasses are CategoricalHeader 
-               and MeasureHeader). Headers contains information about a
-               dimension of the NDimensional data, such as a general label,
-               the number of element, the description of the
-               dimension/subdimensions, and allows to access the values to
-               display on the axis.
+    - Header :
+        Abstract class (subclasses are CategoricalHeader and MeasureHeader).
+        Headers contains information about a dimension of the NDimensional
+        data, such as a general label, the number of element, the description
+        of the dimension/subdimensions, and allows to access the values to
+        display on the axis.
                
-    - CategoricalHeader : CategoricalHeader is a subclass of Header. It is used
-                          to characterize a dimension in which the data has no
-                          regular organisation. It usually is a list of
-                          elements. However, such elements can have interesting
-                          features of different types. That's why such features
-                          are stored in columns, each of them described by a
-                          DimensionDescription object.
+    - CategoricalHeader :
+        CategoricalHeader is a subclass of Header. It is used to characterize
+        a dimension in which the data has no regular organisation. It usually
+        is a list of elements. However, such elements can have interesting
+        features of different types. That's why such features are stored in
+        columns, each of them described by a DimensionDescription object.
                           
-    - MeasureHeader : MeasureHeader is a subclass of Header. It is used for
-                      data acquired by equally spaced sample in a continuous
-                      dimension such as time or space. In which case, there is
-                      only one subdimension (i.e. only one column).
+    - MeasureHeader :
+        MeasureHeader is a subclass of Header. It is used for data acquired by
+        equally spaced sample in a continuous dimension such as time or space.
+        In which case, there is only one subdimension (i.e. only one column).
                       
-    - Xdata : TODO
+    - Xdata :
+        Xdata is used to store the data. Xdata is a container for an ND
+        (N dimensional) array with all the values/data, as well as all of the
+        headers describing each of the N dimensions, stored in a list. Xdata
+        also has the name of the whole set of data and a data_descriptor
+        attribute to describe the data.
     
 """
 
@@ -65,14 +73,16 @@ class Color:
     predefined strings.
 
     Parameters
-    ----------
-    rgb : either a 3-tuple with 3 integers between 0 and 255,
-                or a predefined string predefined strings are 'black',
-                'white', 'red', 'green', 'purple', 'cyan', 'magenta'
+
+    - rgb :
+        Either a 3-tuple with 3 integers between 0 and 255, or a predefined
+        string. Predefined strings are 'black', 'white', 'red', 'green',
+        'blue', 'yellow', 'cyan', 'magenta'
 
     Attributes
-    ----------
-    rgb : a 3-tuple with 3 integers between 0 and 255
+
+    - rgb :
+        3-tuple with 3 integers between 0 and 255
 
     """
 
@@ -88,7 +98,7 @@ class Color:
                 self.rgb = [0, 255, 0]
             elif rgb == 'blue':
                 self.rgb = [0, 0, 255]
-            elif rgb == 'purple':
+            elif rgb == 'yellow':
                 self.rgb = [255, 255, 0]
             elif rgb == 'cyan':
                 self.rgb = [0, 255, 255]
@@ -105,7 +115,7 @@ class Color:
                 for i in range(3):
                     x = self.rgb[i]
                     if x < 0 or x > 255:
-                        raise Exception()
+                        raise Exception("int out of range")
             except:
                 raise Exception("Argument must be either a 3-element color "
                                 "definition or a string color name.")
@@ -123,7 +133,7 @@ class DimensionDescription:
     numerical dimensions.
     
     Parameters
-    ----------
+
     - label :
         name for the dimension
         (type str (e.g. 'time'))
@@ -139,7 +149,7 @@ class DimensionDescription:
  
     
     Attributes
-    ----------
+
     - label :
         name of the dimension
         (type str)
@@ -152,7 +162,7 @@ class DimensionDescription:
         list of dictionaries for unit conversions
 
     Methods
-    -------
+
     - set_dimtype_to_mixed :
         changing the dimension_type to 'mixed' if adding values that are not
         of the correct dimension_type (merging lines for instance)
@@ -160,6 +170,7 @@ class DimensionDescription:
         to copy a DimensionDescription instance
         
     (static methods)
+
     - infertype(x, getdefaultvalue=False) :
         gives the dimension_type of the x element and possibly the associated
         defaultvalue
@@ -167,7 +178,7 @@ class DimensionDescription:
         gives the default value associated to a certain dimension_type
         
     Examples
-    --------
+
     
      t = DimensionDescription('time','numeric',['s, 1, 'ms', 10**(-3),
      'min', 60, 'hour', 3600])
@@ -175,7 +186,6 @@ class DimensionDescription:
      c = DimensionDescription('condition','string')
      
     Note
-    ----
      
     DimensionDescription of dimension type 'color' are Color objects
 
@@ -340,13 +350,10 @@ class Header(ABC):
     A MeasureHeader is used for data aquired with regular intervals in a
     continuous dimension such as time or space. In which case, there is only
     one subdimension (i.e. only one column witch is not stored).
-    
-    
-    Parameters
-    ----------     
+
      
     Attributes
-    ----------
+
     - label :
         name of the dimension (type str)
     - column_descriptors :
@@ -363,7 +370,7 @@ class Header(ABC):
         (not is_categorical_with_values)
 
     Methods
-    -------           
+
     (abstract methods)
     
     - n_elem :
@@ -410,9 +417,10 @@ class Header(ABC):
         basics checks when updating data and giving a new header
         
     Examples
-    --------
+
      CategorialHeader: (with values)
          label : 'fruits'
+
          column_descriptors : (list of DimensionDescriptors, simplified here)
              1/ label : 'fruits', dimension_type : 'string', no unit
              
@@ -421,30 +429,29 @@ class Header(ABC):
              3/ label : 'color', dimension_type : 'string', no unit
              
          n_elem : 4
+
          values :
              [['apple', 0.5, 'red' ]
              
-             ['pear', 0.75, 'green']
+              ['pear', 0.75, 'green']
              
-             ['banana', 0.66, 'yellow']
+              ['banana', 0.66, 'yellow']
              
-             ['cherry', 0.89, 'red']]
+              ['cherry', 0.89, 'red']]
              
                         
-                                   fruits
-                                   
-                         fruits |  prices  | color
-                        ____________________________
-                        
-                         apple  |    0.5   |  red   
-                          
-                         pear   |   0.75   |  green
-                          
-                         banana |   0.66   |  yellow
-                         
-                         cherry |   0.89   |  red
-                         
-        
+                                        'fruits'
+
+                        ======== ========== =======
+                         fruits    prices    color
+                        ======== ========== =======
+                         apple   0.5        red
+                         pear    0.75       green
+                         banana  0.66       yellow
+                         cherry  0.89       red
+                        ======== ========== =======
+
+
     CategorialHeader: (undifferentiated)
          label : 'fruits'
          
@@ -454,18 +461,22 @@ class Header(ABC):
          
          values : None
             
-                       'fruits'
-                                   
-                        fruits 
-                         
-                        1    
-                        
-                        2   
-                        
-                        3   
-                        
-                        4   
-    
+                          'fruits'
+
+                        +---------+
+                        | fruits  |
+                        +=========+
+                        | 1       |
+                        +---------+
+                        | 2       |
+                        +---------+
+                        | 3       |
+                        +---------+
+                        | 4       |
+                        +---------+
+
+
+
     MeasureHeader:
         label : 'x'
         
@@ -485,20 +496,23 @@ class Header(ABC):
         start : 1
         
         scale : 2
+
         
-                                   'x'
-                                    
-                                    x 
-    
-                                    
-                                    1 
-                                   
-                                    3 
-                                   
-                                    5 
-                                   
-                                    7 
-     
+                                        'x'
+
+                                        +-----+
+                                        | x   |
+                                        +=====+
+                                        | 1   |
+                                        +-----+
+                                        | 3   |
+                                        +-----+
+                                        | 5   |
+                                        +-----+
+                                        | 7   |
+                                        +-----+
+
+
     """
 
     # Define an abstract constructor which will not be used, but serves for
