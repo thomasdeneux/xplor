@@ -12,37 +12,37 @@ This module uses :
 
 There are 6 classes in this module:
     
-    - Color :
+    - **Color** :
         This class allows defining colors, either as RGB values or using
         predefined strings.
 
-    - DimensionDescription :
+    - **DimensionDescription** :
         For a specific dimension, DimensionDescription stores a label,a
         dimension_type ('numeric', 'logical', 'string', or 'mixed'), possibly a
         unit and the corresponding conversion table.
         It allows to determine the dimension_type of an element, and access the
         default value of a given dimension_type.
                         
-    - Header :
+    - **Header** :
         Abstract class (subclasses are CategoricalHeader and MeasureHeader).
         Headers contains information about a dimension of the NDimensional
         data, such as a general label, the number of element, the description
         of the dimension/subdimensions, and allows to access the values to
         display on the axis.
                
-    - CategoricalHeader :
+    - **CategoricalHeader** :
         CategoricalHeader is a subclass of Header. It is used to characterize
         a dimension in which the data has no regular organisation. It usually
         is a list of elements. However, such elements can have interesting
         features of different types. That's why such features are stored in
         columns, each of them described by a DimensionDescription object.
                           
-    - MeasureHeader :
+    - **MeasureHeader** :
         MeasureHeader is a subclass of Header. It is used for data acquired by
         equally spaced sample in a continuous dimension such as time or space.
         In which case, there is only one subdimension (i.e. only one column).
                       
-    - Xdata :
+    - **Xdata** :
         Xdata is used to store the data. Xdata is a container for an ND
         (N dimensional) array with all the values/data, as well as all of the
         headers describing each of the N dimensions, stored in a list. Xdata
@@ -72,14 +72,14 @@ class Color:
     This class allows defining colors, either as RGB values or using
     predefined strings.
 
-    Parameters
+    **Parameters**
 
     - rgb :
         Either a 3-tuple with 3 integers between 0 and 255, or a predefined
         string. Predefined strings are 'black', 'white', 'red', 'green',
         'blue', 'yellow', 'cyan', 'magenta'
 
-    Attributes
+    **Attributes**
 
     - rgb :
         3-tuple with 3 integers between 0 and 255
@@ -132,7 +132,7 @@ class DimensionDescription:
     'logical', 'string', 'color' or 'mixed'), and possibly a unit for 
     numerical dimensions.
     
-    Parameters
+    **Parameters**
 
     - label :
         name for the dimension
@@ -148,7 +148,7 @@ class DimensionDescription:
         optional (default value = None)
  
     
-    Attributes
+    **Attributes**
 
     - label :
         name of the dimension
@@ -161,7 +161,7 @@ class DimensionDescription:
     - allunit :
         list of dictionaries for unit conversions
 
-    Methods
+    **Methods**
 
     - set_dimtype_to_mixed :
         changing the dimension_type to 'mixed' if adding values that are not
@@ -169,7 +169,7 @@ class DimensionDescription:
     - copy :
         to copy a DimensionDescription instance
         
-    (static methods)
+    *(static methods)*
 
     - infertype(x, getdefaultvalue=False) :
         gives the dimension_type of the x element and possibly the associated
@@ -177,7 +177,7 @@ class DimensionDescription:
     - defaultvalue(dimension_type) :
         gives the default value associated to a certain dimension_type
         
-    Examples
+    **Examples**
 
     
      t = DimensionDescription('time','numeric',['s, 1, 'ms', 10**(-3),
@@ -185,7 +185,7 @@ class DimensionDescription:
     
      c = DimensionDescription('condition','string')
      
-    Note
+    **Note**
      
     DimensionDescription of dimension type 'color' are Color objects
 
@@ -352,7 +352,7 @@ class Header(ABC):
     one subdimension (i.e. only one column witch is not stored).
 
      
-    Attributes
+    **Attributes**
 
     - label :
         name of the dimension (type str)
@@ -369,9 +369,9 @@ class Header(ABC):
         true if it is a categorical header with no values
         (not is_categorical_with_values)
 
-    Methods
+    **Methods**
 
-    (abstract methods)
+    *(abstract methods)*
     
     - n_elem :
         number of element in the column(s)/ number of samples
@@ -392,23 +392,20 @@ class Header(ABC):
         returned for each column with no specified unit)
     - disp :
         gives the main attributes of a Header
-    - get_value :
-        (self, nline, column = None)
+    - get_value(nline, column = None) :
         gives the value located at the line nline and at the column column
         (defined by it's label or it's number) or the fist one. Since we use
         pyhton, we have decided that to access the first element of the
         column, nline must be equal to 0.
-    - get_itemname : 
-        (self, nline)
+    - get_itemname(nline) :
         nline can here be an integer or a list of integer. The function
         returns the corresponding values of the first column.
     - copy :
         creates a copy of the header
                 
-    (non abstract method)
+    *(non abstract method)*
     
-    - check_header_update:
-        (self, flag, ind, newheader)
+    - check_header_update(flag, ind, newheader) :
         flag : 'all', 'chgdim', 'new', 'remove', 'chg', 'perm','chg&new' or
         'chg&rm'  
             
@@ -416,9 +413,9 @@ class Header(ABC):
         
         basics checks when updating data and giving a new header
         
-    Examples
+    **Examples**
 
-     CategorialHeader: (with values)
+     *CategorialHeader: (with values)*
          label : 'fruits'
 
          column_descriptors : (list of DimensionDescriptors, simplified here)
@@ -432,12 +429,12 @@ class Header(ABC):
 
          values :
              [['apple', 0.5, 'red' ]
-             
-              ['pear', 0.75, 'green']
-             
-              ['banana', 0.66, 'yellow']
-             
-              ['cherry', 0.89, 'red']]
+
+             ['pear', 0.75, 'green']
+
+             ['banana', 0.66, 'yellow']
+
+             ['cherry', 0.89, 'red']]
              
                         
                                         'fruits'
@@ -452,7 +449,8 @@ class Header(ABC):
                         ======== ========== =======
 
 
-    CategorialHeader: (undifferentiated)
+
+    *CategorialHeader: (undifferentiated)*
          label : 'fruits'
          
          column_descriptors : (list of DimensionDescriptors) : None
@@ -477,7 +475,7 @@ class Header(ABC):
 
 
 
-    MeasureHeader:
+    *MeasureHeader:*
         label : 'x'
         
         column_descriptors : (list of one DimensionDescription)
@@ -497,7 +495,7 @@ class Header(ABC):
         
         scale : 2
 
-        
+
                                         'x'
 
                                         +-----+
@@ -681,8 +679,8 @@ class CategoricalHeader(Header):
     
     
     
-    Parameters
-    ----------     
+    **Parameters**
+
     - label:
         name of the header
         (type : str)
@@ -711,8 +709,8 @@ class CategoricalHeader(Header):
         n_elem is given)
             
     
-    Attributes
-    ----------
+    **Attributes**
+
     - label :
         name of the dimension
         (type str)
@@ -722,9 +720,9 @@ class CategoricalHeader(Header):
         content of the various subdimensions (pandas DataFrame
         (pandas.core.frame.DataFrame)of shape (n_elem, len(column_descriptors))
       
-    Methods
-    -------  
-    (methods imposed by inheritance)
+    **Methods**
+
+    *(methods imposed by inheritance)*
     
     - n_elem :
         number of element in the column(s)/ number of samples number of lines
@@ -748,7 +746,7 @@ class CategoricalHeader(Header):
         returned for each column with no specified unit)
     - disp :
         gives the main attributes of a Header
-    - get_value(nline, column = None) : 
+    - get_value(nline, column = None) :
         gives the value located at the line nline and at the column column
         (defined by it's label or it's number) or the fist one. Since we use
         pyhton, we have decided that to access the first element of the
@@ -759,7 +757,7 @@ class CategoricalHeader(Header):
     - copy :
         creates a copy of the categorical header
     
-    (other methods)
+    *(other methods)*
     
     - add_column(column_descriptor, values) :
         column_descriptor must be of type str or DimensionDescription
@@ -782,69 +780,66 @@ class CategoricalHeader(Header):
         merged as well. Mergelines returns for each column all the
         encountered values with no repetitions in the from of a pandas Serie.
         
-    Example
-    --------
+    **Example**
     
-    (with values)
-    
-         label : 'fruits'
-         
-         column_descriptors : (list of DimensionDescriptors, simplified here)
-         
-             1/ label : 'fruits', dimension_type : 'string', no unit
-             
-             2/ label : 'prices', dimension_type : 'numeric', unit : 'euros/kg'
-             
-             3/ label : 'color', dimension_type : 'string', no unit
-             
-         n_elem : 4
-         
-         values :
-             
-             [['apple', 0.5, 'red' ]
-             
-             ['pear', 0.75, 'green']
-             
-             ['banana', 0.66, 'yellow']
-             
-             ['cherry', 0.89, 'red']]
-             
-                        
-                                   fruits
-                                   
-                         fruits |  prices  | color
-                        ____________________________
-                         apple |    0.5   |  red    
-                          
-                         pear  |   0.75   |  green
-                          
-                         banana |   0.66   |  yellow
-                         
-                         cherry |   0.89   |  red
+    *(with values)*
 
-    (undifferentiated)
-    
          label : 'fruits'
-         
-         column_descriptors : (list of DimensionDescriptors, simplified here) :
-         []
-         
+
+         column_descriptors : (list of DimensionDescriptors, simplified here)
+             1/ label : 'fruits', dimension_type : 'string', no unit
+
+             2/ label : 'prices', dimension_type : 'numeric', unit : 'euros/kg'
+
+             3/ label : 'color', dimension_type : 'string', no unit
+
          n_elem : 4
-         
+
+         values :
+             [['apple', 0.5, 'red' ]
+
+             ['pear', 0.75, 'green']
+
+             ['banana', 0.66, 'yellow']
+
+             ['cherry', 0.89, 'red']]
+
+
+                                        'fruits'
+
+                        ======== ========== =======
+                         fruits    prices    color
+                        ======== ========== =======
+                         apple   0.5        red
+                         pear    0.75       green
+                         banana  0.66       yellow
+                         cherry  0.89       red
+                        ======== ========== =======
+
+
+    *(undifferentiated)*
+
+         label : 'fruits'
+
+         column_descriptors : (list of DimensionDescriptors) : None
+
+         n_elem : 4
+
          values : None
-         
-            
-                       'fruits'
-                                   
-                        fruits 
-                         
-                        1    
-                        
-                        2   
-                        
-                        3   
-                        
-                        4  
+
+                          'fruits'
+
+                        +---------+
+                        | fruits  |
+                        +=========+
+                        | 1       |
+                        +---------+
+                        | 2       |
+                        +---------+
+                        | 3       |
+                        +---------+
+                        | 4       |
+                        +---------+
  
     """
     
@@ -1412,8 +1407,8 @@ class MeasureHeader(Header):
     easily from the start and scale attributes and the n_elem property. 
     
     
-    Parameters
-    ----------     
+    **Parameters**
+
     - label:
         name of the header
         (type str)
@@ -1449,8 +1444,8 @@ class MeasureHeader(Header):
         (optional)
     
     
-    Attributes
-    ----------
+    **Attributes**
+
     - label :
         name of the dimension (type str)
     - column_descriptors :
@@ -1460,9 +1455,9 @@ class MeasureHeader(Header):
     - scale :
         interval between the values of this dimension (type float)
       
-    Methods
-    -------          
-    (methods imposed by inheritance)
+    **Methods**
+
+    *(methods imposed by inheritance)*
     
     - n_elem :
         number of element in the column(s)/ number of samples
@@ -1492,7 +1487,7 @@ class MeasureHeader(Header):
         nline can here be an integer or a list of integer. The function
         returns the corresponding values of the first column.
                 
-    (other methods)
+    *(other methods)*
     
     - update_measureheader(start = None, n_elem = None,scale = None):
         creates a new measure header from the attributes of a previous one,
@@ -1501,8 +1496,8 @@ class MeasureHeader(Header):
         creates a copy of a MeasureHeader instance
         
     
-    Example
-    --------
+    **Example**
+
         label : 'x'
         
         column_descriptors : (list of one DimensionDescription)
@@ -1515,26 +1510,27 @@ class MeasureHeader(Header):
             
             all_units : [{unit : 'mm', 'value' : 10**(-3)}, {unit : 'm',
             'value' : 1}]
-    
+
         n-elem : 4
-        
+
         start : 1
-        
-        scale : 1
-        
-        
-                                   'x'
-                                    
-                                    x 
-    
-                                    
-                                    1 
-                                   
-                                    3 
-                                   
-                                    5 
-                                   
-                                    7 
+
+        scale : 2
+
+
+                                        'x'
+
+                                        +-----+
+                                        | x   |
+                                        +=====+
+                                        | 1   |
+                                        +-----+
+                                        | 3   |
+                                        +-----+
+                                        | 5   |
+                                        +-----+
+                                        | 7   |
+                                        +-----+
      
      
     """
@@ -1753,12 +1749,13 @@ class Xdata:
     headers describing each of the N dimensions, stored in a list. Xdata also
     has the name of the whole set of data and a data_descriptor attribute to
     describe the data.
+
     Xdata includes a handeling of events.
     TODO : explain better the event part
     
     
-    Parameters
-    ----------     
+    **Parameters**
+
     - name :
         name of the dataset (type str)
     - data :
@@ -1768,8 +1765,8 @@ class Xdata:
     - unit :
         simple unit or list of conversion
     
-    Attributes
-    ----------
+    **Attributes**
+
     - data :
         N dimensional numpy.ndarray with the data itself
     - headers :
@@ -1779,8 +1776,8 @@ class Xdata:
     - data_descriptor :
         DimensionDescription instance describing the dataset
     
-    Methods
-    -------
+    **Methods**
+
     - get_n_dimensions :
         gives the number of dimensions of xdata (it corresponds to the
         number of headers)
@@ -1819,21 +1816,25 @@ class Xdata:
                
             - 'perm' to permute some lines
                
-       - dim : (int) number of the modified header
+       - dim :
+            (int) number of the modified header
        
-       - ind : (list of int) indices of lines that are changing
+       - ind :
+            (list of int) indices of lines that are changing
        
-       - dataslices : new values for the modified lines
+       - dataslices :
+            new values for the modified lines
        
-       - modified_header : same header as before but with a few changes
-       (adding columns, lines, changing values depending of the type of
-       header).
+       - modified_header :
+            same header as before but with a few changes (adding columns,
+            lines, changing values depending of the type of header).
        
        This method allows to update a header and the corresponding data,
        the shape of data migth be modifed but the dimensions are still
        representing the same thing(DimensionDescriptions are not changed,
        (except for dimension_type that migth become 'mixed' if some lines are
        merged)).It returns a new data instance.
+
     - modify_dimensions(flag, dim, newdata, newheaders):
         - flag
             - 'global' to change everything,
@@ -1842,12 +1843,15 @@ class Xdata:
             - 'rmdim' to remove a dimension/dimensions,
             - 'permdim' to permute the dimensions
                                   
-        - dim : list of the dimensions to be changed
+        - dim :
+            list of the dimensions to be changed
         
-        - newdata : full numpy.array with the whole data (except for flag
-        'permdim')
+        - newdata :
+            full numpy.array with the whole data (except for flag
+            'permdim')
                                     
-        - newheaders : list of the new headers
+        - newheaders :
+            list of the new headers
         
         This methods allows to modify the structure of a Xdata instance, i.e.
         to modify the DimensionDescriptions in the list of headers (and
@@ -1856,8 +1860,8 @@ class Xdata:
         It returns a new Xdata instance.
     
     
-    Example
-    -------
+    **Example**
+
     Let's take the example of children throwing a ball.
     We are interrested in the hight of the ball over time, for each child, and
     for each throw.
@@ -1889,54 +1893,60 @@ class Xdata:
         start : 0
         
         scale : 2
-        
-                                   't'
-                                    
-                                    t 
-                                   
-                                    0
-                                    
-                                    2 
-                                    
-                                    4 
-                                    
-                                    6 
-                                    
-                                   ...
+
+
+
+                                        't'
+
+                                        +-----+
+                                        | t   |
+                                        +=====+
+                                        | 0   |
+                                        +-----+
+                                        | 2   |
+                                        +-----+
+                                        | 4   |
+                                        +-----+
+                                        | 6   |
+                                        +-----+
+                                        | ... |
+                                        +-----+
                                    
         - repetition is a CategoricalHeader that is undifferentiated
+
          label : 'repetitions'
-         
-         column_descriptors : (list of DimensionDescriptors, simplified here)
-         []
-         
+
+         column_descriptors : (list of DimensionDescriptors) : None
+
          n_elem : 8
-         
+
          values : None
-         
-            
-                        'repetitions'
-                                   
-                        repetitions 
-                        
-                        0 
-                        
-                        1  
-                        
-                        2  
-                        
-                        3  
-                        
-                        4 
-                        
-                        5
-                        
-                        6  
-                        
-                        7      
-        
+
+                          'repetitions'
+
+                        +--------------+
+                        | repetitions  |
+                        +==============+
+                        | 0            |
+                        +--------------+
+                        | 1            |
+                        +--------------+
+                        | 2            |
+                        +--------------+
+                        | 3            |
+                        +--------------+
+                        | 4            |
+                        +--------------+
+                        | 5            |
+                        +--------------+
+                        | 6            |
+                        +--------------+
+                        | 7            |
+                        +--------------+
+
+
         - child is a CategoricalHeader with values (because we can store some
-        complementary informatios)
+            complementary informatios)
         
          label : 'child'
          
@@ -1954,29 +1964,27 @@ class Xdata:
              
              
              [['Emily', 8, 'female' ]
+
              ['Paul', 7, 'male']
-             
+
              ['Helen', 9, 'female']
-             
+
              ['Lily', 7, 'female']
-             
+
              ['James', 9, 'male']]
+
              
-             
-                        
-                                   child
-                                   
-                          name  |  age  | gender
-                         _________________________
-                          Emily |   8   |  female  
-                          
-                          Paul  |   7   |  male
-                          
-                          Helen |   9   |  female
-                          
-                          Lily  |   7   |  female
-                          
-                          James |   9   |  male
+                                        'chlid'
+
+                        ======== ====== =======
+                         name     age    gender
+                        ======== ====== =======
+                         Emily   8      female
+                         Paul    7      male
+                         Helen   9      female
+                         Lily    7      female
+                         James   9      male
+                        ======== ====== =======
                           
         
         Now we have our list of headers, of length 3.

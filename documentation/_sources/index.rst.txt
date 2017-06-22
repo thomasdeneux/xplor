@@ -30,6 +30,18 @@ Header abstract class:
 ----------------------
 .. autoclass:: Header
 
+CategoricalHeader  class:
+-------------------------
+.. autoclass:: CategoricalHeader
+
+MeasureHeader class:
+--------------------
+.. autoclass:: MeasureHeader
+
+Xdata class:
+------------
+.. autoclass:: Xdata
+
 Indices and tables
 ==================
 

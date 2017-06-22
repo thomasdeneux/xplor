@@ -56,37 +56,37 @@
 
 <span class="sd">There are 6 classes in this module:</span>
 <span class="sd">    </span>
-<span class="sd">    - Color :</span>
+<span class="sd">    - **Color** :</span>
 <span class="sd">        This class allows defining colors, either as RGB values or using</span>
 <span class="sd">        predefined strings.</span>
 
-<span class="sd">    - DimensionDescription :</span>
+<span class="sd">    - **DimensionDescription** :</span>
 <span class="sd">        For a specific dimension, DimensionDescription stores a label,a</span>
 <span class="sd">        dimension_type (&#39;numeric&#39;, &#39;logical&#39;, &#39;string&#39;, or &#39;mixed&#39;), possibly a</span>
 <span class="sd">        unit and the corresponding conversion table.</span>
 <span class="sd">        It allows to determine the dimension_type of an element, and access the</span>
 <span class="sd">        default value of a given dimension_type.</span>
 <span class="sd">                        </span>
-<span class="sd">    - Header :</span>
+<span class="sd">    - **Header** :</span>
 <span class="sd">        Abstract class (subclasses are CategoricalHeader and MeasureHeader).</span>
 <span class="sd">        Headers contains information about a dimension of the NDimensional</span>
 <span class="sd">        data, such as a general label, the number of element, the description</span>
 <span class="sd">        of the dimension/subdimensions, and allows to access the values to</span>
 <span class="sd">        display on the axis.</span>
 <span class="sd">               </span>
-<span class="sd">    - CategoricalHeader :</span>
+<span class="sd">    - **CategoricalHeader** :</span>
 <span class="sd">        CategoricalHeader is a subclass of Header. It is used to characterize</span>
 <span class="sd">        a dimension in which the data has no regular organisation. It usually</span>
 <span class="sd">        is a list of elements. However, such elements can have interesting</span>
 <span class="sd">        features of different types. That&#39;s why such features are stored in</span>
 <span class="sd">        columns, each of them described by a DimensionDescription object.</span>
 <span class="sd">                          </span>
-<span class="sd">    - MeasureHeader :</span>
+<span class="sd">    - **MeasureHeader** :</span>
 <span class="sd">        MeasureHeader is a subclass of Header. It is used for data acquired by</span>
 <span class="sd">        equally spaced sample in a continuous dimension such as time or space.</span>
 <span class="sd">        In which case, there is only one subdimension (i.e. only one column).</span>
 <span class="sd">                      </span>
-<span class="sd">    - Xdata :</span>
+<span class="sd">    - **Xdata** :</span>
 <span class="sd">        Xdata is used to store the data. Xdata is a container for an ND</span>
 <span class="sd">        (N dimensional) array with all the values/data, as well as all of the</span>
 <span class="sd">        headers describing each of the N dimensions, stored in a list. Xdata</span>
@@ -116,14 +116,14 @@
 <span class="sd">    This class allows defining colors, either as RGB values or using</span>
 <span class="sd">    predefined strings.</span>
 
-<span class="sd">    Parameters</span>
+<span class="sd">    **Parameters**</span>
 
 <span class="sd">    - rgb :</span>
 <span class="sd">        Either a 3-tuple with 3 integers between 0 and 255, or a predefined</span>
 <span class="sd">        string. Predefined strings are &#39;black&#39;, &#39;white&#39;, &#39;red&#39;, &#39;green&#39;,</span>
 <span class="sd">        &#39;blue&#39;, &#39;yellow&#39;, &#39;cyan&#39;, &#39;magenta&#39;</span>
 
-<span class="sd">    Attributes</span>
+<span class="sd">    **Attributes**</span>
 
 <span class="sd">    - rgb :</span>
 <span class="sd">        3-tuple with 3 integers between 0 and 255</span>
@@ -176,7 +176,7 @@
 <span class="sd">    &#39;logical&#39;, &#39;string&#39;, &#39;color&#39; or &#39;mixed&#39;), and possibly a unit for </span>
 <span class="sd">    numerical dimensions.</span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
+<span class="sd">    **Parameters**</span>
 
 <span class="sd">    - label :</span>
 <span class="sd">        name for the dimension</span>
@@ -192,7 +192,7 @@
 <span class="sd">        optional (default value = None)</span>
 <span class="sd"> </span>
 <span class="sd">    </span>
-<span class="sd">    Attributes</span>
+<span class="sd">    **Attributes**</span>
 
 <span class="sd">    - label :</span>
 <span class="sd">        name of the dimension</span>
@@ -205,7 +205,7 @@
 <span class="sd">    - allunit :</span>
 <span class="sd">        list of dictionaries for unit conversions</span>
 
-<span class="sd">    Methods</span>
+<span class="sd">    **Methods**</span>
 
 <span class="sd">    - set_dimtype_to_mixed :</span>
 <span class="sd">        changing the dimension_type to &#39;mixed&#39; if adding values that are not</span>
@@ -213,7 +213,7 @@
 <span class="sd">    - copy :</span>
 <span class="sd">        to copy a DimensionDescription instance</span>
 <span class="sd">        </span>
-<span class="sd">    (static methods)</span>
+<span class="sd">    *(static methods)*</span>
 
 <span class="sd">    - infertype(x, getdefaultvalue=False) :</span>
 <span class="sd">        gives the dimension_type of the x element and possibly the associated</span>
@@ -221,7 +221,7 @@
 <span class="sd">    - defaultvalue(dimension_type) :</span>
 <span class="sd">        gives the default value associated to a certain dimension_type</span>
 <span class="sd">        </span>
-<span class="sd">    Examples</span>
+<span class="sd">    **Examples**</span>
 
 <span class="sd">    </span>
 <span class="sd">     t = DimensionDescription(&#39;time&#39;,&#39;numeric&#39;,[&#39;s, 1, &#39;ms&#39;, 10**(-3),</span>
@@ -229,7 +229,7 @@
 <span class="sd">    </span>
 <span class="sd">     c = DimensionDescription(&#39;condition&#39;,&#39;string&#39;)</span>
 <span class="sd">     </span>
-<span class="sd">    Note</span>
+<span class="sd">    **Note**</span>
 <span class="sd">     </span>
 <span class="sd">    DimensionDescription of dimension type &#39;color&#39; are Color objects</span>
 
@@ -396,7 +396,7 @@
 <span class="sd">    one subdimension (i.e. only one column witch is not stored).</span>
 
 <span class="sd">     </span>
-<span class="sd">    Attributes</span>
+<span class="sd">    **Attributes**</span>
 
 <span class="sd">    - label :</span>
 <span class="sd">        name of the dimension (type str)</span>
@@ -413,9 +413,9 @@
 <span class="sd">        true if it is a categorical header with no values</span>
 <span class="sd">        (not is_categorical_with_values)</span>
 
-<span class="sd">    Methods</span>
+<span class="sd">    **Methods**</span>
 
-<span class="sd">    (abstract methods)</span>
+<span class="sd">    *(abstract methods)*</span>
 <span class="sd">    </span>
 <span class="sd">    - n_elem :</span>
 <span class="sd">        number of element in the column(s)/ number of samples</span>
@@ -436,23 +436,20 @@
 <span class="sd">        returned for each column with no specified unit)</span>
 <span class="sd">    - disp :</span>
 <span class="sd">        gives the main attributes of a Header</span>
-<span class="sd">    - get_value :</span>
-<span class="sd">        (self, nline, column = None)</span>
+<span class="sd">    - get_value(nline, column = None) :</span>
 <span class="sd">        gives the value located at the line nline and at the column column</span>
 <span class="sd">        (defined by it&#39;s label or it&#39;s number) or the fist one. Since we use</span>
 <span class="sd">        pyhton, we have decided that to access the first element of the</span>
 <span class="sd">        column, nline must be equal to 0.</span>
-<span class="sd">    - get_itemname : </span>
-<span class="sd">        (self, nline)</span>
+<span class="sd">    - get_itemname(nline) :</span>
 <span class="sd">        nline can here be an integer or a list of integer. The function</span>
 <span class="sd">        returns the corresponding values of the first column.</span>
 <span class="sd">    - copy :</span>
 <span class="sd">        creates a copy of the header</span>
 <span class="sd">                </span>
-<span class="sd">    (non abstract method)</span>
+<span class="sd">    *(non abstract method)*</span>
 <span class="sd">    </span>
-<span class="sd">    - check_header_update:</span>
-<span class="sd">        (self, flag, ind, newheader)</span>
+<span class="sd">    - check_header_update(flag, ind, newheader) :</span>
 <span class="sd">        flag : &#39;all&#39;, &#39;chgdim&#39;, &#39;new&#39;, &#39;remove&#39;, &#39;chg&#39;, &#39;perm&#39;,&#39;chg&amp;new&#39; or</span>
 <span class="sd">        &#39;chg&amp;rm&#39;  </span>
 <span class="sd">            </span>
@@ -460,9 +457,9 @@
 <span class="sd">        </span>
 <span class="sd">        basics checks when updating data and giving a new header</span>
 <span class="sd">        </span>
-<span class="sd">    Examples</span>
+<span class="sd">    **Examples**</span>
 
-<span class="sd">     CategorialHeader: (with values)</span>
+<span class="sd">     *CategorialHeader: (with values)*</span>
 <span class="sd">         label : &#39;fruits&#39;</span>
 
 <span class="sd">         column_descriptors : (list of DimensionDescriptors, simplified here)</span>
@@ -476,12 +473,12 @@
 
 <span class="sd">         values :</span>
 <span class="sd">             [[&#39;apple&#39;, 0.5, &#39;red&#39; ]</span>
-<span class="sd">             </span>
-<span class="sd">              [&#39;pear&#39;, 0.75, &#39;green&#39;]</span>
-<span class="sd">             </span>
-<span class="sd">              [&#39;banana&#39;, 0.66, &#39;yellow&#39;]</span>
-<span class="sd">             </span>
-<span class="sd">              [&#39;cherry&#39;, 0.89, &#39;red&#39;]]</span>
+
+<span class="sd">             [&#39;pear&#39;, 0.75, &#39;green&#39;]</span>
+
+<span class="sd">             [&#39;banana&#39;, 0.66, &#39;yellow&#39;]</span>
+
+<span class="sd">             [&#39;cherry&#39;, 0.89, &#39;red&#39;]]</span>
 <span class="sd">             </span>
 <span class="sd">                        </span>
 <span class="sd">                                        &#39;fruits&#39;</span>
@@ -496,7 +493,8 @@
 <span class="sd">                        ======== ========== =======</span>
 
 
-<span class="sd">    CategorialHeader: (undifferentiated)</span>
+
+<span class="sd">    *CategorialHeader: (undifferentiated)*</span>
 <span class="sd">         label : &#39;fruits&#39;</span>
 <span class="sd">         </span>
 <span class="sd">         column_descriptors : (list of DimensionDescriptors) : None</span>
@@ -521,7 +519,7 @@
 
 
 
-<span class="sd">    MeasureHeader:</span>
+<span class="sd">    *MeasureHeader:*</span>
 <span class="sd">        label : &#39;x&#39;</span>
 <span class="sd">        </span>
 <span class="sd">        column_descriptors : (list of one DimensionDescription)</span>
@@ -540,6 +538,8 @@
 <span class="sd">        start : 1</span>
 <span class="sd">        </span>
 <span class="sd">        scale : 2</span>
+
+
 <span class="sd">                                        &#39;x&#39;</span>
 
 <span class="sd">                                        +-----+</span>
@@ -705,7 +705,7 @@
         <span class="k">pass</span></div>
 
 
-<span class="k">class</span> <span class="nc">CategoricalHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalHeader"><a class="viewcode-back" href="../index.html#xdata.CategoricalHeader">[docs]</a><span class="k">class</span> <span class="nc">CategoricalHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This class allows the creation of a header for a categorical dimension</span>
 <span class="sd">    of a dataset.</span>
 <span class="sd">    </span>
@@ -723,8 +723,8 @@
 <span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------     </span>
+<span class="sd">    **Parameters**</span>
+
 <span class="sd">    - label:</span>
 <span class="sd">        name of the header</span>
 <span class="sd">        (type : str)</span>
@@ -753,8 +753,8 @@
 <span class="sd">        n_elem is given)</span>
 <span class="sd">            </span>
 <span class="sd">    </span>
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
+<span class="sd">    **Attributes**</span>
+
 <span class="sd">    - label :</span>
 <span class="sd">        name of the dimension</span>
 <span class="sd">        (type str)</span>
@@ -764,9 +764,9 @@
 <span class="sd">        content of the various subdimensions (pandas DataFrame</span>
 <span class="sd">        (pandas.core.frame.DataFrame)of shape (n_elem, len(column_descriptors))</span>
 <span class="sd">      </span>
-<span class="sd">    Methods</span>
-<span class="sd">    -------  </span>
-<span class="sd">    (methods imposed by inheritance)</span>
+<span class="sd">    **Methods**</span>
+
+<span class="sd">    *(methods imposed by inheritance)*</span>
 <span class="sd">    </span>
 <span class="sd">    - n_elem :</span>
 <span class="sd">        number of element in the column(s)/ number of samples number of lines</span>
@@ -790,7 +790,7 @@
 <span class="sd">        returned for each column with no specified unit)</span>
 <span class="sd">    - disp :</span>
 <span class="sd">        gives the main attributes of a Header</span>
-<span class="sd">    - get_value(nline, column = None) : </span>
+<span class="sd">    - get_value(nline, column = None) :</span>
 <span class="sd">        gives the value located at the line nline and at the column column</span>
 <span class="sd">        (defined by it&#39;s label or it&#39;s number) or the fist one. Since we use</span>
 <span class="sd">        pyhton, we have decided that to access the first element of the</span>
@@ -801,7 +801,7 @@
 <span class="sd">    - copy :</span>
 <span class="sd">        creates a copy of the categorical header</span>
 <span class="sd">    </span>
-<span class="sd">    (other methods)</span>
+<span class="sd">    *(other methods)*</span>
 <span class="sd">    </span>
 <span class="sd">    - add_column(column_descriptor, values) :</span>
 <span class="sd">        column_descriptor must be of type str or DimensionDescription</span>
@@ -824,69 +824,66 @@
 <span class="sd">        merged as well. Mergelines returns for each column all the</span>
 <span class="sd">        encountered values with no repetitions in the from of a pandas Serie.</span>
 <span class="sd">        </span>
-<span class="sd">    Example</span>
-<span class="sd">    --------</span>
+<span class="sd">    **Example**</span>
 <span class="sd">    </span>
-<span class="sd">    (with values)</span>
-<span class="sd">    </span>
-<span class="sd">         label : &#39;fruits&#39;</span>
-<span class="sd">         </span>
-<span class="sd">         column_descriptors : (list of DimensionDescriptors, simplified here)</span>
-<span class="sd">         </span>
-<span class="sd">             1/ label : &#39;fruits&#39;, dimension_type : &#39;string&#39;, no unit</span>
-<span class="sd">             </span>
-<span class="sd">             2/ label : &#39;prices&#39;, dimension_type : &#39;numeric&#39;, unit : &#39;euros/kg&#39;</span>
-<span class="sd">             </span>
-<span class="sd">             3/ label : &#39;color&#39;, dimension_type : &#39;string&#39;, no unit</span>
-<span class="sd">             </span>
-<span class="sd">         n_elem : 4</span>
-<span class="sd">         </span>
-<span class="sd">         values :</span>
-<span class="sd">             </span>
-<span class="sd">             [[&#39;apple&#39;, 0.5, &#39;red&#39; ]</span>
-<span class="sd">             </span>
-<span class="sd">             [&#39;pear&#39;, 0.75, &#39;green&#39;]</span>
-<span class="sd">             </span>
-<span class="sd">             [&#39;banana&#39;, 0.66, &#39;yellow&#39;]</span>
-<span class="sd">             </span>
-<span class="sd">             [&#39;cherry&#39;, 0.89, &#39;red&#39;]]</span>
-<span class="sd">             </span>
-<span class="sd">                        </span>
-<span class="sd">                                   fruits</span>
-<span class="sd">                                   </span>
-<span class="sd">                         fruits |  prices  | color</span>
-<span class="sd">                        ____________________________</span>
-<span class="sd">                         apple |    0.5   |  red    </span>
-<span class="sd">                          </span>
-<span class="sd">                         pear  |   0.75   |  green</span>
-<span class="sd">                          </span>
-<span class="sd">                         banana |   0.66   |  yellow</span>
-<span class="sd">                         </span>
-<span class="sd">                         cherry |   0.89   |  red</span>
+<span class="sd">    *(with values)*</span>
 
-<span class="sd">    (undifferentiated)</span>
-<span class="sd">    </span>
 <span class="sd">         label : &#39;fruits&#39;</span>
-<span class="sd">         </span>
-<span class="sd">         column_descriptors : (list of DimensionDescriptors, simplified here) :</span>
-<span class="sd">         []</span>
-<span class="sd">         </span>
+
+<span class="sd">         column_descriptors : (list of DimensionDescriptors, simplified here)</span>
+<span class="sd">             1/ label : &#39;fruits&#39;, dimension_type : &#39;string&#39;, no unit</span>
+
+<span class="sd">             2/ label : &#39;prices&#39;, dimension_type : &#39;numeric&#39;, unit : &#39;euros/kg&#39;</span>
+
+<span class="sd">             3/ label : &#39;color&#39;, dimension_type : &#39;string&#39;, no unit</span>
+
 <span class="sd">         n_elem : 4</span>
-<span class="sd">         </span>
+
+<span class="sd">         values :</span>
+<span class="sd">             [[&#39;apple&#39;, 0.5, &#39;red&#39; ]</span>
+
+<span class="sd">             [&#39;pear&#39;, 0.75, &#39;green&#39;]</span>
+
+<span class="sd">             [&#39;banana&#39;, 0.66, &#39;yellow&#39;]</span>
+
+<span class="sd">             [&#39;cherry&#39;, 0.89, &#39;red&#39;]]</span>
+
+
+<span class="sd">                                        &#39;fruits&#39;</span>
+
+<span class="sd">                        ======== ========== =======</span>
+<span class="sd">                         fruits    prices    color</span>
+<span class="sd">                        ======== ========== =======</span>
+<span class="sd">                         apple   0.5        red</span>
+<span class="sd">                         pear    0.75       green</span>
+<span class="sd">                         banana  0.66       yellow</span>
+<span class="sd">                         cherry  0.89       red</span>
+<span class="sd">                        ======== ========== =======</span>
+
+
+<span class="sd">    *(undifferentiated)*</span>
+
+<span class="sd">         label : &#39;fruits&#39;</span>
+
+<span class="sd">         column_descriptors : (list of DimensionDescriptors) : None</span>
+
+<span class="sd">         n_elem : 4</span>
+
 <span class="sd">         values : None</span>
-<span class="sd">         </span>
-<span class="sd">            </span>
-<span class="sd">                       &#39;fruits&#39;</span>
-<span class="sd">                                   </span>
-<span class="sd">                        fruits </span>
-<span class="sd">                         </span>
-<span class="sd">                        1    </span>
-<span class="sd">                        </span>
-<span class="sd">                        2   </span>
-<span class="sd">                        </span>
-<span class="sd">                        3   </span>
-<span class="sd">                        </span>
-<span class="sd">                        4  </span>
+
+<span class="sd">                          &#39;fruits&#39;</span>
+
+<span class="sd">                        +---------+</span>
+<span class="sd">                        | fruits  |</span>
+<span class="sd">                        +=========+</span>
+<span class="sd">                        | 1       |</span>
+<span class="sd">                        +---------+</span>
+<span class="sd">                        | 2       |</span>
+<span class="sd">                        +---------+</span>
+<span class="sd">                        | 3       |</span>
+<span class="sd">                        +---------+</span>
+<span class="sd">                        | 4       |</span>
+<span class="sd">                        +---------+</span>
 <span class="sd"> </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
@@ -1430,14 +1427,14 @@
         <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
                                  <span class="n">column_descriptors</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">n_elem</span><span class="p">,</span>
-                                 <span class="n">values</span><span class="p">)</span>
+                                 <span class="n">values</span><span class="p">)</span></div>
             
                 
             
         
         
                   
-<span class="k">class</span> <span class="nc">MeasureHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
+<div class="viewcode-block" id="MeasureHeader"><a class="viewcode-back" href="../index.html#xdata.MeasureHeader">[docs]</a><span class="k">class</span> <span class="nc">MeasureHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This class allows the creation of a header for a measureable dimensions</span>
 <span class="sd">    of a dataset.</span>
 <span class="sd">    </span>
@@ -1454,8 +1451,8 @@
 <span class="sd">    easily from the start and scale attributes and the n_elem property. </span>
 <span class="sd">    </span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------     </span>
+<span class="sd">    **Parameters**</span>
+
 <span class="sd">    - label:</span>
 <span class="sd">        name of the header</span>
 <span class="sd">        (type str)</span>
@@ -1491,8 +1488,8 @@
 <span class="sd">        (optional)</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
+<span class="sd">    **Attributes**</span>
+
 <span class="sd">    - label :</span>
 <span class="sd">        name of the dimension (type str)</span>
 <span class="sd">    - column_descriptors :</span>
@@ -1502,9 +1499,9 @@
 <span class="sd">    - scale :</span>
 <span class="sd">        interval between the values of this dimension (type float)</span>
 <span class="sd">      </span>
-<span class="sd">    Methods</span>
-<span class="sd">    -------          </span>
-<span class="sd">    (methods imposed by inheritance)</span>
+<span class="sd">    **Methods**</span>
+
+<span class="sd">    *(methods imposed by inheritance)*</span>
 <span class="sd">    </span>
 <span class="sd">    - n_elem :</span>
 <span class="sd">        number of element in the column(s)/ number of samples</span>
@@ -1534,7 +1531,7 @@
 <span class="sd">        nline can here be an integer or a list of integer. The function</span>
 <span class="sd">        returns the corresponding values of the first column.</span>
 <span class="sd">                </span>
-<span class="sd">    (other methods)</span>
+<span class="sd">    *(other methods)*</span>
 <span class="sd">    </span>
 <span class="sd">    - update_measureheader(start = None, n_elem = None,scale = None):</span>
 <span class="sd">        creates a new measure header from the attributes of a previous one,</span>
@@ -1543,8 +1540,8 @@
 <span class="sd">        creates a copy of a MeasureHeader instance</span>
 <span class="sd">        </span>
 <span class="sd">    </span>
-<span class="sd">    Example</span>
-<span class="sd">    --------</span>
+<span class="sd">    **Example**</span>
+
 <span class="sd">        label : &#39;x&#39;</span>
 <span class="sd">        </span>
 <span class="sd">        column_descriptors : (list of one DimensionDescription)</span>
@@ -1557,26 +1554,27 @@
 <span class="sd">            </span>
 <span class="sd">            all_units : [{unit : &#39;mm&#39;, &#39;value&#39; : 10**(-3)}, {unit : &#39;m&#39;,</span>
 <span class="sd">            &#39;value&#39; : 1}]</span>
-<span class="sd">    </span>
+
 <span class="sd">        n-elem : 4</span>
-<span class="sd">        </span>
+
 <span class="sd">        start : 1</span>
-<span class="sd">        </span>
-<span class="sd">        scale : 1</span>
-<span class="sd">        </span>
-<span class="sd">        </span>
-<span class="sd">                                   &#39;x&#39;</span>
-<span class="sd">                                    </span>
-<span class="sd">                                    x </span>
-<span class="sd">    </span>
-<span class="sd">                                    </span>
-<span class="sd">                                    1 </span>
-<span class="sd">                                   </span>
-<span class="sd">                                    3 </span>
-<span class="sd">                                   </span>
-<span class="sd">                                    5 </span>
-<span class="sd">                                   </span>
-<span class="sd">                                    7 </span>
+
+<span class="sd">        scale : 2</span>
+
+
+<span class="sd">                                        &#39;x&#39;</span>
+
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | x   |</span>
+<span class="sd">                                        +=====+</span>
+<span class="sd">                                        | 1   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | 3   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | 5   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | 7   |</span>
+<span class="sd">                                        +-----+</span>
 <span class="sd">     </span>
 <span class="sd">     </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1784,9 +1782,9 @@
                              <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">n_elem</span><span class="p">,</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
-                             <span class="n">column_descriptors</span> <span class="o">=</span> <span class="n">descriptor</span><span class="p">)</span>
+                             <span class="n">column_descriptors</span> <span class="o">=</span> <span class="n">descriptor</span><span class="p">)</span></div>
 
-<span class="k">class</span> <span class="nc">Xdata</span><span class="p">:</span>
+<div class="viewcode-block" id="Xdata"><a class="viewcode-back" href="../index.html#xdata.Xdata">[docs]</a><span class="k">class</span> <span class="nc">Xdata</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class allows the creation of a ND dataset, with headers for each</span>
 <span class="sd">    dimension and a name.</span>
 <span class="sd">    </span>
@@ -1795,12 +1793,13 @@
 <span class="sd">    headers describing each of the N dimensions, stored in a list. Xdata also</span>
 <span class="sd">    has the name of the whole set of data and a data_descriptor attribute to</span>
 <span class="sd">    describe the data.</span>
+
 <span class="sd">    Xdata includes a handeling of events.</span>
 <span class="sd">    TODO : explain better the event part</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------     </span>
+<span class="sd">    **Parameters**</span>
+
 <span class="sd">    - name :</span>
 <span class="sd">        name of the dataset (type str)</span>
 <span class="sd">    - data :</span>
@@ -1810,8 +1809,8 @@
 <span class="sd">    - unit :</span>
 <span class="sd">        simple unit or list of conversion</span>
 <span class="sd">    </span>
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
+<span class="sd">    **Attributes**</span>
+
 <span class="sd">    - data :</span>
 <span class="sd">        N dimensional numpy.ndarray with the data itself</span>
 <span class="sd">    - headers :</span>
@@ -1821,8 +1820,8 @@
 <span class="sd">    - data_descriptor :</span>
 <span class="sd">        DimensionDescription instance describing the dataset</span>
 <span class="sd">    </span>
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
+<span class="sd">    **Methods**</span>
+
 <span class="sd">    - get_n_dimensions :</span>
 <span class="sd">        gives the number of dimensions of xdata (it corresponds to the</span>
 <span class="sd">        number of headers)</span>
@@ -1861,21 +1860,25 @@
 <span class="sd">               </span>
 <span class="sd">            - &#39;perm&#39; to permute some lines</span>
 <span class="sd">               </span>
-<span class="sd">       - dim : (int) number of the modified header</span>
+<span class="sd">       - dim :</span>
+<span class="sd">            (int) number of the modified header</span>
 <span class="sd">       </span>
-<span class="sd">       - ind : (list of int) indices of lines that are changing</span>
+<span class="sd">       - ind :</span>
+<span class="sd">            (list of int) indices of lines that are changing</span>
 <span class="sd">       </span>
-<span class="sd">       - dataslices : new values for the modified lines</span>
+<span class="sd">       - dataslices :</span>
+<span class="sd">            new values for the modified lines</span>
 <span class="sd">       </span>
-<span class="sd">       - modified_header : same header as before but with a few changes</span>
-<span class="sd">       (adding columns, lines, changing values depending of the type of</span>
-<span class="sd">       header).</span>
+<span class="sd">       - modified_header :</span>
+<span class="sd">            same header as before but with a few changes (adding columns,</span>
+<span class="sd">            lines, changing values depending of the type of header).</span>
 <span class="sd">       </span>
 <span class="sd">       This method allows to update a header and the corresponding data,</span>
 <span class="sd">       the shape of data migth be modifed but the dimensions are still</span>
 <span class="sd">       representing the same thing(DimensionDescriptions are not changed,</span>
 <span class="sd">       (except for dimension_type that migth become &#39;mixed&#39; if some lines are</span>
 <span class="sd">       merged)).It returns a new data instance.</span>
+
 <span class="sd">    - modify_dimensions(flag, dim, newdata, newheaders):</span>
 <span class="sd">        - flag</span>
 <span class="sd">            - &#39;global&#39; to change everything,</span>
@@ -1884,12 +1887,15 @@
 <span class="sd">            - &#39;rmdim&#39; to remove a dimension/dimensions,</span>
 <span class="sd">            - &#39;permdim&#39; to permute the dimensions</span>
 <span class="sd">                                  </span>
-<span class="sd">        - dim : list of the dimensions to be changed</span>
+<span class="sd">        - dim :</span>
+<span class="sd">            list of the dimensions to be changed</span>
 <span class="sd">        </span>
-<span class="sd">        - newdata : full numpy.array with the whole data (except for flag</span>
-<span class="sd">        &#39;permdim&#39;)</span>
+<span class="sd">        - newdata :</span>
+<span class="sd">            full numpy.array with the whole data (except for flag</span>
+<span class="sd">            &#39;permdim&#39;)</span>
 <span class="sd">                                    </span>
-<span class="sd">        - newheaders : list of the new headers</span>
+<span class="sd">        - newheaders :</span>
+<span class="sd">            list of the new headers</span>
 <span class="sd">        </span>
 <span class="sd">        This methods allows to modify the structure of a Xdata instance, i.e.</span>
 <span class="sd">        to modify the DimensionDescriptions in the list of headers (and</span>
@@ -1898,8 +1904,8 @@
 <span class="sd">        It returns a new Xdata instance.</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    **Example**</span>
+
 <span class="sd">    Let&#39;s take the example of children throwing a ball.</span>
 <span class="sd">    We are interrested in the hight of the ball over time, for each child, and</span>
 <span class="sd">    for each throw.</span>
@@ -1931,54 +1937,60 @@
 <span class="sd">        start : 0</span>
 <span class="sd">        </span>
 <span class="sd">        scale : 2</span>
-<span class="sd">        </span>
-<span class="sd">                                   &#39;t&#39;</span>
-<span class="sd">                                    </span>
-<span class="sd">                                    t </span>
-<span class="sd">                                   </span>
-<span class="sd">                                    0</span>
-<span class="sd">                                    </span>
-<span class="sd">                                    2 </span>
-<span class="sd">                                    </span>
-<span class="sd">                                    4 </span>
-<span class="sd">                                    </span>
-<span class="sd">                                    6 </span>
-<span class="sd">                                    </span>
-<span class="sd">                                   ...</span>
+
+
+
+<span class="sd">                                        &#39;t&#39;</span>
+
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | t   |</span>
+<span class="sd">                                        +=====+</span>
+<span class="sd">                                        | 0   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | 2   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | 4   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | 6   |</span>
+<span class="sd">                                        +-----+</span>
+<span class="sd">                                        | ... |</span>
+<span class="sd">                                        +-----+</span>
 <span class="sd">                                   </span>
 <span class="sd">        - repetition is a CategoricalHeader that is undifferentiated</span>
+
 <span class="sd">         label : &#39;repetitions&#39;</span>
-<span class="sd">         </span>
-<span class="sd">         column_descriptors : (list of DimensionDescriptors, simplified here)</span>
-<span class="sd">         []</span>
-<span class="sd">         </span>
+
+<span class="sd">         column_descriptors : (list of DimensionDescriptors) : None</span>
+
 <span class="sd">         n_elem : 8</span>
-<span class="sd">         </span>
+
 <span class="sd">         values : None</span>
-<span class="sd">         </span>
-<span class="sd">            </span>
-<span class="sd">                        &#39;repetitions&#39;</span>
-<span class="sd">                                   </span>
-<span class="sd">                        repetitions </span>
-<span class="sd">                        </span>
-<span class="sd">                        0 </span>
-<span class="sd">                        </span>
-<span class="sd">                        1  </span>
-<span class="sd">                        </span>
-<span class="sd">                        2  </span>
-<span class="sd">                        </span>
-<span class="sd">                        3  </span>
-<span class="sd">                        </span>
-<span class="sd">                        4 </span>
-<span class="sd">                        </span>
-<span class="sd">                        5</span>
-<span class="sd">                        </span>
-<span class="sd">                        6  </span>
-<span class="sd">                        </span>
-<span class="sd">                        7      </span>
-<span class="sd">        </span>
+
+<span class="sd">                          &#39;repetitions&#39;</span>
+
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | repetitions  |</span>
+<span class="sd">                        +==============+</span>
+<span class="sd">                        | 0            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 1            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 2            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 3            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 4            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 5            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 6            |</span>
+<span class="sd">                        +--------------+</span>
+<span class="sd">                        | 7            |</span>
+<span class="sd">                        +--------------+</span>
+
+
 <span class="sd">        - child is a CategoricalHeader with values (because we can store some</span>
-<span class="sd">        complementary informatios)</span>
+<span class="sd">            complementary informatios)</span>
 <span class="sd">        </span>
 <span class="sd">         label : &#39;child&#39;</span>
 <span class="sd">         </span>
@@ -1996,29 +2008,27 @@
 <span class="sd">             </span>
 <span class="sd">             </span>
 <span class="sd">             [[&#39;Emily&#39;, 8, &#39;female&#39; ]</span>
+
 <span class="sd">             [&#39;Paul&#39;, 7, &#39;male&#39;]</span>
-<span class="sd">             </span>
+
 <span class="sd">             [&#39;Helen&#39;, 9, &#39;female&#39;]</span>
-<span class="sd">             </span>
+
 <span class="sd">             [&#39;Lily&#39;, 7, &#39;female&#39;]</span>
-<span class="sd">             </span>
+
 <span class="sd">             [&#39;James&#39;, 9, &#39;male&#39;]]</span>
+
 <span class="sd">             </span>
-<span class="sd">             </span>
-<span class="sd">                        </span>
-<span class="sd">                                   child</span>
-<span class="sd">                                   </span>
-<span class="sd">                          name  |  age  | gender</span>
-<span class="sd">                         _________________________</span>
-<span class="sd">                          Emily |   8   |  female  </span>
-<span class="sd">                          </span>
-<span class="sd">                          Paul  |   7   |  male</span>
-<span class="sd">                          </span>
-<span class="sd">                          Helen |   9   |  female</span>
-<span class="sd">                          </span>
-<span class="sd">                          Lily  |   7   |  female</span>
-<span class="sd">                          </span>
-<span class="sd">                          James |   9   |  male</span>
+<span class="sd">                                        &#39;chlid&#39;</span>
+
+<span class="sd">                        ======== ====== =======</span>
+<span class="sd">                         name     age    gender</span>
+<span class="sd">                        ======== ====== =======</span>
+<span class="sd">                         Emily   8      female</span>
+<span class="sd">                         Paul    7      male</span>
+<span class="sd">                         Helen   9      female</span>
+<span class="sd">                         Lily    7      female</span>
+<span class="sd">                         James   9      male</span>
+<span class="sd">                        ======== ====== =======</span>
 <span class="sd">                          </span>
 <span class="sd">        </span>
 <span class="sd">        Now we have our list of headers, of length 3.</span>
@@ -2762,7 +2772,7 @@
         <span class="c1"># all accepted flags with this method are already taken care of</span>
         <span class="c1"># flag argument is either not a flag or not one accepted by this method        </span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;flag must be &#39;global&#39;, &#39;chgdim&#39;, &#39;insertdim&#39;, &quot;</span>
-                        <span class="s2">&quot;&#39;rmdim&#39;, or &#39;permdim&#39;&quot;</span><span class="p">)</span>
+                        <span class="s2">&quot;&#39;rmdim&#39;, or &#39;permdim&#39;&quot;</span><span class="p">)</span></div>
 
         
 <span class="k">def</span> <span class="nf">createDimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
