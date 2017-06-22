@@ -2744,14 +2744,17 @@ def createDimensionDescription(label, column = None):
     When using this function, no unit is specified, so
     dimensiondescription.unit will be None.
     
-    Parameters
-    ----------     
+    **Parameters**
+
     - label:
         label for the DimensionDescription instance
         (type str)
     - column :
         values to determine the dimension_type of the DimensionDescription
         (type pandas.core.series.Series, shape (n,1))
+
+    **returns**
+    DimensionDescription instance
     """
     if not isinstance(label,str):
         raise Exception("label must be of type str")
@@ -2779,7 +2782,15 @@ def createDimensionDescription(label, column = None):
 
 def check_bank(unit):
     """The functions checks if this unit is in one of the conversion tables of
-    the bank. If so, it returns the conversion table, else, it returns None"""
+    the bank. If so, it returns the conversion table, else, it returns None
+
+    **Parameters**
+
+    - unit: type str, name of the unit
+
+    **returns**
+    a conversion table for the given unit if it exists in the bank
+    """
     pass
     #TODO
     

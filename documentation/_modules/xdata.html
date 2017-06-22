@@ -6,9 +6,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>xdata &#8212; xplor 3.6 documentation</title>
+    <title>xdata &#8212; Xplor your data</title>
     
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -25,16 +25,22 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body role="document">
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Xplor your data</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -110,7 +116,7 @@
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
 
 
-<div class="viewcode-block" id="Color"><a class="viewcode-back" href="../index.html#xdata.Color">[docs]</a><span class="k">class</span> <span class="nc">Color</span><span class="p">:</span>
+<div class="viewcode-block" id="Color"><a class="viewcode-back" href="../xdata.html#xdata.Color">[docs]</a><span class="k">class</span> <span class="nc">Color</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Defines colors.</span>
 
 <span class="sd">    This class allows defining colors, either as RGB values or using</span>
@@ -168,7 +174,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">rgb</span></div>
 
 
-<div class="viewcode-block" id="DimensionDescription"><a class="viewcode-back" href="../index.html#xdata.DimensionDescription">[docs]</a><span class="k">class</span> <span class="nc">DimensionDescription</span><span class="p">:</span>
+<div class="viewcode-block" id="DimensionDescription"><a class="viewcode-back" href="../xdata.html#xdata.DimensionDescription">[docs]</a><span class="k">class</span> <span class="nc">DimensionDescription</span><span class="p">:</span>
     
     <span class="sd">&quot;&quot;&quot; This class aims at defining a dimension.</span>
 <span class="sd">    </span>
@@ -380,7 +386,7 @@
                             <span class="s2">&quot;&#39;string&#39;, &#39;color&#39; or &#39;mixed&#39;&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Header"><a class="viewcode-back" href="../index.html#xdata.Header">[docs]</a><span class="k">class</span> <span class="nc">Header</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="Header"><a class="viewcode-back" href="../xdata.html#xdata.Header">[docs]</a><span class="k">class</span> <span class="nc">Header</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This abstract class allows the creation of headers for the different </span>
 <span class="sd">    dimensions of a dataset.</span>
 <span class="sd">    </span>
@@ -705,7 +711,7 @@
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="CategoricalHeader"><a class="viewcode-back" href="../index.html#xdata.CategoricalHeader">[docs]</a><span class="k">class</span> <span class="nc">CategoricalHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalHeader"><a class="viewcode-back" href="../xdata.html#xdata.CategoricalHeader">[docs]</a><span class="k">class</span> <span class="nc">CategoricalHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This class allows the creation of a header for a categorical dimension</span>
 <span class="sd">    of a dataset.</span>
 <span class="sd">    </span>
@@ -1434,7 +1440,7 @@
         
         
                   
-<div class="viewcode-block" id="MeasureHeader"><a class="viewcode-back" href="../index.html#xdata.MeasureHeader">[docs]</a><span class="k">class</span> <span class="nc">MeasureHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
+<div class="viewcode-block" id="MeasureHeader"><a class="viewcode-back" href="../xdata.html#xdata.MeasureHeader">[docs]</a><span class="k">class</span> <span class="nc">MeasureHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This class allows the creation of a header for a measureable dimensions</span>
 <span class="sd">    of a dataset.</span>
 <span class="sd">    </span>
@@ -1784,7 +1790,7 @@
                              <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
                              <span class="n">column_descriptors</span> <span class="o">=</span> <span class="n">descriptor</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Xdata"><a class="viewcode-back" href="../index.html#xdata.Xdata">[docs]</a><span class="k">class</span> <span class="nc">Xdata</span><span class="p">:</span>
+<div class="viewcode-block" id="Xdata"><a class="viewcode-back" href="../xdata.html#xdata.Xdata">[docs]</a><span class="k">class</span> <span class="nc">Xdata</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class allows the creation of a ND dataset, with headers for each</span>
 <span class="sd">    dimension and a name.</span>
 <span class="sd">    </span>
@@ -2775,7 +2781,7 @@
                         <span class="s2">&quot;&#39;rmdim&#39;, or &#39;permdim&#39;&quot;</span><span class="p">)</span></div>
 
         
-<span class="k">def</span> <span class="nf">createDimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="createDimensionDescription"><a class="viewcode-back" href="../Annexes.html#xdata.createDimensionDescription">[docs]</a><span class="k">def</span> <span class="nf">createDimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;the function creates an instance of DimensionDescription.</span>
 <span class="sd">    </span>
 <span class="sd">    createDimensionDescription gives an instance of the class</span>
@@ -2788,14 +2794,17 @@
 <span class="sd">    When using this function, no unit is specified, so</span>
 <span class="sd">    dimensiondescription.unit will be None.</span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------     </span>
+<span class="sd">    **Parameters**</span>
+
 <span class="sd">    - label:</span>
 <span class="sd">        label for the DimensionDescription instance</span>
 <span class="sd">        (type str)</span>
 <span class="sd">    - column :</span>
 <span class="sd">        values to determine the dimension_type of the DimensionDescription</span>
 <span class="sd">        (type pandas.core.series.Series, shape (n,1))</span>
+
+<span class="sd">    **returns**</span>
+<span class="sd">    DimensionDescription instance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;label must be of type str&quot;</span><span class="p">)</span>
@@ -2818,13 +2827,20 @@
               <span class="n">notmixed</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">notmixed</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">dimension_type</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">))</span></div>
 
 
-<span class="k">def</span> <span class="nf">check_bank</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+<div class="viewcode-block" id="check_bank"><a class="viewcode-back" href="../Annexes.html#xdata.check_bank">[docs]</a><span class="k">def</span> <span class="nf">check_bank</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The functions checks if this unit is in one of the conversion tables of</span>
-<span class="sd">    the bank. If so, it returns the conversion table, else, it returns None&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+<span class="sd">    the bank. If so, it returns the conversion table, else, it returns None</span>
+
+<span class="sd">    **Parameters**</span>
+<span class="sd">    - unit: type str, name of the unit</span>
+
+<span class="sd">    **returns**</span>
+<span class="sd">    conversion table for the given unit if it exists in the bank</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
     <span class="c1">#TODO</span>
     
     
@@ -2853,15 +2869,7 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+        <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -2876,17 +2884,22 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, Elodie Ikkache, Thomas Deneux.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Xplor your data</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
   </body>
 </html>
