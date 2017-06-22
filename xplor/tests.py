@@ -1,10 +1,10 @@
 
 """tests module is a module to test the others
 
-The modules that need to be tested are :
+The modules that need to be tested are:
     - xdata (shape of the data itself)
 
-This module uses :
+This module uses:
         numpy
         pandas
         unittest
@@ -126,7 +126,7 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, xdata.DimensionDescription.defaultvalue,
                           'prices')
         self.assertRaises(Exception, xdata.DimensionDescription, 2)
-        print("Test 6 : method set_dimtype_to_mixed")
+        print("Test 6: method set_dimtype_to_mixed")
         f.set_dimtype_to_mixed()
         self.assertEqual(f.dimension_type, 'mixed')
         print("Test 7: method copy")

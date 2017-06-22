@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Annexes : Various functions &#8212; Xplor your data</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Module xdata : defining a data structure" href="xdata.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xdata.html" title="Module xdata : defining a data structure"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="annexes-various-functions">
+<h1>Annexes : Various functions<a class="headerlink" href="#annexes-various-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="in-the-xdata-module">
+<h2>In the xdata module:<a class="headerlink" href="#in-the-xdata-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="createdimensionsdescription">
+<h3>createDimensionsDescription<a class="headerlink" href="#createdimensionsdescription" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="xdata.createDimensionDescription">
+<code class="descclassname">xdata.</code><code class="descname">createDimensionDescription</code><span class="sig-paren">(</span><em>label</em>, <em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#createDimensionDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.createDimensionDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>the function creates an instance of DimensionDescription.</p>
+<p>createDimensionDescription gives an instance of the class
+DimensionDescription from a label and an column of values of type
+pandas.core.series.Series.</p>
+<p>If column is None, the DimensionDescription instance will be of
+dimension_type &#8216;mixed&#8217; by default.</p>
+<p>When using this function, no unit is specified, so
+dimensiondescription.unit will be None.</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label:</dt>
+<dd>label for the DimensionDescription instance
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column :</dt>
+<dd>values to determine the dimension_type of the DimensionDescription
+(type pandas.core.series.Series, shape (n,1))</dd>
+</dl>
+</li>
+</ul>
+<p><strong>returns</strong>
+DimensionDescription instance</p>
+</dd></dl>
+
+</div>
+<div class="section" id="check-bank">
+<h3>check_bank<a class="headerlink" href="#check-bank" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="xdata.check_bank">
+<code class="descclassname">xdata.</code><code class="descname">check_bank</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#check_bank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.check_bank" title="Permalink to this definition">¶</a></dt>
+<dd><p>The functions checks if this unit is in one of the conversion tables of
+the bank. If so, it returns the conversion table, else, it returns None</p>
+<p><strong>Parameters</strong>
+- unit: type str, name of the unit</p>
+<p><strong>returns</strong>
+conversion table for the given unit if it exists in the bank</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Annexes : Various functions</a><ul>
+<li><a class="reference internal" href="#in-the-xdata-module">In the xdata module:</a><ul>
+<li><a class="reference internal" href="#createdimensionsdescription">createDimensionsDescription</a></li>
+<li><a class="reference internal" href="#check-bank">check_bank</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="xdata.html"
+                        title="previous chapter">Module xdata : defining a data structure</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Annexes.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xdata.html" title="Module xdata : defining a data structure"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

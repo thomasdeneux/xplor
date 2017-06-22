@@ -1,0 +1,1412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Module xdata : defining a data structure &#8212; Xplor your data</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Annexes : Various functions" href="Annexes.html" />
+    <link rel="prev" title="Welcome to xplor’s documentation!" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Annexes.html" title="Annexes : Various functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to xplor’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-xdata">
+<span id="module-xdata-defining-a-data-structure"></span><h1>Module xdata : defining a data structure<a class="headerlink" href="#module-xdata" title="Permalink to this headline">¶</a></h1>
+<p>xdata module is a module to define a structure to store the data in the
+form of an N dimensional array as well as the description of the data and each
+of the dimensions (names, types, units, scale, ...)</p>
+<dl class="docutils">
+<dt>This module uses :</dt>
+<dd><ul class="first last simple">
+<li>pandas as pd</li>
+<li>numpy as np</li>
+<li>operator</li>
+<li>abc</li>
+</ul>
+</dd>
+</dl>
+<p>There are 6 classes in this module:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Color</strong> :</dt>
+<dd>This class allows defining colors, either as RGB values or using
+predefined strings.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>DimensionDescription</strong> :</dt>
+<dd>For a specific dimension, DimensionDescription stores a label,a
+dimension_type (&#8216;numeric&#8217;, &#8216;logical&#8217;, &#8216;string&#8217;, or &#8216;mixed&#8217;), possibly a
+unit and the corresponding conversion table.
+It allows to determine the dimension_type of an element, and access the
+default value of a given dimension_type.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Header</strong> :</dt>
+<dd>Abstract class (subclasses are CategoricalHeader and MeasureHeader).
+Headers contains information about a dimension of the NDimensional
+data, such as a general label, the number of element, the description
+of the dimension/subdimensions, and allows to access the values to
+display on the axis.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>CategoricalHeader</strong> :</dt>
+<dd>CategoricalHeader is a subclass of Header. It is used to characterize
+a dimension in which the data has no regular organisation. It usually
+is a list of elements. However, such elements can have interesting
+features of different types. That&#8217;s why such features are stored in
+columns, each of them described by a DimensionDescription object.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>MeasureHeader</strong> :</dt>
+<dd>MeasureHeader is a subclass of Header. It is used for data acquired by
+equally spaced sample in a continuous dimension such as time or space.
+In which case, there is only one subdimension (i.e. only one column).</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Xdata</strong> :</dt>
+<dd>Xdata is used to store the data. Xdata is a container for an ND
+(N dimensional) array with all the values/data, as well as all of the
+headers describing each of the N dimensions, stored in a list. Xdata
+also has the name of the whole set of data and a data_descriptor
+attribute to describe the data.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<div class="section" id="color-class">
+<h2>Color class:<a class="headerlink" href="#color-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xdata.Color">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">Color</code><span class="sig-paren">(</span><em>rgb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#Color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.Color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines colors.</p>
+<p>This class allows defining colors, either as RGB values or using
+predefined strings.</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>rgb :</dt>
+<dd>Either a 3-tuple with 3 integers between 0 and 255, or a predefined
+string. Predefined strings are &#8216;black&#8217;, &#8216;white&#8217;, &#8216;red&#8217;, &#8216;green&#8217;,
+&#8216;blue&#8217;, &#8216;yellow&#8217;, &#8216;cyan&#8217;, &#8216;magenta&#8217;</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Attributes</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>rgb :</dt>
+<dd>3-tuple with 3 integers between 0 and 255</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="dimensiondescription-class">
+<h2>DimensionDescription class:<a class="headerlink" href="#dimensiondescription-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xdata.DimensionDescription">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">DimensionDescription</code><span class="sig-paren">(</span><em>label</em>, <em>dimension_type</em>, <em>unit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#DimensionDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.DimensionDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class aims at defining a dimension.</p>
+<p>This class allows to define a dimension with a name, a type (&#8216;numeric,
+&#8216;logical&#8217;, &#8216;string&#8217;, &#8216;color&#8217; or &#8216;mixed&#8217;), and possibly a unit for 
+numerical dimensions.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd><p class="first last">name for the dimension
+(type str (e.g. &#8216;time&#8217;))</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>dimension_type :</dt>
+<dd><p class="first last">can be &#8216;numeric&#8217;, &#8216;logical&#8217;, &#8216;string&#8217;, &#8216;color&#8217; or &#8216;mixed&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>unit :</dt>
+<dd><p class="first">One can define only the unit (e.g. mm) or the conversions as well in
+the form of a list (e.g. [&#8216;mm&#8217;, 10**(-3), &#8216;m&#8217;, 1]).</p>
+<p>(type str or list)</p>
+<p class="last">optional (default value = None)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Attributes</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd>name of the dimension
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>dimension_type :</dt>
+<dd>&#8216;numeric&#8217;, &#8216;logical&#8217;, &#8216;string&#8217;, &#8216;color&#8217; or &#8216;mixed&#8217;</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>unit :</dt>
+<dd>currently used unit
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>allunit :</dt>
+<dd>list of dictionaries for unit conversions</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>set_dimtype_to_mixed :</dt>
+<dd>changing the dimension_type to &#8216;mixed&#8217; if adding values that are not
+of the correct dimension_type (merging lines for instance)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd>to copy a DimensionDescription instance</dd>
+</dl>
+</li>
+</ul>
+<p><em>(static methods)</em></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>infertype(x, getdefaultvalue=False) :</dt>
+<dd>gives the dimension_type of the x element and possibly the associated
+defaultvalue</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>defaultvalue(dimension_type) :</dt>
+<dd>gives the default value associated to a certain dimension_type</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Examples</strong></p>
+<blockquote>
+<div><p>t = DimensionDescription(&#8216;time&#8217;,&#8217;numeric&#8217;,[&#8216;s, 1, &#8216;ms&#8217;, 10**(-3),
+&#8216;min&#8217;, 60, &#8216;hour&#8217;, 3600])</p>
+<p>c = DimensionDescription(&#8216;condition&#8217;,&#8217;string&#8217;)</p>
+</div></blockquote>
+<p><strong>Note</strong></p>
+<p>DimensionDescription of dimension type &#8216;color&#8217; are Color objects</p>
+</dd></dl>
+
+</div>
+<div class="section" id="header-abstract-class">
+<h2>Header abstract class:<a class="headerlink" href="#header-abstract-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xdata.Header">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">Header</code><a class="reference internal" href="_modules/xdata.html#Header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.Header" title="Permalink to this definition">¶</a></dt>
+<dd><p>This abstract class allows the creation of headers for the different 
+dimensions of a dataset.</p>
+<p>Header is an abstract class that has two subclasses: CategoricalHeader and
+MeasureHeader.
+A Header object fully describes a dimension.
+A CategoricalHeader is used for data with  no regular organisation.
+It usually correspond to a list of elements. However,  such elements can
+have interesting features of different types. That&#8217;s why such features are 
+stored in columns, each of them described by a DimensionDescription object.
+A MeasureHeader is used for data aquired with regular intervals in a
+continuous dimension such as time or space. In which case, there is only
+one subdimension (i.e. only one column witch is not stored).</p>
+<p><strong>Attributes</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd>name of the dimension (type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column_descriptors :</dt>
+<dd>list of the DimensionDescription of each of the columns of values</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_measure :</dt>
+<dd>true if the header is a MeasureHeader instance, false if it is a
+CategoricalHeader instance</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical_with_values :</dt>
+<dd>true if it is an instance of CategoricalHeader and that values is not
+None. If it is a categorical header but with no column or a measure
+header, it is false.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_undifferentiated :</dt>
+<dd>true if it is a categorical header with no values
+(not is_categorical_with_values)</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<p><em>(abstract methods)</em></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>n_elem :</dt>
+<dd>number of element in the column(s)/ number of samples</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical :</dt>
+<dd>differentiate measure and categorical headers for the properties
+is_measure, is_categorical_with_values and is_undifferentiated</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>__eq__ :</dt>
+<dd>compares all the fields of the headers (returns True if all the 
+fields are the same) it can be used by writting header1 == header2</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_n_columns :</dt>
+<dd>gives the number of columns (1 for MeasureHeader, 0 to n for
+CategoricalHeader)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_units :</dt>
+<dd>gives the list of the unit used for each column (&#8216;no unit&#8217; is 
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_all_units :</dt>
+<dd>gives the list of conversion table for each column (&#8216;no unit&#8217; is
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>disp :</dt>
+<dd>gives the main attributes of a Header</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_value(nline, column = None) :</dt>
+<dd>gives the value located at the line nline and at the column column
+(defined by it&#8217;s label or it&#8217;s number) or the fist one. Since we use
+pyhton, we have decided that to access the first element of the
+column, nline must be equal to 0.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_itemname(nline) :</dt>
+<dd>nline can here be an integer or a list of integer. The function
+returns the corresponding values of the first column.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd>creates a copy of the header</dd>
+</dl>
+</li>
+</ul>
+<p><em>(non abstract method)</em></p>
+<ul>
+<li><dl class="first docutils">
+<dt>check_header_update(flag, ind, newheader) :</dt>
+<dd><p class="first">flag : &#8216;all&#8217;, &#8216;chgdim&#8217;, &#8216;new&#8217;, &#8216;remove&#8217;, &#8216;chg&#8217;, &#8216;perm&#8217;,&#8217;chg&amp;new&#8217; or
+&#8216;chg&amp;rm&#8217;</p>
+<p>ind : numpy.array of shape (n,)</p>
+<p class="last">basics checks when updating data and giving a new header</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Examples</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>CategorialHeader: (with values)</em></dt>
+<dd><p class="first">label : &#8216;fruits&#8217;</p>
+<dl class="docutils">
+<dt>column_descriptors</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(list of DimensionDescriptors, simplified here)</span><dd><p class="first">1/ label : &#8216;fruits&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+<p>2/ label : &#8216;prices&#8217;, dimension_type : &#8216;numeric&#8217;, unit : &#8216;euros/kg&#8217;</p>
+<p class="last">3/ label : &#8216;color&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+</dd>
+</dl>
+<p>n_elem : 4</p>
+<dl class="last docutils">
+<dt>values :</dt>
+<dd><p class="first">[[&#8216;apple&#8217;, 0.5, &#8216;red&#8217; ]</p>
+<p>[&#8216;pear&#8217;, 0.75, &#8216;green&#8217;]</p>
+<p>[&#8216;banana&#8217;, 0.66, &#8216;yellow&#8217;]</p>
+<p>[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
+<blockquote class="last">
+<div><blockquote>
+<div>&#8216;fruits&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="40%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">fruits</th>
+<th class="head">prices</th>
+<th class="head">color</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>apple</td>
+<td>0.5</td>
+<td>red</td>
+</tr>
+<tr class="row-odd"><td>pear</td>
+<td>0.75</td>
+<td>green</td>
+</tr>
+<tr class="row-even"><td>banana</td>
+<td>0.66</td>
+<td>yellow</td>
+</tr>
+<tr class="row-odd"><td>cherry</td>
+<td>0.89</td>
+<td>red</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt><em>CategorialHeader: (undifferentiated)</em></dt>
+<dd><p class="first">label : &#8216;fruits&#8217;</p>
+<p>column_descriptors : (list of DimensionDescriptors) : None</p>
+<p>n_elem : 4</p>
+<p>values : None</p>
+<blockquote class="last">
+<div><blockquote>
+<div>&#8216;fruits&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">fruits</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+</tr>
+<tr class="row-even"><td>3</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd>
+<dt><em>MeasureHeader:</em></dt>
+<dd><p class="first">label : &#8216;x&#8217;</p>
+<p>column_descriptors : (list of one DimensionDescription)</p>
+<blockquote>
+<div><p>label : &#8216;x&#8217;,</p>
+<p>dimension_type : &#8216;numeric&#8217;,</p>
+<p>unit : &#8216;mm&#8217;,</p>
+<p>all_units : [{unit : &#8216;mm&#8217;, &#8216;value&#8217; : 10**(-3)}, {unit : &#8216;m&#8217;,
+&#8216;value&#8217; : 1}]</p>
+</div></blockquote>
+<p>n-elem : 4</p>
+<p>start : 1</p>
+<p>scale : 2</p>
+<blockquote class="last">
+<div><p>&#8216;x&#8217;</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">x</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+</tr>
+<tr class="row-even"><td>5</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="categoricalheader-class">
+<h2>CategoricalHeader  class:<a class="headerlink" href="#categoricalheader-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xdata.CategoricalHeader">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">CategoricalHeader</code><span class="sig-paren">(</span><em>label</em>, <em>column_descriptors=None</em>, <em>n_elem=None</em>, <em>values=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#CategoricalHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.CategoricalHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class allows the creation of a header for a categorical dimension
+of a dataset.</p>
+<p>CategoricalHeader is used for categorical dimensions of a dataset. This
+means that this dimension is either not continuous or that the data has not
+been collected regularly in this dimension. Therefore, their is no scale,
+measure for this dimension. It is more a collection of objects.</p>
+<p>A CategoricalHeader has a general label as well as one or several
+DimensionDescription objects stored in column_descriptorss to describe each
+of the features. For each feature, values can be given (e.g. for &#8216;fruits&#8217;
+values would be &#8216;apple&#8217;, &#8216;pear&#8217;, &#8216;blueberry&#8217;, &#8216;watermelon&#8217;...) or be a list
+of numbers. The first case corresponds to &#8216;is_categorical_with_values&#8217;, the
+second to &#8216;is_undifferentiated&#8217;</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt>label:</dt>
+<dd><p class="first last">name of the header
+(type : str)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column_descriptors :</dt>
+<dd><p class="first">description of the dimension of each feature</p>
+<p>(type str, DimensionDescription or a list of such elements)</p>
+<p class="last">(optional, the case with no column is possible. The legend would then
+be a list of int [1, 2, ...], it is undifferentiated)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>n_elem :</dt>
+<dd><p class="first">number of element in the column(s)</p>
+<p>(type int)</p>
+<p class="last">(optional if values is specified)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>values :</dt>
+<dd><p class="first">content of the various subdimensions</p>
+<p>(type DataFrame from pandas (pandas.core.frame.DataFrame) of shape
+(n_elem, len(column_descriptors))</p>
+<p class="last">(optional if it is just undifferentiated series of measures and that
+n_elem is given)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Attributes</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd>name of the dimension
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column_descriptors :</dt>
+<dd>list of the DimensionDescription of each of the columns of values</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>values :</dt>
+<dd>content of the various subdimensions (pandas DataFrame
+(pandas.core.frame.DataFrame)of shape (n_elem, len(column_descriptors))</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<p><em>(methods imposed by inheritance)</em></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>n_elem :</dt>
+<dd>number of element in the column(s)/ number of samples number of lines
+of values</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical :</dt>
+<dd>differentiate measure and categorical headers for the properties
+is_measure, is_categorical_with_values and is_undifferentiated</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical :</dt>
+<dd>returns True since it is the class CategoricalHeader</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>__eq__ :</dt>
+<dd>compares all the fields of the headers (returns True if all the
+fields are the same) it can be used by writting header1 == header2</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_n_columns :</dt>
+<dd>gives the number of columns (1 for MeasureHeader, 0 to n for
+CategoricalHeader)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_units :</dt>
+<dd>gives the list of the unit used for each column (&#8216;no unit&#8217; is returned
+for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_all_units :</dt>
+<dd>gives the list of conversion table for each column (&#8216;no unit&#8217; is
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>disp :</dt>
+<dd>gives the main attributes of a Header</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_value(nline, column = None) :</dt>
+<dd>gives the value located at the line nline and at the column column
+(defined by it&#8217;s label or it&#8217;s number) or the fist one. Since we use
+pyhton, we have decided that to access the first element of the
+column, nline must be equal to 0.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_itemname(nline) :</dt>
+<dd>nline can here be an integer or a list of integer. The function
+returns the corresponding values of the first column</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd>creates a copy of the categorical header</dd>
+</dl>
+</li>
+</ul>
+<p><em>(other methods)</em></p>
+<ul>
+<li><dl class="first docutils">
+<dt>add_column(column_descriptor, values) :</dt>
+<dd><p class="first last">column_descriptor must be of type str or DimensionDescription
+values must be of type pandas.core.series.Series this method allows
+to created a new categorical header from the attributes of a previous
+categorical haeder, while adding a new column (it can be usefull for
+selections or to add colors)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>update_categoricalheader(flag, ind, values) :</dt>
+<dd><p class="first">flags can be : &#8216;all&#8217;, &#8216;new&#8217;, &#8216;chg&#8217;, &#8216;chg&amp;new&#8217;, &#8216;chg&amp;rm&#8217;, &#8216;remove&#8217;,
+&#8216;perm&#8217;</p>
+<p>idn indicates were the changes take place</p>
+<p>values contains the new values</p>
+<p class="last">This method allows filters to create a new categorical header from
+the current one, with some changes in the values</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>mergelines(ind) :</dt>
+<dd><p class="first last">When merging some data, the corresponding header&#8217;s lines must be 
+merged as well. Mergelines returns for each column all the
+encountered values with no repetitions in the from of a pandas Serie.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Example</strong></p>
+<p><em>(with values)</em></p>
+<blockquote>
+<div><p>label : &#8216;fruits&#8217;</p>
+<dl class="docutils">
+<dt>column_descriptors</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(list of DimensionDescriptors, simplified here)</span><dd><p class="first">1/ label : &#8216;fruits&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+<p>2/ label : &#8216;prices&#8217;, dimension_type : &#8216;numeric&#8217;, unit : &#8216;euros/kg&#8217;</p>
+<p class="last">3/ label : &#8216;color&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+</dd>
+</dl>
+<p>n_elem : 4</p>
+<dl class="docutils">
+<dt>values :</dt>
+<dd><p class="first">[[&#8216;apple&#8217;, 0.5, &#8216;red&#8217; ]</p>
+<p>[&#8216;pear&#8217;, 0.75, &#8216;green&#8217;]</p>
+<p>[&#8216;banana&#8217;, 0.66, &#8216;yellow&#8217;]</p>
+<p>[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
+<blockquote class="last">
+<div><blockquote>
+<div>&#8216;fruits&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="40%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">fruits</th>
+<th class="head">prices</th>
+<th class="head">color</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>apple</td>
+<td>0.5</td>
+<td>red</td>
+</tr>
+<tr class="row-odd"><td>pear</td>
+<td>0.75</td>
+<td>green</td>
+</tr>
+<tr class="row-even"><td>banana</td>
+<td>0.66</td>
+<td>yellow</td>
+</tr>
+<tr class="row-odd"><td>cherry</td>
+<td>0.89</td>
+<td>red</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p><em>(undifferentiated)</em></p>
+<blockquote>
+<div><p>label : &#8216;fruits&#8217;</p>
+<p>column_descriptors : (list of DimensionDescriptors) : None</p>
+<p>n_elem : 4</p>
+<p>values : None</p>
+<blockquote>
+<div><blockquote>
+<div>&#8216;fruits&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">fruits</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+</tr>
+<tr class="row-even"><td>3</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="measureheader-class">
+<h2>MeasureHeader class:<a class="headerlink" href="#measureheader-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xdata.MeasureHeader">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">MeasureHeader</code><span class="sig-paren">(</span><em>label</em>, <em>start</em>, <em>n_elem</em>, <em>scale</em>, <em>unit=None</em>, <em>checkbank=False</em>, <em>column_descriptors=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#MeasureHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.MeasureHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class allows the creation of a header for a measureable dimensions
+of a dataset.</p>
+<p>MeasureHeader is used for a measurable dimensions of a dataset. This
+means that this dimension is continuous and that the data has been 
+collected regularly in this dimension. Therefore, a scale, a start
+attributes can be defined.</p>
+<p>A MeasureHeader has a general label and only one column (there is only one
+feature of interest). This column is described by a single
+DimensionDescription object, but it is still stored in a list
+(column_descriptors) in order to keep the similarity between the different
+types of headers. The values are not stored because they can be calculated
+easily from the start and scale attributes and the n_elem property.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt>label:</dt>
+<dd><p class="first last">name of the header
+(type str)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>start :</dt>
+<dd><p class="first last">first value of this dimension
+(type float or int)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>n_elem :</dt>
+<dd><p class="first last">number of element in the column
+(type int)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>scale :</dt>
+<dd><p class="first last">interval between the values of this dimension
+(type float or int)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>unit :</dt>
+<dd><p class="first">One can define only the unit (e.g. mm) or the conversions as well in
+the form of a list (e.g. [&#8216;mm&#8217;, 10**(-3), &#8216;m&#8217;, 1])</p>
+<p>(type str or list)</p>
+<p class="last">(optional)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>checkbank :</dt>
+<dd><p class="first">Default value of checkbank is Flase. If is it True, a unit must be
+specified, in order to check in the bank of conversion tables if one
+exists for the given unit.</p>
+<p class="last">(optional)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column_descriptors :</dt>
+<dd><p class="first">description of the dimension (it&#8217;s label must be the same as the
+general label of the header)</p>
+<p>(type DimensionDescription)</p>
+<p class="last">(optional)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Attributes</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label :</dt>
+<dd>name of the dimension (type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column_descriptors :</dt>
+<dd>list of one DimensionDescription instance</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>start :</dt>
+<dd>first value of this dimension (type float)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>scale :</dt>
+<dd>interval between the values of this dimension (type float)</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<p><em>(methods imposed by inheritance)</em></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>n_elem :</dt>
+<dd>number of element in the column(s)/ number of samples</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>is_categorical :</dt>
+<dd>differentiate measure and categorical headers for the properties
+is_measure, is_categorical_with_values and is_undifferentiated</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>__eq__ :</dt>
+<dd>compares all the fields of the headers (returns True if all the
+fields are the same) it can be used by writting header1 == header2</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_n_columns :</dt>
+<dd>gives the number of columns (1 for MeasureHeader, 0 to n for
+CategoricalHeader)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_units :</dt>
+<dd>gives the list of the unit used for each column (&#8216;no unit&#8217; is
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_all_units :</dt>
+<dd>gives the list of conversion table for each column (&#8216;no unit&#8217; is
+returned for each column with no specified unit)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>disp :</dt>
+<dd>gives the main attributes of a Header</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_value(nline, column = None) :</dt>
+<dd>gives the value located at the line nline and at the column column
+(defined by it&#8217;s label or it&#8217;s number) or the fist one.Since we use
+pyhton, we have decided that to access the first element of the
+column, nline must be equal to 0.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>get_itemname(nline) :</dt>
+<dd>nline can here be an integer or a list of integer. The function
+returns the corresponding values of the first column.</dd>
+</dl>
+</li>
+</ul>
+<p><em>(other methods)</em></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>update_measureheader(start = None, n_elem = None,scale = None):</dt>
+<dd>creates a new measure header from the attributes of a previous one,
+and the specified changes</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd>creates a copy of a MeasureHeader instance</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Example</strong></p>
+<blockquote>
+<div><p>label : &#8216;x&#8217;</p>
+<p>column_descriptors : (list of one DimensionDescription)</p>
+<blockquote>
+<div><p>label : &#8216;x&#8217;,</p>
+<p>dimension_type : &#8216;numeric&#8217;,</p>
+<p>unit : &#8216;mm&#8217;,</p>
+<p>all_units : [{unit : &#8216;mm&#8217;, &#8216;value&#8217; : 10**(-3)}, {unit : &#8216;m&#8217;,
+&#8216;value&#8217; : 1}]</p>
+</div></blockquote>
+<p>n-elem : 4</p>
+<p>start : 1</p>
+<p>scale : 2</p>
+<blockquote>
+<div><p>&#8216;x&#8217;</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">x</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+</tr>
+<tr class="row-even"><td>5</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="xdata-class">
+<h2>Xdata class:<a class="headerlink" href="#xdata-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xdata.Xdata">
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">Xdata</code><span class="sig-paren">(</span><em>name</em>, <em>data</em>, <em>headers</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#Xdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.Xdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class allows the creation of a ND dataset, with headers for each
+dimension and a name.</p>
+<p>Xdata is used to store the data. Xdata is a container for an ND
+(N dimensional) array with all the values/data, as well as all of the 
+headers describing each of the N dimensions, stored in a list. Xdata also
+has the name of the whole set of data and a data_descriptor attribute to
+describe the data.</p>
+<p>Xdata includes a handeling of events.
+TODO : explain better the event part</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>name :</dt>
+<dd>name of the dataset (type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>data :</dt>
+<dd>N dimensional numpy array with the data itself</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>headers :</dt>
+<dd>list of the headers describing each of the N dimensions</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>unit :</dt>
+<dd>simple unit or list of conversion</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Attributes</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>data :</dt>
+<dd>N dimensional numpy.ndarray with the data itself</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>headers :</dt>
+<dd>list of the headers describing each of the N dimensions</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>name :</dt>
+<dd>name of the dataset (type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>data_descriptor :</dt>
+<dd>DimensionDescription instance describing the dataset</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt>get_n_dimensions :</dt>
+<dd><p class="first last">gives the number of dimensions of xdata (it corresponds to the
+number of headers)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>shape :</dt>
+<dd><p class="first last">gives the shape of the data (it corresponds to the number of elements
+for each dimension)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy :</dt>
+<dd><p class="first last">creates a copy of a Xdata instance</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>update_data(newdata) :</dt>
+<dd><p class="first last">Simply changing some values in data by giving a whole new numpy array.
+Thoses changes can change the length of measure headers or categorical
+headers tht are undifferentiated. This method returns a new Xdata
+instance.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>update_xdata(flag, dim, ind, dataslices, modified_header) :</dt>
+<dd><blockquote class="first">
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>flag</dt>
+<dd><ul class="first last">
+<li>&#8216;chgdata&#8217; to only chage some data (it can modifie the length of
+measure headers and undifferentiated headers but not
+categoricalwithvalues headers), this flag is not supposed to be
+used: to simply change the data, one must use update_data.
+However, the flag can be &#8216;all&#8217; but with no new header, in witch
+case, we transform it to the &#8216;chgdata&#8217; flag (this is why it is
+tolerated as an arrgument as well)</li>
+<li>&#8216;all&#8217; to change the data and modifie the header (possible
+modifications are given for modified_header)</li>
+<li>&#8216;chg&#8217; to change some lines of a header and corresponding data</li>
+<li>&#8216;new&#8217; to add lines in a dimension</li>
+<li>&#8216;remove&#8217; to remove some lines</li>
+<li>&#8216;chg&amp;new&#8217; to change and add some lines</li>
+<li>&#8216;chg&amp;rm&#8217; to change and remove some lines</li>
+<li>&#8216;perm&#8217; to permute some lines</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>dim :</dt>
+<dd>(int) number of the modified header</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>ind :</dt>
+<dd>(list of int) indices of lines that are changing</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>dataslices :</dt>
+<dd>new values for the modified lines</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>modified_header :</dt>
+<dd>same header as before but with a few changes (adding columns,
+lines, changing values depending of the type of header).</dd>
+</dl>
+</li>
+</ul>
+<p class="last">This method allows to update a header and the corresponding data,
+the shape of data migth be modifed but the dimensions are still
+representing the same thing(DimensionDescriptions are not changed,
+(except for dimension_type that migth become &#8216;mixed&#8217; if some lines are
+merged)).It returns a new data instance.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>modify_dimensions(flag, dim, newdata, newheaders):</dt>
+<dd><ul class="first simple">
+<li><dl class="first docutils">
+<dt>flag</dt>
+<dd><ul class="first last">
+<li>&#8216;global&#8217; to change everything,</li>
+<li>&#8216;chgdim&#8217; to change one dimension/dimensions,</li>
+<li>&#8216;insertdim&#8217; to insert a dimension/dimensions,</li>
+<li>&#8216;rmdim&#8217; to remove a dimension/dimensions,</li>
+<li>&#8216;permdim&#8217; to permute the dimensions</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>dim :</dt>
+<dd>list of the dimensions to be changed</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>newdata :</dt>
+<dd>full numpy.array with the whole data (except for flag
+&#8216;permdim&#8217;)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>newheaders :</dt>
+<dd>list of the new headers</dd>
+</dl>
+</li>
+</ul>
+<p class="last">This methods allows to modify the structure of a Xdata instance, i.e.
+to modify the DimensionDescriptions in the list of headers (and
+therefore the data) new headers do not represent the same thing as
+before. This method aslo allows to change the number of dimensions.
+It returns a new Xdata instance.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Example</strong></p>
+<p>Let&#8217;s take the example of children throwing a ball.
+We are interrested in the hight of the ball over time, for each child, and
+for each throw.</p>
+<dl class="docutils">
+<dt>In this example, we have 3 dimensions:</dt>
+<dd><ul class="first last simple">
+<li>time</li>
+<li>child</li>
+<li>number of the throw, that we are going to call repetition</li>
+</ul>
+</dd>
+</dl>
+<p>Therefore, headers will be a list of the 3 headers given below:</p>
+<blockquote>
+<div><ul class="simple">
+<li>time is a MeasureHeader:</li>
+</ul>
+<p>label : &#8216;t&#8217;</p>
+<p>column_descriptors : (list of one DimensionDescription)</p>
+<blockquote>
+<div><p>label : &#8216;t&#8217;,</p>
+<p>dimension_type : &#8216;numeric&#8217;,</p>
+<p>unit : &#8216;ms&#8217;,</p>
+<p>all_units : [{unit : &#8216;ms&#8217;, &#8216;value&#8217; : 10**(-3)},
+{unit : &#8216;s&#8217;, &#8216;value&#8217; : 1}]</p>
+</div></blockquote>
+<p>n-elem : 3000</p>
+<p>start : 0</p>
+<p>scale : 2</p>
+<blockquote>
+<div><p>&#8216;t&#8217;</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">t</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+</tr>
+<tr class="row-even"><td>4</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+</tr>
+<tr class="row-even"><td>...</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ul class="simple">
+<li>repetition is a CategoricalHeader that is undifferentiated</li>
+</ul>
+<blockquote>
+<div><p>label : &#8216;repetitions&#8217;</p>
+<p>column_descriptors : (list of DimensionDescriptors) : None</p>
+<p>n_elem : 8</p>
+<p>values : None</p>
+<blockquote>
+<div><blockquote>
+<div>&#8216;repetitions&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">repetitions</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+</tr>
+<tr class="row-even"><td>2</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+</tr>
+<tr class="row-even"><td>4</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+</tr>
+<tr class="row-even"><td>6</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>child is a CategoricalHeader with values (because we can store some</dt>
+<dd>complementary informatios)</dd>
+</dl>
+</li>
+</ul>
+<blockquote>
+<div><p>label : &#8216;child&#8217;</p>
+<p>column_descriptors : (list of DimensionDescriptors, simplified here)</p>
+<blockquote>
+<div><p>1/ label : &#8216;name&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+<p>2/ label : &#8216;age&#8217;, dimension_type : &#8216;numeric&#8217;, unit : &#8216;year old&#8217;</p>
+<p>3/ label : &#8216;gender&#8217;, dimension_type : &#8216;string&#8217;, no unit</p>
+</div></blockquote>
+<p>n_elem : 5</p>
+<p>values :</p>
+<blockquote>
+<div><p>[[&#8216;Emily&#8217;, 8, &#8216;female&#8217; ]</p>
+<p>[&#8216;Paul&#8217;, 7, &#8216;male&#8217;]</p>
+<p>[&#8216;Helen&#8217;, 9, &#8216;female&#8217;]</p>
+<p>[&#8216;Lily&#8217;, 7, &#8216;female&#8217;]</p>
+<p>[&#8216;James&#8217;, 9, &#8216;male&#8217;]]</p>
+<blockquote>
+<div><blockquote>
+<div>&#8216;chlid&#8217;</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="29%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">age</th>
+<th class="head">gender</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Emily</td>
+<td>8</td>
+<td>female</td>
+</tr>
+<tr class="row-odd"><td>Paul</td>
+<td>7</td>
+<td>male</td>
+</tr>
+<tr class="row-even"><td>Helen</td>
+<td>9</td>
+<td>female</td>
+</tr>
+<tr class="row-odd"><td>Lily</td>
+<td>7</td>
+<td>female</td>
+</tr>
+<tr class="row-even"><td>James</td>
+<td>9</td>
+<td>male</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>Now we have our list of headers, of length 3.</p>
+<p>The corresponding data is 3D array containing the values of the higth
+of the ball at all time for each of the children&#8217;s throw. It is
+described (dimension_type and unit) in data_descriptor.</p>
+<p>All we miss is the name of this set of data and headers : &#8220;higth of
+the throw of a ball&#8221;</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Module xdata : defining a data structure</a><ul>
+<li><a class="reference internal" href="#color-class">Color class:</a></li>
+<li><a class="reference internal" href="#dimensiondescription-class">DimensionDescription class:</a></li>
+<li><a class="reference internal" href="#header-abstract-class">Header abstract class:</a></li>
+<li><a class="reference internal" href="#categoricalheader-class">CategoricalHeader  class:</a></li>
+<li><a class="reference internal" href="#measureheader-class">MeasureHeader class:</a></li>
+<li><a class="reference internal" href="#xdata-class">Xdata class:</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to xplor&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Annexes.html"
+                        title="next chapter">Annexes : Various functions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/xdata.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Annexes.html" title="Annexes : Various functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to xplor’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
