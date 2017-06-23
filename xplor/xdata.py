@@ -1044,26 +1044,25 @@ class CategoricalHeader(Header):
         if line >= self.n_elem or line < 0:
             raise Exception("line must be in [0, n_elem[")
         if column is None:
-            raise Exception("not implemented yet")  # TODO
+            if self.n_column == 0:
+                return []
+            else:
+                raise Exception("not implemented yet (should return the whole "
+                                "line)")  # TODO
         if isinstance(column, int):
-            if column == 0 and self.n_column == 0:
-                # line_num must be 0 to have the first elem of a list in
-                # python.
-                return None
             if column >= self.n_column or column < 0:
                 raise Exception("column is a str or an int in [0, n_col[")
             return self._values[column][line]
-        elif not isinstance(column, str):
+        elif isinstance(column, str):
+            for j in range(self.n_column):
+                if column == self._column_descriptors[j].label:
+                    return self._values[j][line]
+            raise Exception("column is either the label of a column or it's"
+                            "number (int)")
+        else:
             raise Exception("column is either the label of a column or it's"
                             "number (int)")
         # if it is a string
-        count = 0
-        for dim_descriptor in self._column_descriptors:
-            if dim_descriptor.label == column:
-                return self._values[count][line]
-            count += 1
-        raise Exception("column is either the label of a column or it's"
-                        "number (int)")
 
     def get_item_name(self, line):
         """get the value(s) of the line(s) in line_num (it can be an int or a list
@@ -1073,15 +1072,17 @@ class CategoricalHeader(Header):
         if isinstance(line, int):
             if line >= self.n_elem or line < 0:
                 raise Exception("line_num must be in [0, n_elem[")
-            return self.get_value(line)
+            if self.n_column:
+                return self.get_value(line, 0)
+            else:
+                return str(line)
         elif isinstance(line, list):
-            item_names = []
-            for n in line:
-                if not isinstance(n, int):
-                    raise Exception("all line numbers must be integers")
-                item_names += [self.get_value(n)]
-            return item_names
-        raise Exception("line_num must be an int or a list of int")
+            if self.n_column:
+                return [self.get_value(i, 0) for i in line]
+            else:
+                return [str(i) for i in line]
+        else:
+            raise Exception("line_num must be an int or a list of int")
 
     def add_column(self, column_descriptor, values):
         """this method allows to add a column to a categorical header"""
