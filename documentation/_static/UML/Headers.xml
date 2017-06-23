@@ -1,0 +1,76 @@
+<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>320</x><y>80</y><w>380</w><h>340</h></coordinates><panel_attributes>/Header {abstract}/
+--
+label : str
+column_descriptors : list of DimensionDescription
+
+is_measure : Booleen
+is_categorical_with_values : Booleen
+is_undifferentiated : Booleen
+--
+check_header_update(flag, ind, newheader)
+
+(abstract methods)
+__eq__
+
+n_elem()
+is_categorical()
+get_n_columns()
+get_units()
+get_all_units()
+disp()
+copy()
+get_value(line, column = None)
+get_item_name(nline)
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>590</x><y>410</y><w>130</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;110;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>540</x><y>490</y><w>320</w><h>390</h></coordinates><panel_attributes>MeasureHeader
+--
+label : str
+column_descriptors : list of 1 DimensionDescription
+start : float
+scale : float
+n_elem : int
+
+is_categorical :Booleen
+--
+MeasureHeader(label, start, n_elem, scale, unit = None,
+              checkbank = None, column_descriptors = None)
+--
+__eq__
+
+get_n_columns()
+get_units()
+get_all_units()
+disp()
+copy()
+get_value(line, column = None)
+get_item_name(nline)
+
+&lt;&lt;update&gt;&gt;
+update_measureheader(start = None,
+                                               n_elem = None,
+                                               scale = None)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>170</x><y>490</y><w>320</w><h>390</h></coordinates><panel_attributes>CategoricalHeader
+--
+label : str
+column_descriptors : list of DimensionDescription
+values : pandas DataFrame
+
+n_elem : int
+is_categorical : Booleen
+--
+CategoricalHeader(label, column_descriptors = None,
+                                         n_elem = None, values = None)
+--
+__eq__
+
+get_n_columns()
+get_units()
+get_all_units()
+disp()
+copy()
+get_value(line, column = None)
+get_item_name(nline)
+
+&lt;&lt;update&gt;&gt;
+update_categoricalheader(flag, ind, value)
+merge_lines(ind)
+add_column(column_descriptor, values)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>310</x><y>410</y><w>130</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>110;10;10;80</additional_attributes></element></diagram>
