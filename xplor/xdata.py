@@ -158,7 +158,7 @@ class DimensionDescription:
     - unit :
         currently used unit
         (type str)
-    - allunit :
+    - all_units :
         list of dictionaries for unit conversions
 
     **Methods**
@@ -187,7 +187,8 @@ class DimensionDescription:
      
     **Note**
      
-    DimensionDescription of dimension type 'color' are Color objects
+    Values corresponding to a DimensionDescription of dimension_type
+    'color' are Color objects
 
     """
 
