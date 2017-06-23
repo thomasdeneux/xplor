@@ -1,5 +1,44 @@
 # -*- coding: utf-8 -*-
 
+def test_visp():
+    from vispy.plot import Fig
+    fig = Fig()
+    ax = fig[0, 0]
+    ax.plot([[0, 1], [0, 1]])
+
+
+
+def qt_hello_world():
+    # example taken from http://fr.wikibooks.org/wiki/PyQt/Premier_exemple_:_Hello_World_!
+
+    import sys
+    from PyQt5 import QtCore, QtWidgets
+    from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget
+    from PyQt5.QtCore import QSize
+
+    class HelloWindow(QMainWindow):
+        def __init__(self):
+            QMainWindow.__init__(self)
+
+            self.setMinimumSize(QSize(640, 480))
+            self.setWindowTitle("Hello world")
+
+            # centralWidget = QWidget(self)
+            # self.setCentralWidget(centralWidget)
+            #
+            # gridLayout = QGridLayout(self)
+            # centralWidget.setLayout(gridLayout)
+
+            title = QLabel("Hello World from PyQt", self)
+            title.setAlignment(QtCore.Qt.AlignCenter)
+            # gridLayout.addWidget(title, 0, 0)
+            self.setCentralWidget(title)
+
+    app = QtWidgets.QApplication(sys.argv)
+    mainWin = HelloWindow()
+    mainWin.show()
+    sys.exit(app.exec_())
+
 
 def test_native():
 
@@ -444,7 +483,8 @@ def test_typing():
 # Go!!!
 if __name__ == '__main__':
     # test_native()
-    # test_signal()
+    test_signal()
     # test_pointscloud()
     # test_typing()
-    test_user()
+    # test_user()
+    # qt_hello_world()
