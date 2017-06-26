@@ -1,0 +1,16 @@
+<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>280</x><y>80</y><w>340</w><h>210</h></coordinates><panel_attributes>Xdata
+bg=white
+--
+name : str
+data : numpy array
+data_descriptor : DimensionDescription
+headers : list of Header
+--
+get_n_dimensions()
+shape()
+
+&lt;&lt;update&gt;&gt;
+update_data(newdata)
+update_xdata(flag, dim, ind, dataslices, modified_header)
+modify_dimensions(flag, dim, newdata, newheaders)
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>

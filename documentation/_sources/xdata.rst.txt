@@ -6,29 +6,41 @@
 Module xdata : defining a data structure
 ****************************************
 
-
 .. automodule:: xdata
 
-Color class:
-------------
+.. image:: module_xdata.png
+   :align: center
+   :alt: UML diagram for module xdata
+
+Color class
+-----------
 .. autoclass:: Color
 
-DimensionDescription class:
----------------------------
+DimensionDescription class
+--------------------------
 .. autoclass:: DimensionDescription
 
-Header abstract class:
-----------------------
+Header abstract class
+---------------------
+.. image:: headers_simplified.png
+   :align: center
+   :alt: UML diagram for abstract class Header and subclasses
+
 .. autoclass:: Header
 
-CategoricalHeader  class:
--------------------------
+CategoricalHeader  class
+------------------------
 .. autoclass:: CategoricalHeader
 
-MeasureHeader class:
---------------------
+MeasureHeader class
+-------------------
 .. autoclass:: MeasureHeader
 
-Xdata class:
-------------
+Xdata class
+-----------
+
+.. image:: Xdata.png
+   :align: center
+   :alt: UML diagram for class Xdata
+
 .. autoclass:: Xdata

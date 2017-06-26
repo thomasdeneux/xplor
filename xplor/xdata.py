@@ -1803,7 +1803,7 @@ class Xdata:
     - update_data(new_data):
         Simply changing some values in data by giving a whole new numpy array.
         Those changes can change the length of measure headers or categorical
-        headers tht are undifferentiated. This method returns a new Xdata
+        headers that are undifferentiated. This method returns a new Xdata
         instance.
     - update_xdata(flag, dim, ind, data_slices, modified_header):
         - flag

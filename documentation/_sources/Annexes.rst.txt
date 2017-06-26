@@ -6,15 +6,15 @@
 Annexes : Various functions
 ***************************
 
-In the xdata module:
---------------------
+In the xdata module
+-------------------
 
-createDimensionsDescription
-+++++++++++++++++++++++++++
+create_dimension_description
+++++++++++++++++++++++++++++
 
-.. autofunction:: xdata.createDimensionDescription(label, column)
+.. autofunction:: xdata.create_dimension_description(label, column)
 
-check_bank
-++++++++++
+check_bank_unit
++++++++++++++++
 
-.. autofunction:: xdata.check_bank(unit)
+.. autofunction:: xdata.check_bank_unit(unit)

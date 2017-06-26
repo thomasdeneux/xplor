@@ -3,6 +3,7 @@
 
 The modules that need to be tested are:
     - xdata (shape of the data itself)
+    - view (display of the data and commands)
 
 This module uses:
         numpy
@@ -24,9 +25,11 @@ import pandas as pd
 import unittest
 
 import xdata
+import view
 
 
 class MyTestCase(unittest.TestCase):
+
     def test_xdata_module_DimensionDescription_class(self):
         p = xdata.DimensionDescription('prices', 'numeric', 'euros')
         r = xdata.DimensionDescription('race_times', 'numeric',
@@ -1192,3 +1195,4 @@ if __name__ == "__main__":
     first_test.test_xdata_module_MeasureHeader_class()
     first_test.test_xdata_module_Xdata_class()
     first_test.test_xdata_module_create_dimension_description_function()
+
