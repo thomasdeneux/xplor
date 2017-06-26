@@ -25,7 +25,6 @@ import pandas as pd
 import unittest
 
 import xdata
-import view
 
 
 class MyTestCase(unittest.TestCase):
