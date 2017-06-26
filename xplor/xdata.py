@@ -262,6 +262,8 @@ class DimensionDescription:
                             "the conversion indicator (e.g. "
                             "['mm', 10**(-3), 'm', 1])")
 
+        self._check_type_fun = None
+
     # Attributes label, dimension_type, unit and all_units can be seen but not
     # modified outside of the class (only get methods, no setters).
     @property
@@ -304,17 +306,36 @@ class DimensionDescription:
 
     def check_type(self, x, raise_error=False):
         """check that a given value satisfies dimension_type"""
-        # Check type
+
         if self.dimension_type == 'mixed':
             ok = True
-        elif self.dimension_type == 'logical':
-            ok = isinstance(x, bool)
-        elif self.dimension_type == 'string':
-            ok = isinstance(x, str)
-        elif self.dimension_type == 'numeric':
-            ok = type(x) in [int, float, complex, np.float64, np.int64]
-        elif self.dimension_type == 'color':
-            ok = isinstance(x, Color)
+        else:
+            if self._check_type_fun is None:
+                # Check type
+                if self.dimension_type == 'mixed':
+                    self._check_type_fun = lambda u: True
+                elif self.dimension_type == 'logical':
+                    self._check_type_fun = lambda u: isinstance(u, bool)
+                elif self.dimension_type == 'string':
+                    self._check_type_fun = lambda u: isinstance(u, str)
+                elif self.dimension_type == 'numeric':
+                    self._check_type_fun = (
+                        lambda u: type(u) in [int, float, complex,
+                                                np.float64, np.int64])
+                elif self.dimension_type == 'color':
+                    self._check_type_fun = lambda u: isinstance(u, Color)
+                else:
+                    raise Exception
+
+            if isinstance(x, list):
+                ok = True
+                for elem in x:
+                    ok = self._check_type_fun(elem)
+                    if not ok:
+                        break
+            else:
+                ok = self._check_type_fun(x)
+
         # Return check result, or raise an error
         if raise_error:
             if not ok:
@@ -534,15 +555,15 @@ class Header(ABC):
                           'fruits'
 
                         +---------+
-                        or fruits  or
+                        | fruits  |
                         +=========+
-                        or 1       or
+                        | 1       |
                         +---------+
-                        or 2       or
+                        | 2       |
                         +---------+
-                        or 3       or
+                        | 3       |
                         +---------+
-                        or 4       or
+                        | 4       |
                         +---------+
 
 
@@ -571,15 +592,15 @@ class Header(ABC):
                                         'x'
 
                                         +-----+
-                                        or x   or
+                                        | x   |
                                         +=====+
-                                        or 1   or
+                                        | 1   |
                                         +-----+
-                                        or 3   or
+                                        | 3   |
                                         +-----+
-                                        or 5   or
+                                        | 5   |
                                         +-----+
-                                        or 7   or
+                                        | 7   |
                                         +-----+
 
 
@@ -760,13 +781,6 @@ class CategoricalHeader(Header):
         (optional, the case with no column is possible. The legend would then
         be a list of int [1, 2, ...], it is undifferentiated)
 
-    - n_elem:
-        number of element in the column(s)
-
-        (type int)
-
-        (optional if values is specified)
-
     - values:
         content of the various subdimensions
 
@@ -775,6 +789,13 @@ class CategoricalHeader(Header):
 
         (optional if it is just undifferentiated series of measures and that
         n_elem is given)
+
+    - n_elem:
+        number of element in the column(s)
+
+        (type int)
+
+        (optional if values is specified)
 
 
     **Attributes**
@@ -898,15 +919,15 @@ class CategoricalHeader(Header):
                           'fruits'
 
                         +---------+
-                        or fruits  or
+                        | fruits  |
                         +=========+
-                        or 1       or
+                        | 1       |
                         +---------+
-                        or 2       or
+                        | 2       |
                         +---------+
-                        or 3       or
+                        | 3       |
                         +---------+
-                        or 4       or
+                        | 4       |
                         +---------+
 
     """
@@ -927,10 +948,10 @@ class CategoricalHeader(Header):
         # this case the values will be a table with zero column, and n_elem
         # must be provided to inform about the number of rows.
         if values is None:
-            assert n_elem is not None, (
-                "if there are no values, n_elem must be provided")
-            assert column_descriptors is None, (
-                "if there are no values, there are no columns to be described")
+            assert n_elem is not None, \
+                "if there are no values, n_elem must be provided"
+            assert column_descriptors is None, \
+                "if there are no values, there are no columns to be described"
             values = pd.DataFrame(np.zeros((n_elem, 0)))
             column_descriptors = []
 
@@ -942,8 +963,8 @@ class CategoricalHeader(Header):
         if n_elem is None:
             n_elem = values.shape[0]
         else:
-            assert n_elem == values.shape[0], (
-                "n_elem does not match the shape of values")
+            assert n_elem == values.shape[0], \
+                "n_elem does not match the shape of values"
 
         # column descriptors can be provided as string, DimensionDescription
         # object (if n_column==1), or list thereof
@@ -953,11 +974,11 @@ class CategoricalHeader(Header):
             # convert sting or DimensionDescription to 1-element list
             column_descriptors = [column_descriptors]
         else:
-            assert isinstance(column_descriptors, list), (
-                "column_descriptors must be of type str, "
-                "DimensionDescription or a list of such elements")
-        assert len(column_descriptors) == n_column, (
-            "column_descriptors does not match the number of values columns")
+            assert isinstance(column_descriptors, list), \
+                ("column_descriptors must be of type str, "
+                 "DimensionDescription or a list of such elements")
+        assert len(column_descriptors) == n_column, \
+            "column_descriptors does not match the number of values columns"
         # create DimensionDescription objects or check their type
         for i in range(n_column):
             dim_descriptor = column_descriptors[i]
@@ -1099,13 +1120,8 @@ class CategoricalHeader(Header):
         else:
             # if it was a given DimensionDescriptor, let's check that the
             # dimension_type correspond to that of the values
-            dimension_type = column_descriptor.dimension_type
-            if dimension_type != 'mixed':
-                for i in values:
-                    if DimensionDescription.infer_type(i) != dimension_type:
-                        raise Exception("the dimension_type of the "
-                                        "DimensionDescription must correspond"
-                                        " to that of the values")
+            column_descriptor.check_type(values)
+
         column_descriptors = self._column_descriptors + [column_descriptor]
         new_values = self._values.copy()
         new_values[len(column_descriptors)-1] = values
@@ -1396,9 +1412,11 @@ class CategoricalHeader(Header):
         return pd.Series(merge)
 
     def copy(self):
-        """creates a copy of a categoricalHeader"""
+        """creates a copy of a categoricalHeader: note that the list of column
+        descriptor elements is a 'simple copy' as its elements themselves
+        are only shallow copied"""
         return CategoricalHeader(self._label,
-                                 [x.copy() for x in self._column_descriptors],
+                                 self._column_descriptors.copy(),
                                  self._values.copy())
 
 

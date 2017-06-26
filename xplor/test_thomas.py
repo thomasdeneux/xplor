@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-def test_visp():
+
+def test_vispy():
     from vispy.plot import Fig
     fig = Fig()
     ax = fig[0, 0]
-    ax.plot([[0, 1], [0, 1]])
-
+    ax.plot([[0, 1], [1, 2]])
 
 
 def qt_hello_world():
@@ -196,7 +196,7 @@ def test_signal():
         app.run()
 
 
-def test_pointscloud():
+def test_points_cloud():
 
     """
     Demonstrating a cloud of points.
@@ -470,21 +470,22 @@ def test_pointscloud():
         c = Canvas()
         app.run()
 
+
 def test_typing():
 
-    class Apple:
-        def __init__(self,x: int):
-            self.x = x
+    def display_string(s: str):
+        print(s)
+        return
 
-    print(Apple(3))
-    print(Apple('hello'))
+    display_string('hello')
+    display_string(3)
 
 
 # Go!!!
 if __name__ == '__main__':
     # test_native()
-    test_signal()
-    # test_pointscloud()
-    # test_typing()
+    # test_signal()
+    # test_points_cloud()
+    test_typing()
     # test_user()
     # qt_hello_world()
