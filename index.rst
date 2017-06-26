@@ -15,6 +15,7 @@ Table of Contents:
 
    xdata.rst
    Annexes.rst
+   Library.rst
 
 
 

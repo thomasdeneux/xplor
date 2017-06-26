@@ -7,4 +7,3 @@ install:
   - pip install -e git+https://github.com/vispy/vispy#egg=vispy-dev
 script:
   - python xplor/tests.py
-  - python xplor/vispy_test.py
