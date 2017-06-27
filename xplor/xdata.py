@@ -1847,7 +1847,7 @@ class Xdata:
        the shape of data might be modified but the dimensions are still
        representing the same thing(DimensionDescriptions are not changed,
        (except for dimension_type that might become 'mixed' if some lines are
-       merged)).It returns a new data instance.
+       merged)).It returns a new data instance. TODO : change the returns part
 
     - modify_dimensions(flag, dim, new_data, new_headers):
         - flag
@@ -1871,7 +1871,7 @@ class Xdata:
         to modify the DimensionDescriptions in the list of headers (and
         therefore the data) new headers do not represent the same thing as
         before. This method also allows to change the number of dimensions.
-        It returns a new Xdata instance.
+        It returns a new Xdata instance. TODO : change the returns part
 
 
     **Example**
@@ -2126,6 +2126,7 @@ class Xdata:
         # once all headers are updated, update the data itself
         new_xdata._data = new_data
         return new_xdata
+        # TODO : notify instead of returns
 
     def update_xdata(self, flag, dim, ind, data_slices, modified_header):
         """creates a new Xdata instance with the same attributes as the
@@ -2641,6 +2642,7 @@ class Xdata:
         # flag argument is either not a flag or not one accepted by this method
         raise Exception("flag must be 'all', 'chg', 'new', 'remove', 'perm' "
                         "'chg&new' or 'chg&rm'")
+        # TODO : notify instead of returns
 
     def modify_dimensions(self, flag, dim, new_data, new_headers):
         """creates a new Xdata instance with changes for the dimensions"""
@@ -2758,6 +2760,7 @@ class Xdata:
         # flag argument is either not a flag or not one accepted by this method
         raise Exception("flag must be 'global', 'dim_chg', 'dim_insert', "
                         "'dim_rm', or 'dim_perm'")
+        # TODO : notify instead of returns
 
 
 def create_dimension_description(label, column=None):

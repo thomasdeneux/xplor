@@ -114,7 +114,7 @@ class MyTestCase(unittest.TestCase):
         # get_default_value = False
         self.assertTrue(xdata.DimensionDescription.infertype(0, False),
                         'numeric')
-        # getdefaultvalue = True
+        # get_default_value = True
         self.assertTrue(xdata.DimensionDescription.infertype(0, True),
                         ('numeric', 0))
 
@@ -835,6 +835,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(dataset.shape(), (5, 3, 4))
         self.assertEqual(dataset.headers[2], fruits)
         print("Test 7: testing the update_data method")
+        # TODO : notify instead of returns
         new_data1 = np.random.rand(5, 3, 4)
         ud_dataset1 = dataset.update_data(new_data1)
         new_data2 = np.random.rand(10, 8, 4)
@@ -856,6 +857,7 @@ class MyTestCase(unittest.TestCase):
                           dataset.update_data,
                           np.random.rand(5, 3, 9))
         print("Test 8: testing the update_xdata method")
+        # TODO : notify instead of returns
         # if dim is not an int of out of range, it raises an exception
         new_fruits = fruits.update_categorical_header('chg', [1, 3], series)
         self.assertRaises(Exception, dataset.update_xdata,
@@ -1062,6 +1064,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(perm_xdata.data[0][2][1], dataset.data[0][2][3])
 
         print("Test 9: testing the modify_dimensions method")
+        # TODO : notify instead of returns
         # flag 'global' (not all exceptions are tested)
         (global_xdata, flag) = dataset.modify_dimensions('global',
                                                          None,
