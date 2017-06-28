@@ -1113,7 +1113,6 @@ class CategoricalHeader(Header):
                                     DimensionDescription.infertype(
                                     values[j][i])):
                                 column_descriptors[j].set_dimtype_to_mixed()
-                                i = values.shape[0]
                 return CategoricalHeader(self._label,
                                          column_descriptors,
                                          values=values)

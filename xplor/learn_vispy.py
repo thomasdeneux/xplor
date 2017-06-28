@@ -109,6 +109,7 @@ yaxis.link_view(view1)
 
 #display the canevas
 canvas.show()
+
 #start the app
 app.run()
 
