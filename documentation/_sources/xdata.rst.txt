@@ -8,7 +8,7 @@ Module xdata : defining a data structure
 
 .. automodule:: xdata
 
-.. image:: module_xdata.png
+.. image:: \images\module_xdata.png
    :align: center
    :alt: UML diagram for module xdata
 
@@ -22,7 +22,7 @@ DimensionDescription class
 
 Header abstract class
 ---------------------
-.. image:: headers_simplified.png
+.. image:: \images\headers_simplified.png
    :align: center
    :alt: UML diagram for abstract class Header and subclasses
 
@@ -39,7 +39,7 @@ MeasureHeader class
 Xdata class
 -----------
 
-.. image:: Xdata.png
+.. image:: \images\Xdata.png
    :align: center
    :alt: UML diagram for class Xdata
 

@@ -8,6 +8,10 @@ Annexes : Libraries and other tools
 
 numpy
 +++++
+.. image:: \images\numpy.jpg
+   :align: right
+   :alt: numpy logo
+   :height: 80 px
 
 http://www.numpy.org/
 
@@ -16,6 +20,10 @@ In this project it is used to store the data and easily apply filters on it.
 
 pandas
 ++++++
+.. image:: \images\pandas.png
+   :align: right
+   :alt: pandas logo
+   :height: 80 px
 
 http://pandas.pydata.org/
 
@@ -25,15 +33,30 @@ apply the filters.
 
 Vispy and PyQt
 ++++++++++++++
+.. image:: \images\Vispy.png
+   :align: right
+   :alt: Vispy logo
+   :height: 80 px
+
+.. image:: \images\PyQt.png
+   :align: left
+   :alt: PyQt logo
+   :height: 80 px
 
 http://vispy.org/
+
 https://wiki.python.org/moin/PyQt
+
 https://www.qt.io/
 
 This project uses Vispy and PyQt for the user interface and interactive design.
 
 Sphinx
 ++++++
+.. image:: \images\Sphinx.png
+   :align: right
+   :alt: Sphinx logo
+   :height: 80 px
 
 http://www.sphinx-doc.org/
 
@@ -41,6 +64,10 @@ This project uses Sphinx for the documentation (including autodoc).
 
 Travis CI
 +++++++++
+.. image:: \images\Travis.png
+   :align: right
+   :alt: Travis CI logo
+   :height: 80 px
 
 https://travis-ci.org/
 
@@ -49,6 +76,10 @@ working versions.
 
 UMLetino
 ++++++++
+.. image:: \images\UMLetino.png
+   :align: right
+   :alt: UMLetino logo
+   :height: 80 px
 
 http://www.umlet.com/
 

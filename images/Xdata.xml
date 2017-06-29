@@ -1,5 +1,5 @@
 <diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>280</x><y>80</y><w>340</w><h>210</h></coordinates><panel_attributes>Xdata
-bg=white
+bg=#7dbce8
 --
 name : str
 data : numpy array

@@ -20,6 +20,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('xplor'))
+sys.path.insert(0, os.path.abspath('image'))
 import xdata
 a = xdata.Color('red')
 
@@ -97,7 +98,9 @@ html_theme = "classic"
 #
 html_theme_options = {
     "stickysidebar" : "true",
-    "relbarbgcolor": "black"
+    "relbarbgcolor": "black",
+    "visitedlinkcolor": "#a97de8",
+    "linkcolor": "#852563"
 }
 html_title = "Xplor your data"
 

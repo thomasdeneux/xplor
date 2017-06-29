@@ -59,6 +59,24 @@
 <div class="section" id="structure">
 <h1>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h1>
 <img alt="UML diagram of all Xplor's modules" class="align-center" src="_images/GlobalDiagram.png" />
+<p>The module <strong>xdata</strong> aims at the creation of a container for the N dimensional
+data and all the relative information on the dimensions and the data itself.</p>
+<p><strong>view</strong>&#8216;s main class is Window. Window creates the canvas (i.e. the window)
+on witch to display the data. This canvas is composed of a control zone, where
+the user can select the filters to apply, and a display zone, in which the user
+can zoom and change the labels&#8217; position. Window also possesses a Slicer
+instance and a ZoomSlicer instance to apply the correct filters on the Xdata
+instance.</p>
+<p>The module <strong>operation</strong> contains differents types of Filters as well as a
+Slicer class and a ZoomSlicer class that will apply a succession of Filters on
+the Xdata instance. The result of this operation is what is going to be
+displayed on the canvas.</p>
+<p><strong>Bank</strong> is used to store previously used Headers and units, to save the user
+some time.</p>
+<dl class="docutils">
+<dt>TODO: explain other modules ?</dt>
+<dd>add some illustrations</dd>
+</dl>
 </div>
 
 
