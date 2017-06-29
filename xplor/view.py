@@ -34,6 +34,8 @@ There are 2 classes in this module:
 from vispy import scene
 from vispy import app
 
+
+
 # creating the canvas of window
 canvas = scene.SceneCanvas(title = "xplor your data",
                            size = (800, 600),

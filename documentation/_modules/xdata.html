@@ -1163,7 +1163,6 @@
                                     <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span>
                                     <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">])):</span>
                                 <span class="n">column_descriptors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
-                                <span class="n">i</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                          <span class="n">column_descriptors</span><span class="p">,</span>
                                          <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
@@ -1897,7 +1896,7 @@
 <span class="sd">       the shape of data might be modified but the dimensions are still</span>
 <span class="sd">       representing the same thing(DimensionDescriptions are not changed,</span>
 <span class="sd">       (except for dimension_type that might become &#39;mixed&#39; if some lines are</span>
-<span class="sd">       merged)).It returns a new data instance.</span>
+<span class="sd">       merged)).It returns a new data instance. TODO : change the returns part</span>
 
 <span class="sd">    - modify_dimensions(flag, dim, new_data, new_headers):</span>
 <span class="sd">        - flag</span>
@@ -1921,7 +1920,7 @@
 <span class="sd">        to modify the DimensionDescriptions in the list of headers (and</span>
 <span class="sd">        therefore the data) new headers do not represent the same thing as</span>
 <span class="sd">        before. This method also allows to change the number of dimensions.</span>
-<span class="sd">        It returns a new Xdata instance.</span>
+<span class="sd">        It returns a new Xdata instance. TODO : change the returns part</span>
 
 
 <span class="sd">    **Example**</span>
@@ -2176,6 +2175,7 @@
         <span class="c1"># once all headers are updated, update the data itself</span>
         <span class="n">new_xdata</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">new_data</span>
         <span class="k">return</span> <span class="n">new_xdata</span>
+        <span class="c1"># TODO : notify instead of returns</span>
 
     <span class="k">def</span> <span class="nf">update_xdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">data_slices</span><span class="p">,</span> <span class="n">modified_header</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;creates a new Xdata instance with the same attributes as the</span>
@@ -2691,6 +2691,7 @@
         <span class="c1"># flag argument is either not a flag or not one accepted by this method</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;flag must be &#39;all&#39;, &#39;chg&#39;, &#39;new&#39;, &#39;remove&#39;, &#39;perm&#39; &quot;</span>
                         <span class="s2">&quot;&#39;chg&amp;new&#39; or &#39;chg&amp;rm&#39;&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO : notify instead of returns</span>
 
     <span class="k">def</span> <span class="nf">modify_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">new_data</span><span class="p">,</span> <span class="n">new_headers</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;creates a new Xdata instance with changes for the dimensions&quot;&quot;&quot;</span>
@@ -2808,6 +2809,7 @@
         <span class="c1"># flag argument is either not a flag or not one accepted by this method</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;flag must be &#39;global&#39;, &#39;dim_chg&#39;, &#39;dim_insert&#39;, &quot;</span>
                         <span class="s2">&quot;&#39;dim_rm&#39;, or &#39;dim_perm&#39;&quot;</span><span class="p">)</span></div>
+        <span class="c1"># TODO : notify instead of returns</span>
 
 
 <div class="viewcode-block" id="create_dimension_description"><a class="viewcode-back" href="../Annexes.html#xdata.create_dimension_description">[docs]</a><span class="k">def</span> <span class="nf">create_dimension_description</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

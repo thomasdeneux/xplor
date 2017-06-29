@@ -7,6 +7,11 @@
 *********************************
 Welcome to xplor's documentation!
 *********************************
+Introduction:
+
+.. image:: GlobalDiagram.png
+   :align: center
+   :alt: UML diagram of all Xplor's modules
 
 Table of Contents:
 
