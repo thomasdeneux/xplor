@@ -38,14 +38,14 @@ Vispy and PyQt
    :alt: Vispy logo
    :height: 80 px
 
-.. image:: \images\PyQt.png
-   :align: left
-   :alt: PyQt logo
-   :height: 80 px
-
 http://vispy.org/
 
 https://wiki.python.org/moin/PyQt
+
+.. image:: \images\PyQt.png
+   :align: right
+   :alt: PyQt logo
+   :height: 80 px
 
 https://www.qt.io/
 
@@ -74,8 +74,22 @@ https://travis-ci.org/
 This project uses Travis CI to continuously test the code and deploy only
 working versions.
 
+WebSequenceDiagrams
++++++++++++++++++++
+
+.. image:: \images\sequence.jpg
+   :align: right
+   :alt: WebSequenceDiagrams logo
+   :height: 80 px
+
+https://www.websequencediagrams.com/
+
+The sequence diagrams of this documentation were produced using
+websequencediagrams.
+
 UMLetino
 ++++++++
+
 .. image:: \images\UMLetino.png
    :align: right
    :alt: UMLetino logo

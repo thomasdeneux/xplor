@@ -58,25 +58,44 @@
 </div>
 <div class="section" id="structure">
 <h1>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="uml-diagram-of-all-xplor-s-modules">
+<h2>UML diagram of all Xplor&#8217;s modules<a class="headerlink" href="#uml-diagram-of-all-xplor-s-modules" title="Permalink to this headline">¶</a></h2>
+<p><strong>UML diagram of the global structure of the toolbox</strong></p>
 <img alt="UML diagram of all Xplor's modules" class="align-center" src="_images/GlobalDiagram.png" />
+</div>
+<div class="section" id="presentation-of-the-modules">
+<h2>Presentation of the modules<a class="headerlink" href="#presentation-of-the-modules" title="Permalink to this headline">¶</a></h2>
+<p>The three main modules are <strong>xdata</strong>, <strong>operation</strong> and <strong>view</strong>.</p>
 <p>The module <strong>xdata</strong> aims at the creation of a container for the N dimensional
-data and all the relative information on the dimensions and the data itself.</p>
+data and all the relative information on the dimensions and the data itself.
+Here is an example of a Xdata instance and one of it&#8217;s header:</p>
+<p><strong>Example of a MeasureHeader instance</strong></p>
+<p><strong>Example of a Xdata instance</strong></p>
 <p><strong>view</strong>&#8216;s main class is Window. Window creates the canvas (i.e. the window)
 on witch to display the data. This canvas is composed of a control zone, where
 the user can select the filters to apply, and a display zone, in which the user
 can zoom and change the labels&#8217; position. Window also possesses a Slicer
 instance and a ZoomSlicer instance to apply the correct filters on the Xdata
 instance.</p>
-<p>The module <strong>operation</strong> contains differents types of Filters as well as a
+<p><strong>Screenshot of the Window with the control zone and the display zone</strong></p>
+<p>The module <strong>operation</strong> contains different types of Filters as well as a
 Slicer class and a ZoomSlicer class that will apply a succession of Filters on
 the Xdata instance. The result of this operation is what is going to be
 displayed on the canvas.</p>
-<p><strong>Bank</strong> is used to store previously used Headers and units, to save the user
+<p>The interactions between the various classes are illustrated by the sequence
+diagrams bellow.</p>
+<p><strong>place here some diagrams!!</strong></p>
+<p><strong>list_display</strong>&#8216;s main class is ListDisplay. It is an interface for the user
+to select what data is to be displayed. For each filter created from the
+control zone of a Window instance, a new List instance appears.</p>
+<p><strong>Screenshot of the ListDisplay</strong></p>
+<p><strong>bank</strong> is used to store previously used Headers and units, to save the user
 some time.</p>
-<dl class="docutils">
-<dt>TODO: explain other modules ?</dt>
-<dd>add some illustrations</dd>
-</dl>
+<p><strong>header_edit</strong> allows the initialisation of a Xdata element : the user
+specifies the headers&#8217; labels and units. It suggests some previously used
+labels and units thanks to Bank.</p>
+<p><strong>GUI_tools</strong> is a set of tools for the interface.</p>
+</div>
 </div>
 
 
@@ -85,6 +104,15 @@ some time.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Structure</a><ul>
+<li><a class="reference internal" href="#uml-diagram-of-all-xplor-s-modules">UML diagram of all Xplor&#8217;s modules</a></li>
+<li><a class="reference internal" href="#presentation-of-the-modules">Presentation of the modules</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to xplor&#8217;s documentation!</a></p>

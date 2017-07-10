@@ -12,13 +12,17 @@ Introduction:
 
 Xplor is a free toolbox to visualise as easily as possible your N dimensional
 data.
-It started as a project for neuroscience, however it can be used for any type
-of data as show in the exemples below.
+It started as a project for neuroscience at CNRS (French National Center for
+Scientific Research), however it can be used for any type of data as shown in
+the examples below.
 
 It is available on github:
 
 https://github.com/thomasdeneux/xplor
 
+The toolbox is also available for matlab:
+
+https://github.com/thomasdeneux/xplor-Matlab-
 
 This documentation presents some tutorials on how to use the toolbox as well as
 the architecture of the code so that you can go through it more easily.

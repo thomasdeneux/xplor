@@ -37,15 +37,15 @@ from vispy import app
 
 
 # creating the canvas of window
-canvas = scene.SceneCanvas(title = "xplor your data",
-                           size = (800, 600),
-                           position = (500, 100),
-                           show = True,
-                           app = 'PyQt5',
-                           resizable = True,
+canvas = scene.SceneCanvas(title="xplor your data",
+                           size=(800, 600),
+                           position=(500, 100),
+                           show=True,
+                           app='PyQt5',
+                           resizable=True,
                            #later shared
-                           always_on_top = True,
-                           bgcolor = 'gray')
+                           always_on_top=True,
+                           bgcolor='gray')
 # display the canevas
 canvas.show()
 
