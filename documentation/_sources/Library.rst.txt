@@ -8,7 +8,7 @@ Annexes : Libraries and other tools
 
 numpy
 +++++
-.. image:: \images\numpy.jpg
+.. image:: \images\logos\numpy.jpg
    :align: right
    :alt: numpy logo
    :height: 80 px
@@ -20,7 +20,7 @@ In this project it is used to store the data and easily apply filters on it.
 
 pandas
 ++++++
-.. image:: \images\pandas.png
+.. image:: \images\logos\pandas.png
    :align: right
    :alt: pandas logo
    :height: 80 px
@@ -33,7 +33,7 @@ apply the filters.
 
 Vispy and PyQt
 ++++++++++++++
-.. image:: \images\Vispy.png
+.. image:: \images\logos\Vispy.png
    :align: right
    :alt: Vispy logo
    :height: 80 px
@@ -42,7 +42,7 @@ http://vispy.org/
 
 https://wiki.python.org/moin/PyQt
 
-.. image:: \images\PyQt.png
+.. image:: \images\logos\PyQt.png
    :align: right
    :alt: PyQt logo
    :height: 80 px
@@ -53,7 +53,7 @@ This project uses Vispy and PyQt for the user interface and interactive design.
 
 Sphinx
 ++++++
-.. image:: \images\Sphinx.png
+.. image:: \images\logos\Sphinx.png
    :align: right
    :alt: Sphinx logo
    :height: 80 px
@@ -64,7 +64,7 @@ This project uses Sphinx for the documentation (including autodoc).
 
 Travis CI
 +++++++++
-.. image:: \images\Travis.png
+.. image:: \images\logos\Travis.png
    :align: right
    :alt: Travis CI logo
    :height: 80 px
@@ -77,7 +77,7 @@ working versions.
 WebSequenceDiagrams
 +++++++++++++++++++
 
-.. image:: \images\sequence.jpg
+.. image:: \images\logos\sequence.jpg
    :align: right
    :alt: WebSequenceDiagrams logo
    :height: 80 px
@@ -90,7 +90,7 @@ websequencediagrams.
 UMLetino
 ++++++++
 
-.. image:: \images\UMLetino.png
+.. image:: \images\logos\UMLetino.png
    :align: right
    :alt: UMLetino logo
    :height: 80 px

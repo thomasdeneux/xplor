@@ -1,5 +1,3 @@
-title Adding a Filter sequence diagram
-
 participant User as u
 
 participant Window as w

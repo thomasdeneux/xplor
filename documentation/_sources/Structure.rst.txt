@@ -11,7 +11,7 @@ UML diagram of all Xplor's modules
 
 **UML diagram of the global structure of the toolbox**
 
-.. image:: \images\GlobalDiagram.png
+.. image:: \images\UML\GlobalDiagram.png
    :align: center
    :alt: UML diagram of all Xplor's modules
 
@@ -49,7 +49,17 @@ displayed on the canvas.
 The interactions between the various classes are illustrated by the sequence
 diagrams bellow.
 
-**place here some diagrams!!**
+**Sequence Diagram of the creation of a Window and the creation of a filter**
+
+.. image:: \images\sequence\FilterSequence.png
+   :align: center
+   :alt: Sequence diagram of the creation of a Window and a filter
+
+**Sequence Diagram for a zoom action**
+
+.. image:: \images\sequence\ZoomSequence.png
+   :align: center
+   :alt: Sequence diagram for a zoom action
 
 
 **list_display**'s main class is ListDisplay. It is an interface for the user
@@ -57,6 +67,13 @@ to select what data is to be displayed. For each filter created from the
 control zone of a Window instance, a new List instance appears.
 
 **Screenshot of the ListDisplay**
+
+**Sequence Diagram of the modification of a filter**
+
+.. image:: \images\sequence\ListDisplaySequence.png
+   :align: center
+   :alt: Sequence diagram of the modification of a filter
+
 
 
 **bank** is used to store previously used Headers and units, to save the user

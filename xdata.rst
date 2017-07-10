@@ -10,7 +10,7 @@ Module xdata : defining a data structure
 
 **UML diagram of the  xdata module**
 
-.. image:: \images\module_xdata.png
+.. image:: \images\UML\module_xdata.png
    :align: center
    :alt: UML diagram for module xdata
 
@@ -27,7 +27,7 @@ Header abstract class
 
 **UML diagram of the abstract class Header and its subclasses**
 
-.. image:: \images\headers_simplified.png
+.. image:: \images\UML\headers_simplified.png
    :align: center
    :alt: UML diagram for abstract class Header and subclasses
 
@@ -46,7 +46,7 @@ Xdata class
 
 **UML diagram of the class Xdata**
 
-.. image:: \images\Xdata.png
+.. image:: \images\UML\Xdata.png
    :align: center
    :alt: UML diagram for class Xdata
 
