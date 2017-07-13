@@ -40,6 +40,9 @@ instance.
 
 **Screenshot of the Window with the control zone and the display zone**
 
+.. image:: \images\screenshots\windowExp.png
+   :align: center
+   :alt: Screenshot of Window
 
 The module **operation** contains different types of Filters as well as a
 Slicer class and a ZoomSlicer class that will apply a succession of Filters on
