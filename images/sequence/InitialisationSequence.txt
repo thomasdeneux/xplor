@@ -1,0 +1,47 @@
+
+participant User as u
+
+participant Window as w
+
+participant ViewControl as vc
+participant ListDisplay as ld
+
+participant Data as d
+
+participant Slicer as s
+participant Filter as f
+participant Slice
+
+participant ViewDisplay as vd
+participant ZoomSlicer as zs
+participant ZoomFilter as zf
+participant ZoomSlice
+
+
+
+ 
+
+note leftof u : initialisation of visualisation
+
+u-> d: loads a xdata element
+u-> w: opens for Data
+
+note over w : main container appears
+
+w -> vc:  creates
+
+note over vc : list of dimensions appears
+
+w -> s:  creates
+s --> d : listens
+s -> Slice : creates
+w -> vd:  creates
+vd -> zs : creates
+zs -> zf : creates
+zs --> zf : listens
+zs --> Slice : listens
+zs -> ZoomSlice : creates
+vd --> ZoomSlice : listens
+vd --> Slice : listens
+
+note over vd : initial display

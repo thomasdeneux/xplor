@@ -27,7 +27,7 @@ note leftof u : zooming
 
 u -> vd : zoom in one of the dimensiosn
 vd -> zf: modifies zoomfilter
-zs --> zf : listens
+zf --> zs : notifies
 zs -> ZoomSlice : updates
 ZoomSlice --> vd : notifies
 note over vd : new display
