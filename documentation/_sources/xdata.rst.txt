@@ -37,9 +37,27 @@ CategoricalHeader  class
 ------------------------
 .. autoclass:: CategoricalHeader
 
+**Illustrations of the CategoricalHeader instance  (with values)**
+
+.. image:: \images\examples_module_xdata\categoricalwithvalues.png
+   :align: center
+   :alt: illustration for a categorical header with values
+
+**Illustrations of the CategoricalHeader instance  (undifferentiated)**
+
+.. image:: \images\examples_module_xdata\undifferentiated.png
+   :align: center
+   :alt: illustration for an undifferentiated categorical header
+
 MeasureHeader class
 -------------------
 .. autoclass:: MeasureHeader
+
+**Illustrations of the MeasureHeader instance**
+
+.. image:: \images\examples_module_xdata\measureheader.png
+   :align: center
+   :alt: illustration for a measure header
 
 Xdata class
 -----------
@@ -51,3 +69,26 @@ Xdata class
    :alt: UML diagram for class Xdata
 
 .. autoclass:: Xdata
+
+**Illustrations of the Headers composing the Xdata instance**
+
+.. image:: \images\examples_module_xdata\categoricalwithvalues.png
+   :align: center
+   :alt: illustration for a categorical header with values
+   :width: 50%
+
+.. image:: \images\examples_module_xdata\undifferentiated.png
+   :align: center
+   :alt: illustration for a undifferentiated categorical header
+   :width: 50%
+
+.. image:: \images\examples_module_xdata\measureheader.png
+   :align: center
+   :alt: illustration for a measure header
+   :width: 50%
+
+**Illustration of the Xdata instance**
+
+.. image:: \images\examples_module_xdata\xdataexample.png
+   :align: center
+   :alt: illustration for a xdata element

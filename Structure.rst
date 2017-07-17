@@ -28,8 +28,15 @@ Here is an example of a Xdata instance and one of it's header:
 
 **Example of a MeasureHeader instance**
 
+.. image:: \images\examples_module_xdata\measureheader.png
+   :align: center
+   :alt: illustration for a measure header
+
 **Example of a Xdata instance**
 
+.. image:: \images\examples_module_xdata\xdataexample.png
+   :align: center
+   :alt: illustration for a xdata element
 
 **view**'s main class is Window. Window creates the canvas (i.e. the window)
 on witch to display the data. This canvas is composed of a control zone, where
@@ -69,13 +76,17 @@ diagrams bellow.
 to select what data is to be displayed. For each filter created from the
 control zone of a Window instance, a new List instance appears.
 
-**Screenshot of the ListDisplay**
+**Screenshot of the ListDisplay and the Window**
+
+.. image:: \images\screenshots\ListDisplay.png
+   :align: center
+   :alt: Screenshot of the ListDisplay element
 
 **Sequence Diagram of the modification of a filter**
 
 .. image:: \images\sequence\ListDisplaySequence.png
    :align: center
-   :alt: Sequence diagram of the modification of a filter
+   :alt: Screenshot of the ListDisplay
 
 
 

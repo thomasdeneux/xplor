@@ -71,7 +71,9 @@
 data and all the relative information on the dimensions and the data itself.
 Here is an example of a Xdata instance and one of it&#8217;s header:</p>
 <p><strong>Example of a MeasureHeader instance</strong></p>
+<a class="reference internal image-reference" href="_images/measureheader.png"><img alt="illustration for a measure header" class="align-center" src="_images/measureheader.png" style="width: 50%;" /></a>
 <p><strong>Example of a Xdata instance</strong></p>
+<img alt="illustration for a xdata element" class="align-center" src="_images/xdataexample.png" />
 <p><strong>view</strong>&#8216;s main class is Window. Window creates the canvas (i.e. the window)
 on witch to display the data. This canvas is composed of a control zone, where
 the user can select the filters to apply, and a display zone, in which the user
@@ -93,9 +95,10 @@ diagrams bellow.</p>
 <p><strong>list_display</strong>&#8216;s main class is ListDisplay. It is an interface for the user
 to select what data is to be displayed. For each filter created from the
 control zone of a Window instance, a new List instance appears.</p>
-<p><strong>Screenshot of the ListDisplay</strong></p>
+<p><strong>Screenshot of the ListDisplay and the Window</strong></p>
+<img alt="Screenshot of the ListDisplay element" class="align-center" src="_images/ListDisplay.png" />
 <p><strong>Sequence Diagram of the modification of a filter</strong></p>
-<img alt="Sequence diagram of the modification of a filter" class="align-center" src="_images/ListDisplaySequence.png" />
+<img alt="Screenshot of the ListDisplay" class="align-center" src="_images/ListDisplaySequence.png" />
 <p><strong>bank</strong> is used to store previously used Headers and units, to save the user
 some time.</p>
 <p><strong>header_edit</strong> allows the initialisation of a Xdata element : the user
