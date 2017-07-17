@@ -39,17 +39,10 @@ instance and a ZoomSlicer instance to apply the correct filters on the Xdata
 instance.
 
 **Screenshot of the Window with the control zone and the display zone**
-.. image:: \images\screenshots\Window.png
-   :align: center
-   :alt: UML diagram of all Xplor's modules
-
-.. image:: \images\screenshots\WindowExp.odg
-   :align: center
-   :alt: UML diagram of all Xplor's modules
 
 .. image:: \images\screenshots\windowExp.png
    :align: center
-   :alt: UML diagram of all Xplor's modules
+   :alt: Screenshot of Window
 
 The module **operation** contains different types of Filters as well as a
 Slicer class and a ZoomSlicer class that will apply a succession of Filters on
