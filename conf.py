@@ -104,6 +104,7 @@ html_theme_options = {
 }
 html_title = "Xplor your data"
 html_favicon = "images/favicons/favicon1.ico"
+html_logo = "images/logos/xplor.png"
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
