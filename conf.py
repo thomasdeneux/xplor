@@ -105,7 +105,7 @@ html_theme_options = {
 html_title = "Xplor your data"
 html_favicon = "images/favicons/favicon1.ico"
 html_logo = "images/logos/xplor.png"
-
+html_last_updated_fmt =  '%b %d, %Y'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

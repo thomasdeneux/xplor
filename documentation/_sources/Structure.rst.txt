@@ -31,7 +31,6 @@ Here is an example of a Xdata instance and one of it's header:
 .. image:: \images\examples_module_xdata\measureheader.png
    :align: center
    :alt: illustration for a measure header
-   :width: 50%
 
 **Example of a Xdata instance**
 
