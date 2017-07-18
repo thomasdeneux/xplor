@@ -48,7 +48,15 @@ There are 6 classes in this module:
         headers describing each of the N dimensions, stored in a list. Xdata
         also has the name of the whole set of data and a data_descriptor
         attribute to describe the data.
-    
+
+There are 2 functions in this class:
+    - **create_dimension_description**:
+        create_dimension_description gives an instance of the class
+        DimensionDescription from a label and an column of values of type
+        pandas.core.series.Series.
+    - **check_bank_unit**:
+        The functions checks if this unit is in one of the conversion tables of
+        the bank. If so, it returns the conversion table, else, it returns None
 """
 
 # Authors: Elodie Ikkache CNRS <elodie.ikkache@student.ecp.fr>

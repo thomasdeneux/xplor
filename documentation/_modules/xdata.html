@@ -99,7 +99,15 @@
 <span class="sd">        headers describing each of the N dimensions, stored in a list. Xdata</span>
 <span class="sd">        also has the name of the whole set of data and a data_descriptor</span>
 <span class="sd">        attribute to describe the data.</span>
-<span class="sd">    </span>
+
+<span class="sd">There are 2 functions in this class:</span>
+<span class="sd">    - **create_dimension_description**:</span>
+<span class="sd">        create_dimension_description gives an instance of the class</span>
+<span class="sd">        DimensionDescription from a label and an column of values of type</span>
+<span class="sd">        pandas.core.series.Series.</span>
+<span class="sd">    - **check_bank_unit**:</span>
+<span class="sd">        The functions checks if this unit is in one of the conversion tables of</span>
+<span class="sd">        the bank. If so, it returns the conversion table, else, it returns None</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># Authors: Elodie Ikkache CNRS &lt;elodie.ikkache@student.ecp.fr&gt;</span>
@@ -2474,7 +2482,7 @@
         <span class="c1"># TODO : notify instead of returns</span>
 
 
-<div class="viewcode-block" id="create_dimension_description"><a class="viewcode-back" href="../Annexes.html#xdata.create_dimension_description">[docs]</a><span class="k">def</span> <span class="nf">create_dimension_description</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="create_dimension_description"><a class="viewcode-back" href="../xdata.html#xdata.create_dimension_description">[docs]</a><span class="k">def</span> <span class="nf">create_dimension_description</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;the function creates an instance of DimensionDescription.</span>
 
 <span class="sd">    create_dimension_description gives an instance of the class</span>
@@ -2523,7 +2531,7 @@
     <span class="k">return</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_bank_unit"><a class="viewcode-back" href="../Annexes.html#xdata.check_bank_unit">[docs]</a><span class="k">def</span> <span class="nf">check_bank_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+<div class="viewcode-block" id="check_bank_unit"><a class="viewcode-back" href="../xdata.html#xdata.check_bank_unit">[docs]</a><span class="k">def</span> <span class="nf">check_bank_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The functions checks if this unit is in one of the conversion tables of</span>
 <span class="sd">    the bank. If so, it returns the conversion table, else, it returns None</span>
 

@@ -27,7 +27,7 @@
     <link rel="shortcut icon" href="_static/favicon1.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Annexes : Various functions" href="Annexes.html" />
+    <link rel="next" title="Module view : user interface" href="view.html" />
     <link rel="prev" title="Structure" href="Structure.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Annexes.html" title="Annexes : Various functions"
+          <a href="view.html" title="Module view : user interface"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="Structure.html" title="Structure"
@@ -126,6 +126,25 @@ attribute to describe the data.</dd>
 </li>
 </ul>
 </div></blockquote>
+<dl class="docutils">
+<dt>There are 2 functions in this class:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt><strong>create_dimension_description</strong>:</dt>
+<dd>create_dimension_description gives an instance of the class
+DimensionDescription from a label and an column of values of type
+pandas.core.series.Series.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>check_bank_unit</strong>:</dt>
+<dd>The functions checks if this unit is in one of the conversion tables of
+the bank. If so, it returns the conversion table, else, it returns None</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
 <p><strong>UML diagram of the  xdata module</strong></p>
 <img alt="UML diagram for module xdata" class="align-center" src="_images/module_xdata.png" />
 <div class="section" id="color-class">
@@ -988,7 +1007,8 @@ It returns a new Xdata instance. TODO : change the returns part</p>
 </dd></dl>
 
 <p><strong>Example</strong></p>
-<p>Let&#8217;s take the example of the growth of fruit trees.
+<blockquote>
+<div><p>Let&#8217;s take the example of the growth of fruit trees.
 A gardener is interested in knowing how fast trees grow in the spring in
 a specific climate. He choses a few fruit trees to study, plants a few of
 each sort and watches them grow over time.</p>
@@ -997,17 +1017,15 @@ each sort and watches them grow over time.</p>
 <dd><ul class="first last simple">
 <li>time called &#8220;t&#8221;</li>
 <li>type of fruit tree simply called &#8220;fruits&#8221;</li>
-<li>the fruit tree&#8217;s number simply called &#8220;trees&#8221;</li>
+<li>the fruit tree&#8217;s number simply called &#8220;tree&#8221;</li>
 </ul>
 </dd>
 </dl>
-<p>Therefore, headers will be a list of the 3 headers given below:</p>
+<p>Therefore, headers will be a list of the 3 headers given below.</p>
+<ul>
+<li><p class="first">&#8220;t&#8221; is a MeasureHeader:</p>
 <blockquote>
-<div><ul class="simple">
-<li>&#8220;t&#8221; is a MeasureHeader:</li>
-</ul>
-</div></blockquote>
-<p>label: &#8216;t&#8217;</p>
+<div><p>label: &#8216;t&#8217;</p>
 <p>column_descriptors: (list of one DimensionDescription)</p>
 <blockquote>
 <div><p>label: &#8216;t&#8217;,</p>
@@ -1024,23 +1042,23 @@ each sort and watches them grow over time.</p>
 <p>scale: 1</p>
 <p><strong>Illustrations of the MeasureHeader composing the Xdata instance</strong></p>
 <a class="reference internal image-reference" href="_images/measureheader.png"><img alt="illustration for a measure header" class="align-center" src="_images/measureheader.png" style="width: 80%;" /></a>
-<ul class="simple">
-<li>&#8220;trees&#8221; is a CategoricalHeader that is undifferentiated</li>
-</ul>
-<p>label: &#8216;trees&#8217;</p>
+</div></blockquote>
+</li>
+<li><p class="first">&#8220;tree&#8221; is a CategoricalHeader that is undifferentiated</p>
+<blockquote>
+<div><p>label: &#8216;tree&#8217;</p>
 <p>column_descriptors (list of DimensionDescriptors): None</p>
 <p>n_elem: 8</p>
 <p>values: None</p>
 <p><strong>Illustrations of the undifferentiated CategoricalHeader of xdata</strong></p>
 <a class="reference internal image-reference" href="_images/undifferentiated.png"><img alt="illustration for a undifferentiated categorical header" class="align-center" src="_images/undifferentiated.png" style="width: 80%;" /></a>
-<ul class="simple">
+</div></blockquote>
+</li>
 <li><dl class="first docutils">
 <dt>&#8220;fruits&#8221; is a CategoricalHeader with values (because we can store some</dt>
-<dd>complementary information)</dd>
-</dl>
-</li>
-</ul>
-<p>label: &#8216;fruits&#8217;</p>
+<dd><p class="first">complementary information)</p>
+<blockquote class="last">
+<div><p>label: &#8216;fruits&#8217;</p>
 <dl class="docutils">
 <dt>column_descriptors: (list of DimensionDescriptors, simplified here)</dt>
 <dd><p class="first">1/ label: &#8216;fruits&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
@@ -1059,6 +1077,11 @@ each sort and watches them grow over time.</p>
 </dl>
 <p><strong>Illustrations of the CategoricalHeader with values of xdata</strong></p>
 <a class="reference internal image-reference" href="_images/categoricalwithvalues.png"><img alt="illustration for a categorical header with values" class="align-center" src="_images/categoricalwithvalues.png" style="width: 80%;" /></a>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+</ul>
 <p>Now we have our list of headers, of length 3.</p>
 <p>The corresponding data is 3D array containing the values of the height
 of the tree at everyday for each of types of fruit trees. It is
@@ -1069,6 +1092,56 @@ described (dimension_type and unit) the following data_descriptor:</p>
 the fruit trees in TreesCity&#8221;</p>
 <p><strong>Illustration of the Xdata instance</strong></p>
 <img alt="illustration for a xdata element" class="align-center" src="_images/xdataexample.png" />
+</div></blockquote>
+</div>
+<div class="section" id="create-dimension-description-function">
+<h2>create_dimension_description function<a class="headerlink" href="#create-dimension-description-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="xdata.create_dimension_description">
+<code class="descclassname">xdata.</code><code class="descname">create_dimension_description</code><span class="sig-paren">(</span><em>label</em>, <em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#create_dimension_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.create_dimension_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>the function creates an instance of DimensionDescription.</p>
+<p>create_dimension_description gives an instance of the class
+DimensionDescription from a label and an column of values of type
+pandas.core.series.Series.</p>
+<p>If column is None, the DimensionDescription instance will be of
+dimension_type &#8216;mixed&#8217; by default.</p>
+<p>When using this function, no unit is specified, so
+dimension_description.unit will be None.</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>label:</dt>
+<dd>label for the DimensionDescription instance
+(type str)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>column:</dt>
+<dd>values to determine the dimension_type of the DimensionDescription
+(type pandas.core.series.Series, shape (n,1))</dd>
+</dl>
+</li>
+</ul>
+<p><strong>returns</strong>
+DimensionDescription instance</p>
+</dd></dl>
+
+</div>
+<div class="section" id="check-bank-unit-function">
+<h2>check_bank_unit function<a class="headerlink" href="#check-bank-unit-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="xdata.check_bank_unit">
+<code class="descclassname">xdata.</code><code class="descname">check_bank_unit</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#check_bank_unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.check_bank_unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The functions checks if this unit is in one of the conversion tables of
+the bank. If so, it returns the conversion table, else, it returns None</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li>unit: type str, name of the unit</li>
+</ul>
+<p><strong>returns</strong>
+a conversion table for the given unit if it exists in the bank</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -1090,6 +1163,8 @@ the fruit trees in TreesCity&#8221;</p>
 <li><a class="reference internal" href="#categoricalheader-class">CategoricalHeader  class</a></li>
 <li><a class="reference internal" href="#measureheader-class">MeasureHeader class</a></li>
 <li><a class="reference internal" href="#xdata-class">Xdata class</a></li>
+<li><a class="reference internal" href="#create-dimension-description-function">create_dimension_description function</a></li>
+<li><a class="reference internal" href="#check-bank-unit-function">check_bank_unit function</a></li>
 </ul>
 </li>
 </ul>
@@ -1098,8 +1173,8 @@ the fruit trees in TreesCity&#8221;</p>
   <p class="topless"><a href="Structure.html"
                         title="previous chapter">Structure</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="Annexes.html"
-                        title="next chapter">Annexes : Various functions</a></p>
+  <p class="topless"><a href="view.html"
+                        title="next chapter">Module view : user interface</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1131,7 +1206,7 @@ the fruit trees in TreesCity&#8221;</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Annexes.html" title="Annexes : Various functions"
+          <a href="view.html" title="Module view : user interface"
              >next</a> |</li>
         <li class="right" >
           <a href="Structure.html" title="Structure"

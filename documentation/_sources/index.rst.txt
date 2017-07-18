@@ -7,6 +7,9 @@
 *********************************
 Welcome to xplor's documentation!
 *********************************
+
+The first version of xplor in Python with soon be available!
+
 Introduction:
 +++++++++++++
 
@@ -30,17 +33,18 @@ Feel free to build on top of the existing code to answer your needs!
 
 
 
-Table Of Contents:
-++++++++++++++++++
+Index:
+++++++
 
 .. toctree::
    :maxdepth: 2
 
-
+   Tutorial.rst
+   Overview.rst
    Structure.rst
    xdata.rst
-   Annexes.rst
-   Library.rst
+   view.rst
+   Credits.rst
 
 
 

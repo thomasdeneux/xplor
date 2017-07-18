@@ -2,9 +2,9 @@
    :maxdepth: 2
    :caption: Contents:
 
-
-Annexes : Libraries and other tools
-***********************************
+*******
+Credits
+*******
 
 numpy
 +++++
