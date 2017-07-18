@@ -382,132 +382,6 @@ returns the corresponding values of the first column.</dd>
 </dl>
 </li>
 </ul>
-<p><strong>Examples</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><em>CategoricalHeader: (with values)</em></dt>
-<dd><p class="first">label: &#8216;fruits&#8217;</p>
-<dl class="docutils">
-<dt>column_descriptors: (list of DimensionDescriptors, simplified here)</dt>
-<dd><p class="first">1/ label: &#8216;fruits&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
-<p>2/ label: &#8216;prices&#8217;, dimension_type: &#8216;numeric&#8217;, unit: &#8216;euros/kg&#8217;</p>
-<p class="last">3/ label: &#8216;color&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
-</dd>
-</dl>
-<p>n_elem: 4</p>
-<dl class="last docutils">
-<dt>values:</dt>
-<dd><p class="first">[[&#8216;apple&#8217;, 0.5, &#8216;red&#8217; ]</p>
-<p>[&#8216;pear&#8217;, 0.75, &#8216;green&#8217;]</p>
-<p>[&#8216;banana&#8217;, 0.66, &#8216;yellow&#8217;]</p>
-<p>[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
-<blockquote class="last">
-<div><blockquote>
-<div>&#8216;fruits&#8217;</div></blockquote>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="40%" />
-<col width="28%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">fruits</th>
-<th class="head">prices</th>
-<th class="head">color</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>apple</td>
-<td>0.5</td>
-<td>red</td>
-</tr>
-<tr class="row-odd"><td>pear</td>
-<td>0.75</td>
-<td>green</td>
-</tr>
-<tr class="row-even"><td>banana</td>
-<td>0.66</td>
-<td>yellow</td>
-</tr>
-<tr class="row-odd"><td>cherry</td>
-<td>0.89</td>
-<td>red</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="docutils">
-<dt><em>CategoricalHeader: (undifferentiated)</em></dt>
-<dd><p class="first">label: &#8216;fruits&#8217;</p>
-<p>column_descriptors: (list of DimensionDescriptors): None</p>
-<p>n_elem: 4</p>
-<p>values: None</p>
-<blockquote class="last">
-<div><blockquote>
-<div>&#8216;fruits&#8217;</div></blockquote>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">fruits</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>1</td>
-</tr>
-<tr class="row-odd"><td>2</td>
-</tr>
-<tr class="row-even"><td>3</td>
-</tr>
-<tr class="row-odd"><td>4</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-</dd>
-<dt><em>MeasureHeader:</em></dt>
-<dd><p class="first">label: &#8216;x&#8217;</p>
-<p>column_descriptors: (list of one DimensionDescription)</p>
-<blockquote>
-<div><p>label: &#8216;x&#8217;,</p>
-<p>dimension_type: &#8216;numeric&#8217;,</p>
-<p>unit: &#8216;mm&#8217;,</p>
-<p>all_units: [{unit: &#8216;mm&#8217;, &#8216;value&#8217;: 10**(-3)}, {unit: &#8216;m&#8217;,
-&#8216;value&#8217;: 1}]</p>
-</div></blockquote>
-<p>n-elem: 4</p>
-<p>start: 1</p>
-<p>scale: 2</p>
-<blockquote class="last">
-<div><p>&#8216;x&#8217;</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">x</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>1</td>
-</tr>
-<tr class="row-odd"><td>3</td>
-</tr>
-<tr class="row-even"><td>5</td>
-</tr>
-<tr class="row-odd"><td>7</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
@@ -686,8 +560,9 @@ encountered values with no repetitions in the from of a pandas Series.</p>
 </dl>
 </li>
 </ul>
-<p><strong>Example</strong></p>
-<p><em>(with values)</em></p>
+</dd></dl>
+
+<p><strong>Example of a CategoricalHeader with values</strong></p>
 <blockquote>
 <div><p>label: &#8216;fruits&#8217;</p>
 <dl class="docutils">
@@ -703,79 +578,19 @@ encountered values with no repetitions in the from of a pandas Series.</p>
 <dd><p class="first">[[&#8216;apple&#8217;, 0.5, &#8216;red&#8217; ]</p>
 <p>[&#8216;pear&#8217;, 0.75, &#8216;green&#8217;]</p>
 <p>[&#8216;banana&#8217;, 0.66, &#8216;yellow&#8217;]</p>
-<p>[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
-<blockquote class="last">
-<div><blockquote>
-<div>&#8216;fruits&#8217;</div></blockquote>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="40%" />
-<col width="28%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">fruits</th>
-<th class="head">prices</th>
-<th class="head">color</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>apple</td>
-<td>0.5</td>
-<td>red</td>
-</tr>
-<tr class="row-odd"><td>pear</td>
-<td>0.75</td>
-<td>green</td>
-</tr>
-<tr class="row-even"><td>banana</td>
-<td>0.66</td>
-<td>yellow</td>
-</tr>
-<tr class="row-odd"><td>cherry</td>
-<td>0.89</td>
-<td>red</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
+<p class="last">[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
 </dd>
 </dl>
 </div></blockquote>
-<p><em>(undifferentiated)</em></p>
+<p><strong>Illustrations of the CategoricalHeader instance  (with values)</strong></p>
+<img alt="illustration for a categorical header with values" class="align-center" src="_images/categoricalwithvalues.png" />
+<p><strong>Example of an undifferentiated CategoricalHeader</strong></p>
 <blockquote>
 <div><p>label: &#8216;fruits&#8217;</p>
 <p>column_descriptors (list of DimensionDescriptors): None</p>
-<p>n_elem: 4</p>
+<p>n_elem: n</p>
 <p>values: None</p>
-<blockquote>
-<div><blockquote>
-<div>&#8216;fruits&#8217;</div></blockquote>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">fruits</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>1</td>
-</tr>
-<tr class="row-odd"><td>2</td>
-</tr>
-<tr class="row-even"><td>3</td>
-</tr>
-<tr class="row-odd"><td>4</td>
-</tr>
-</tbody>
-</table>
 </div></blockquote>
-</div></blockquote>
-</dd></dl>
-
-<p><strong>Illustrations of the CategoricalHeader instance  (with values)</strong></p>
-<img alt="illustration for a categorical header with values" class="align-center" src="_images/categoricalwithvalues.png" />
 <p><strong>Illustrations of the CategoricalHeader instance  (undifferentiated)</strong></p>
 <img alt="illustration for an undifferentiated categorical header" class="align-center" src="_images/undifferentiated.png" />
 </div>
@@ -954,45 +769,26 @@ and the specified changes</dd>
 </dl>
 </li>
 </ul>
-<p><strong>Example</strong></p>
-<blockquote>
-<div><p>label: &#8216;x&#8217;</p>
-<p>column_descriptors: (list of one DimensionDescription)</p>
-<blockquote>
-<div><p>label: &#8216;x&#8217;,</p>
-<p>dimension_type: &#8216;numeric&#8217;,</p>
-<p>unit: &#8216;mm&#8217;,</p>
-<p>all_units: [{unit: &#8216;mm&#8217;, &#8216;value&#8217;: 10**(-3)}, {unit: &#8216;m&#8217;,
-&#8216;value&#8217;: 1}]</p>
-</div></blockquote>
-<p>n-elem: 4</p>
-<p>start: 1</p>
-<p>scale: 2</p>
-<blockquote>
-<div><p>&#8216;x&#8217;</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">x</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>1</td>
-</tr>
-<tr class="row-odd"><td>3</td>
-</tr>
-<tr class="row-even"><td>5</td>
-</tr>
-<tr class="row-odd"><td>7</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-</div></blockquote>
 </dd></dl>
 
+<p><strong>Example of a MeasureHeader</strong></p>
+<blockquote>
+<div><p>label: &#8216;t&#8217;</p>
+<p>column_descriptors: (list of one DimensionDescription)</p>
+<blockquote>
+<div><p>label: &#8216;t&#8217;,</p>
+<p>dimension_type: &#8216;numeric&#8217;,</p>
+<p>unit: &#8216;days&#8217;,</p>
+<p>all_units:
+[{unit: &#8216;hours&#8217;, &#8216;value&#8217;: 1/24},
+{unit: &#8216;days&#8217;, &#8216;value&#8217;: 1},
+{unit: &#8216;weeks&#8217;, &#8216;value&#8217;: 7},
+{unit: &#8216;months&#8217;, &#8216;value&#8217;: 30.5}]</p>
+</div></blockquote>
+<p>n-elem: n</p>
+<p>start: 1</p>
+<p>scale: 0.25</p>
+</div></blockquote>
 <p><strong>Illustrations of the MeasureHeader instance</strong></p>
 <img alt="illustration for a measure header" class="align-center" src="_images/measureheader.png" />
 </div>
@@ -1189,177 +985,88 @@ It returns a new Xdata instance. TODO : change the returns part</p>
 </dl>
 </li>
 </ul>
+</dd></dl>
+
 <p><strong>Example</strong></p>
-<p>Let&#8217;s take the example of children throwing a ball.
-We are interested in the height of the ball over time, for each child, and
-for each throw.</p>
+<p>Let&#8217;s take the example of the growth of fruit trees.
+A gardener is interested in knowing how fast trees grow in the spring in
+a specific climate. He choses a few fruit trees to study, plants a few of
+each sort and watches them grow over time.</p>
 <dl class="docutils">
 <dt>In this example, we have 3 dimensions:</dt>
 <dd><ul class="first last simple">
-<li>time</li>
-<li>child</li>
-<li>number of the throw, that we are going to call repetition</li>
+<li>time called &#8220;t&#8221;</li>
+<li>type of fruit tree simply called &#8220;fruits&#8221;</li>
+<li>the fruit tree&#8217;s number simply called &#8220;trees&#8221;</li>
 </ul>
 </dd>
 </dl>
 <p>Therefore, headers will be a list of the 3 headers given below:</p>
 <blockquote>
 <div><ul class="simple">
-<li>time is a MeasureHeader:</li>
+<li>&#8220;t&#8221; is a MeasureHeader:</li>
 </ul>
+</div></blockquote>
 <p>label: &#8216;t&#8217;</p>
 <p>column_descriptors: (list of one DimensionDescription)</p>
 <blockquote>
 <div><p>label: &#8216;t&#8217;,</p>
 <p>dimension_type: &#8216;numeric&#8217;,</p>
-<p>unit: &#8216;ms&#8217;,</p>
-<p>all_units: [{unit: &#8216;ms&#8217;, &#8216;value&#8217;: 10**(-3)},
-{unit: &#8216;s&#8217;, &#8216;value&#8217;: 1}]</p>
+<p>unit: &#8216;days&#8217;,</p>
+<p>all_units:
+[{unit: &#8216;hours&#8217;, &#8216;value&#8217;: 1/24},
+{unit: &#8216;days&#8217;, &#8216;value&#8217;: 1},
+{unit: &#8216;weeks&#8217;, &#8216;value&#8217;: 7},
+{unit: &#8216;months&#8217;, &#8216;value&#8217;: 30.5}]</p>
 </div></blockquote>
-<p>n-elem: 3000</p>
-<p>start: 0</p>
-<p>scale: 2</p>
-<blockquote>
-<div><p>&#8216;t&#8217;</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">t</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>0</td>
-</tr>
-<tr class="row-odd"><td>2</td>
-</tr>
-<tr class="row-even"><td>4</td>
-</tr>
-<tr class="row-odd"><td>6</td>
-</tr>
-<tr class="row-even"><td>...</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
+<p>n-elem: 100</p>
+<p>start: 0.5</p>
+<p>scale: 1</p>
+<p><strong>Illustrations of the MeasureHeader composing the Xdata instance</strong></p>
+<a class="reference internal image-reference" href="_images/measureheader.png"><img alt="illustration for a measure header" class="align-center" src="_images/measureheader.png" style="width: 80%;" /></a>
 <ul class="simple">
-<li>repetition is a CategoricalHeader that is undifferentiated</li>
+<li>&#8220;trees&#8221; is a CategoricalHeader that is undifferentiated</li>
 </ul>
-<blockquote>
-<div><p>label: &#8216;repetitions&#8217;</p>
+<p>label: &#8216;trees&#8217;</p>
 <p>column_descriptors (list of DimensionDescriptors): None</p>
 <p>n_elem: 8</p>
 <p>values: None</p>
-<blockquote>
-<div><blockquote>
-<div>&#8216;repetitions&#8217;</div></blockquote>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">repetitions</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>0</td>
-</tr>
-<tr class="row-odd"><td>1</td>
-</tr>
-<tr class="row-even"><td>2</td>
-</tr>
-<tr class="row-odd"><td>3</td>
-</tr>
-<tr class="row-even"><td>4</td>
-</tr>
-<tr class="row-odd"><td>5</td>
-</tr>
-<tr class="row-even"><td>6</td>
-</tr>
-<tr class="row-odd"><td>7</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-</div></blockquote>
+<p><strong>Illustrations of the undifferentiated CategoricalHeader of xdata</strong></p>
+<a class="reference internal image-reference" href="_images/undifferentiated.png"><img alt="illustration for a undifferentiated categorical header" class="align-center" src="_images/undifferentiated.png" style="width: 80%;" /></a>
 <ul class="simple">
 <li><dl class="first docutils">
-<dt>child is a CategoricalHeader with values (because we can store some</dt>
+<dt>&#8220;fruits&#8221; is a CategoricalHeader with values (because we can store some</dt>
 <dd>complementary information)</dd>
 </dl>
 </li>
 </ul>
-<blockquote>
-<div><p>label: &#8216;child&#8217;</p>
-<p>column_descriptors: (list of DimensionDescriptors, simplified here)</p>
-<blockquote>
-<div><p>1/ label: &#8216;name&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
-<p>2/ label: &#8216;age&#8217;, dimension_type: &#8216;numeric&#8217;, unit: &#8216;year old&#8217;</p>
-<p>3/ label: &#8216;gender&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
-</div></blockquote>
-<p>n_elem: 5</p>
-<p>values:</p>
-<blockquote>
-<div><p>[[&#8216;Emily&#8217;, 8, &#8216;female&#8217; ]</p>
-<p>[&#8216;Paul&#8217;, 7, &#8216;male&#8217;]</p>
-<p>[&#8216;Helen&#8217;, 9, &#8216;female&#8217;]</p>
-<p>[&#8216;Lily&#8217;, 7, &#8216;female&#8217;]</p>
-<p>[&#8216;James&#8217;, 9, &#8216;male&#8217;]]</p>
-<blockquote>
-<div><blockquote>
-<div>&#8216;child&#8217;</div></blockquote>
-<table border="1" class="docutils">
-<colgroup>
-<col width="38%" />
-<col width="29%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">age</th>
-<th class="head">gender</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Emily</td>
-<td>8</td>
-<td>female</td>
-</tr>
-<tr class="row-odd"><td>Paul</td>
-<td>7</td>
-<td>male</td>
-</tr>
-<tr class="row-even"><td>Helen</td>
-<td>9</td>
-<td>female</td>
-</tr>
-<tr class="row-odd"><td>Lily</td>
-<td>7</td>
-<td>female</td>
-</tr>
-<tr class="row-even"><td>James</td>
-<td>9</td>
-<td>male</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<p>label: &#8216;fruits&#8217;</p>
+<dl class="docutils">
+<dt>column_descriptors: (list of DimensionDescriptors, simplified here)</dt>
+<dd><p class="first">1/ label: &#8216;fruits&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
+<p>2/ label: &#8216;prices&#8217;, dimension_type: &#8216;numeric&#8217;, unit: &#8216;euros/kg&#8217;</p>
+<p class="last">3/ label: &#8216;color&#8217;, dimension_type: &#8216;string&#8217;, no unit</p>
+</dd>
+</dl>
+<p>n_elem: 4</p>
+<dl class="docutils">
+<dt>values:</dt>
+<dd><p class="first">[[&#8216;apple&#8217;, 0.5, &#8216;red&#8217; ]</p>
+<p>[&#8216;pear&#8217;, 0.75, &#8216;green&#8217;]</p>
+<p>[&#8216;banana&#8217;, 0.66, &#8216;yellow&#8217;]</p>
+<p class="last">[&#8216;cherry&#8217;, 0.89, &#8216;red&#8217;]]</p>
+</dd>
+</dl>
+<p><strong>Illustrations of the CategoricalHeader with values of xdata</strong></p>
+<a class="reference internal image-reference" href="_images/categoricalwithvalues.png"><img alt="illustration for a categorical header with values" class="align-center" src="_images/categoricalwithvalues.png" style="width: 80%;" /></a>
 <p>Now we have our list of headers, of length 3.</p>
 <p>The corresponding data is 3D array containing the values of the height
-of the ball at all time for each of the children&#8217;s throw. It is
-described (dimension_type and unit) in data_descriptor.</p>
-<p>All we miss is the name of this set of data and headers: &#8220;height of
-the throw of a ball&#8221;</p>
-</div></blockquote>
-</dd></dl>
-
-<p><strong>Illustrations of the Headers composing the Xdata instance</strong></p>
-<a class="reference internal image-reference" href="_images/categoricalwithvalues.png"><img alt="illustration for a categorical header with values" class="align-center" src="_images/categoricalwithvalues.png" style="width: 50%;" /></a>
-<a class="reference internal image-reference" href="_images/undifferentiated.png"><img alt="illustration for a undifferentiated categorical header" class="align-center" src="_images/undifferentiated.png" style="width: 50%;" /></a>
-<a class="reference internal image-reference" href="_images/measureheader.png"><img alt="illustration for a measure header" class="align-center" src="_images/measureheader.png" style="width: 50%;" /></a>
+of the tree at everyday for each of types of fruit trees. It is
+described (dimension_type and unit) the following data_descriptor:</p>
+<blockquote>
+<div>label: &#8216;height&#8217;, dimension_type: &#8216;numeric&#8217;, &#8216;m&#8217;</div></blockquote>
+<p>All we miss is the name of this set of data and headers: &#8220;Growth of
+the fruit trees in TreesCity&#8221;</p>
 <p><strong>Illustration of the Xdata instance</strong></p>
 <img alt="illustration for a xdata element" class="align-center" src="_images/xdataexample.png" />
 </div>
@@ -1434,7 +1141,7 @@ the throw of a ball&#8221;</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
-      Last updated on Jul 17, 2017.
+      Last updated on Jul 18, 2017.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
