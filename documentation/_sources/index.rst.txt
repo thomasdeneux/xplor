@@ -19,6 +19,15 @@ It started as a project for neuroscience at CNRS (French National Center for
 Scientific Research), however it can be used for any type of data as shown in
 the examples below.
 
+
+.. image:: \images\screenshots\basicexample\Window.PNG
+   :align: center
+   :alt: example of data displayed with xplor
+
+.. image:: \images\screenshots\unemploymentexample\unemployment.PNG
+   :align: center
+   :alt: example of data displayed with xplor
+
 It is available on github:
 
 https://github.com/thomasdeneux/xplor

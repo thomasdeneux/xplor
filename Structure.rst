@@ -92,7 +92,7 @@ control zone of a Window instance, a new List instance appears.
 
 **Screenshot of the ListDisplay and the Window**
 
-.. image:: \images\screenshots\basicexample\ListDisplay.png
+.. image:: \images\screenshots\basicexample\Filtre.png
    :align: center
    :alt: Screenshot of the ListDisplay element
 
@@ -108,6 +108,13 @@ header_edit
 **header_edit** allows the initialisation of a Xdata element : the user
 specifies the headers' labels and units. It suggests some previously used
 labels and units thanks to Bank.
+
+**Screenshot of the set headers window**
+
+.. image:: \images\screenshots\unemploymentexample\setHeaders.PNG
+   :align: center
+   :alt: Screenshot of set headers window
+
 
 GUI_tools
 +++++++++

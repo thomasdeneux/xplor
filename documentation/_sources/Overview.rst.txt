@@ -41,3 +41,9 @@ filter object
 
 Filters are selected in the interface and will update the xdata element :
 the resulting slice of data will be displayed.
+
+**Screenshot of the Window showing the filter applied**
+
+.. image:: \images\screenshots\basicexample\FilterExp.PNG
+   :align: center
+   :alt: Screenshot of Window with filter
