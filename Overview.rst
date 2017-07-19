@@ -20,7 +20,7 @@ can zoom and change the labels' position.
 
 **Screenshot of the Window with the control zone and the display zone**
 
-.. image:: \images\screenshots\windowExp.png
+.. image:: \images\screenshots\basicexample\windowExp.PNG
    :align: center
    :alt: Screenshot of Window
 

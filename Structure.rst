@@ -43,7 +43,7 @@ operation module) to apply the correct filters on the Xdata instance.
 
 **Screenshot of the Window with the control zone and the display zone**
 
-.. image:: \images\screenshots\windowExp.png
+.. image:: \images\screenshots\basicexample\windowExp.png
    :align: center
    :alt: Screenshot of Window
 
@@ -92,7 +92,7 @@ control zone of a Window instance, a new List instance appears.
 
 **Screenshot of the ListDisplay and the Window**
 
-.. image:: \images\screenshots\ListDisplay.png
+.. image:: \images\screenshots\basicexample\ListDisplay.png
    :align: center
    :alt: Screenshot of the ListDisplay element
 
@@ -129,7 +129,7 @@ Initialisation of the Window
 
 **Screenshot of the Window with the control zone and the display zone**
 
-.. image:: \images\screenshots\windowExp.png
+.. image:: \images\screenshots\basicexample\windowExp.png
    :align: center
    :alt: Screenshot of Window
 
@@ -163,7 +163,7 @@ element of it's dimension.
 
 **Screenshot of the newly created ListDisplay element and the Window**
 
-.. image:: \images\screenshots\ListDisplay.PNG
+.. image:: \images\screenshots\basicexample\ListDisplay.PNG
    :align: center
    :alt: Screenshot of ListDisplay and the Window
 
@@ -181,7 +181,7 @@ selected slice will appear on the display zone.
 
 **Screenshot of the changed ListDisplay element and the Window**
 
-.. image:: \images\screenshots\Filtre.PNG
+.. image:: \images\screenshots\basicexample\Filtre.PNG
    :align: center
    :alt: Screenshot of ListDisplay and the Window
 
@@ -196,7 +196,7 @@ Zooming in or out
 
 **Screenshot of ListDisplay and the Window after a zoom action**
 
-.. image:: \images\screenshots\Zoom.PNG
+.. image:: \images\screenshots\basicexample\Zoom.PNG
    :align: center
    :alt: Screenshot after a zoom action
 
