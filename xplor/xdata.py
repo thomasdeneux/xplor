@@ -295,7 +295,7 @@ class DimensionDescription:
         """conversion table (type list of dict)"""
         return self._all_units
 
-    def __eq__(self, other: 'DimensionDescription'):
+    def __eq__(self, other):
         return ((self._label == other._label) and (self._unit == other._unit)
                 and (self._all_units == other._all_units))
 
