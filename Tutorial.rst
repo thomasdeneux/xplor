@@ -9,6 +9,8 @@ This tutorial shows the basic features of xplor based on the Matlab version.
 A more complete tutorial will be available once the first version for python
 is released.
 
+loading the data
+++++++++++++++++
 
 The first thing to do is to load your data. Your data must be stored into a N
 dimension array.
@@ -33,6 +35,8 @@ The scale/value column can be filled with :
 - a start and a scale number (the ticks will be calculated from those
    numbers), it corresponds to a continous dimension.
 
+setting the headers
++++++++++++++++++++
 
 **Screenshot of the set headers window**
 
@@ -50,6 +54,8 @@ This will reduce the size of the data, which will then be displayed properly.
    :align: center
    :alt: Screenshot of the initial display
 
+create a new filter
++++++++++++++++++++
 
 To create a filter, right click on the name of the dimension you wish to
 filter in the left part of the window. A menu will appear. Click on add/show
@@ -79,6 +85,10 @@ females aged between 15 and 19 years old.
 By clicking on F and M in the sex column and Y15-39 and Y40-64 in the age
 column, one can easily compare the trends as seen in the next display.
 
+
+Change the value of a filter
+++++++++++++++++++++++++++++
+
 **Screenshot of a comparative display**
 
 .. image:: \images\screenshots\unemploymentexample\comparison.png
@@ -87,6 +97,10 @@ column, one can easily compare the trends as seen in the next display.
 
 If you which to display the same imformation differently, you can drag the
 labels. On the next screenshot, "sex" is not on the same axis as before.
+
+
+Average some values
++++++++++++++++++++
 
 **Screenshot of an average**
 
