@@ -25,10 +25,14 @@ Then you can launch the toolbox with this simple line of command : xplor mydata
 The following window appears. It allows you to enter the metadata. For each
 dimension, there is a label, possibly a unit.
 The scale/value column can be filled with :
-   - nothing (the ticks of the axis will simply be numbered from 0)
-   - a list of named elements (each name will appear with a tick on the axis)
-   - a start and a scale number (the ticks will be calculated from those
-      numbers), it corresponds to a continous dimension.
+
+- nothing (the ticks of the axis will simply be numbered from 0)
+
+- a list of named elements (each name will appear with a tick on the axis)
+
+- a start and a scale number (the ticks will be calculated from those
+   numbers), it corresponds to a continous dimension.
+
 
 **Screenshot of the set headers window**
 
@@ -66,7 +70,14 @@ locally deactivate a filter by clicking on it.
    :align: center
    :alt: Screenshot of the creation of filters
 
+In the shared filter window, you can select for each filtered dimension the
+values that will be displayed.
 
+For instance, in the previous screenshot we had the unemployment rate for
+females aged between 15 and 19 years old.
+
+By clicking on F and M in the sex column and Y15-39 and Y40-64 in the age
+column, one can easily compare the trends as seen in the next display.
 
 **Screenshot of a comparative display**
 
@@ -74,11 +85,17 @@ locally deactivate a filter by clicking on it.
    :align: center
    :alt: Screenshot of a comparative display
 
-
+If you which to display the same imformation differently, you can drag the
+labels. On the next screenshot, "sex" is not on the same axis as before.
 
 **Screenshot of an average**
 
 .. image:: \images\screenshots\unemploymentexample\average.png
    :align: center
    :alt: Screenshot of an average
+
+To make an average, as on the previous screenshot, select the values you want
+to average. Right click on it and a menu will appear. Click on "new group
+selection". The values are now grouped, you can then compare them to another
+single selection or another group selection.
 

@@ -222,7 +222,7 @@
 
 <span class="sd">    **Methods**</span>
 
-<span class="sd">    - set_dimtype_to_mixed:</span>
+<span class="sd">    - set_dim_type_to_mixed:</span>
 <span class="sd">        changing the dimension_type to &#39;mixed&#39; if adding values that are not</span>
 <span class="sd">        of the correct dimension_type (merging lines for instance)</span>
 <span class="sd">    - copy:</span>
@@ -230,7 +230,7 @@
 <span class="sd">        </span>
 <span class="sd">    *(static methods)*</span>
 
-<span class="sd">    - infertype(x, getdefaultvalue=False):</span>
+<span class="sd">    - infer_type(x, getdefaultvalue=False):</span>
 <span class="sd">        gives the dimension_type of the x element and possibly the associated</span>
 <span class="sd">        defaultvalue</span>
 <span class="sd">    - defaultvalue(dimension_type):</span>
@@ -322,6 +322,8 @@
                             <span class="s2">&quot;the conversion indicator (e.g. &quot;</span>
                             <span class="s2">&quot;[&#39;mm&#39;, 10**(-3), &#39;m&#39;, 1])&quot;</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="c1"># Attributes label, dimension_type, unit and all_units can be seen but not</span>
     <span class="c1"># modified outside of the class (only get methods, no setters).</span>
     <span class="nd">@property</span>
@@ -344,7 +346,11 @@
         <span class="sd">&quot;&quot;&quot;conversion table (type list of dict)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_units</span>
 
-    <span class="k">def</span> <span class="nf">set_dimtype_to_mixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_label</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_unit</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_units</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_all_units</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_dim_type_to_mixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;change the dimension_type to mixed&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_type</span> <span class="o">=</span> <span class="s1">&#39;mixed&#39;</span>
 
@@ -352,27 +358,70 @@
         <span class="sd">&quot;&quot;&quot;copy a DimensionDescription instance&quot;&quot;&quot;</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit</span>
-        <span class="n">obj</span><span class="o">.</span><span class="n">_all_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_units</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_all_units</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_all_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_units</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">obj</span>
 
+    <span class="k">def</span> <span class="nf">check_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check that a given value satisfies dimension_type&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">==</span> <span class="s1">&#39;mixed&#39;</span><span class="p">:</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Check type</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">==</span> <span class="s1">&#39;mixed&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">==</span> <span class="s1">&#39;logical&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">==</span> <span class="s1">&#39;numeric&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span>
+                                                <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">==</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Color</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+                    <span class="n">ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_type_fun</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Return check result, or raise an error</span>
+        <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Value does not satisfy dimension_type &#39;&quot;</span>
+                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ok</span>
+
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">infertype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">getdefaultvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;infertype is a static method to access the dimension_type of an</span>
+    <span class="k">def</span> <span class="nf">infer_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">getdefaultvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;infer_type is a static method to guess the dimension_type of an</span>
 <span class="sd">        element x and if required, the associated default value&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="n">dimtype</span> <span class="o">=</span> <span class="s1">&#39;logical&#39;</span>
+            <span class="n">dim_type</span> <span class="o">=</span> <span class="s1">&#39;logical&#39;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">dimtype</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+            <span class="n">dim_type</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
-            <span class="n">dimtype</span> <span class="o">=</span> <span class="s1">&#39;numeric&#39;</span>
+            <span class="n">dim_type</span> <span class="o">=</span> <span class="s1">&#39;numeric&#39;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
-            <span class="n">dimtype</span> <span class="o">=</span> <span class="s1">&#39;color&#39;</span>
+            <span class="n">dim_type</span> <span class="o">=</span> <span class="s1">&#39;color&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">dimtype</span> <span class="o">=</span> <span class="s1">&#39;mixed&#39;</span>
+            <span class="n">dim_type</span> <span class="o">=</span> <span class="s1">&#39;mixed&#39;</span>
         <span class="k">if</span> <span class="n">getdefaultvalue</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">dimtype</span><span class="p">,</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">defaultvalue</span><span class="p">(</span><span class="n">dimtype</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dim_type</span><span class="p">,</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">defaultvalue</span><span class="p">(</span><span class="n">dim_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">dimtype</span>
+            <span class="k">return</span> <span class="n">dim_type</span>
 
     <span class="c1"># Calculating a default value for the different dimension_types.</span>
     <span class="nd">@staticmethod</span>
@@ -394,6 +443,50 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This function only gives the default value for&quot;</span>
                             <span class="s2">&quot; the following types: &#39;numeric&#39;, &#39;logical&#39;, &quot;</span>
                             <span class="s2">&quot;&#39;string&#39;, &#39;color&#39; or &#39;mixed&#39;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_dimension_description"><a class="viewcode-back" href="../xdata.html#xdata.create_dimension_description">[docs]</a><span class="k">def</span> <span class="nf">create_dimension_description</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;the function creates an instance of DimensionDescription.</span>
+
+<span class="sd">    create_dimension_description gives an instance of the class</span>
+<span class="sd">    DimensionDescription from a label and an column of values of type</span>
+<span class="sd">    pandas.core.series.Series.</span>
+
+<span class="sd">    If column is None, the DimensionDescription instance will be of</span>
+<span class="sd">    dimension_type &#39;mixed&#39; by default.</span>
+
+<span class="sd">    When using this function, no unit is specified, so</span>
+<span class="sd">    dimension_description.unit will be None.</span>
+
+<span class="sd">    **Parameters**</span>
+
+<span class="sd">    - label:</span>
+<span class="sd">        label for the DimensionDescription instance</span>
+<span class="sd">        (type str)</span>
+<span class="sd">    - column:</span>
+<span class="sd">        values to determine the dimension_type of the DimensionDescription</span>
+<span class="sd">        (type pandas.core.series.Series, shape (n,1))</span>
+
+<span class="sd">    **returns**</span>
+<span class="sd">    DimensionDescription instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;label must be of type str&quot;</span><span class="p">)</span>
+    <span class="c1"># if no table of value is given:</span>
+    <span class="k">if</span> <span class="n">column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">series</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column must be of type pandas.core.series.Series&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column must be of shape (n,1)&quot;</span><span class="p">)</span>
+    <span class="c1"># if a table of value is given, we must determine the dimension_type</span>
+    <span class="c1"># we must check all the elements to make sure it is not a &#39;mixed&#39; type</span>
+    <span class="n">dimension_type</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="n">dimension_type</span><span class="p">:</span>
+            <span class="n">dimension_type</span> <span class="o">=</span> <span class="s1">&#39;mixed&#39;</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">dimension_type</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Header"><a class="viewcode-back" href="../xdata.html#xdata.Header">[docs]</a><span class="k">class</span> <span class="nc">Header</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
@@ -506,19 +599,18 @@
     <span class="k">def</span> <span class="nf">is_categorical_with_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;fast way to test if a header is categorical with values</span>
 <span class="sd">        (ie list of elements)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_categorical</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_categorical</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_undifferentiated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;fast way to test if a header is categorical with no values&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_categorical</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_categorical</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span> <span class="o">==</span> <span class="mi">0</span>
 
     <span class="c1"># Methods</span>
-    <span class="k">def</span> <span class="nf">check_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">new_header</span><span class="p">:</span> <span class="s1">&#39;Header&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">check_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">new_header</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;basics checks when updating data and giving a new header&quot;&quot;&quot;</span>
         <span class="c1"># check types of parameters</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_header</span><span class="p">,</span> <span class="n">Header</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;new_header must be a header&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_header</span><span class="p">,</span> <span class="n">Header</span><span class="p">)</span>
 
         <span class="c1"># &#39;dim_chg&#39; flag allows any change!</span>
         <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;dim_chg&#39;</span><span class="p">:</span>
@@ -538,32 +630,28 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;sub-labels are not preserved&quot;</span><span class="p">)</span>
 
-        <span class="c1"># only &#39;all&#39; and &#39;dim_chg&#39; flag allows to change n_elem as we want</span>
+        <span class="c1"># no need to check n_elem for flag &#39;all&#39;</span>
+        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># no constraint on n_elem</span>
+
+        <span class="c1"># check n_elem</span>
         <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;new&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">new_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the new headers has the wrong number of &quot;</span>
-                                <span class="s2">&quot;elements&quot;</span><span class="p">)</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;chg&#39;</span> <span class="s1">&#39;perm&#39;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">new_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;both headers must have the same number &quot;</span>
-                                <span class="s2">&quot;of elements&quot;</span><span class="p">)</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;remove&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">new_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the new headers has the wrong number of &quot;</span>
-                                <span class="s2">&quot;elements&quot;</span><span class="p">)</span>
-        <span class="c1"># &#39;chg&amp;new&#39; and &#39;chg&amp;rm&#39; flags impose ind to be an array of array</span>
-        <span class="c1"># with the first element being the array of indices to be changed</span>
-        <span class="c1"># and the second element being an array of new indices</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;chg&amp;new&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">new_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the new headers has the wrong number of &quot;</span>
-                                <span class="s2">&quot;elements&quot;</span><span class="p">)</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;chg&amp;rm&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">new_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the new headers has the wrong number of &quot;</span>
-                                <span class="s2">&quot;elements&quot;</span><span class="p">)</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown flag&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span> <span class="o">+</span> <span class="n">nc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the new headers has the wrong number of elements&quot;</span><span class="p">)</span>
+
+        <span class="c1"># not checking values (if CategoricalHeader) or units/start/scale (</span>
+        <span class="c1"># if Measure Header... that would be too long</span>
 
     <span class="c1"># abstract methods</span>
     <span class="nd">@abstractmethod</span>
@@ -583,8 +671,9 @@
         <span class="sd">&quot;&quot;&quot;Override the default Equals behavior&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
+    <span class="nd">@property</span>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_n_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">n_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns the number of columns&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
@@ -625,21 +714,21 @@
 <div class="viewcode-block" id="CategoricalHeader"><a class="viewcode-back" href="../xdata.html#xdata.CategoricalHeader">[docs]</a><span class="k">class</span> <span class="nc">CategoricalHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This class allows the creation of a header for a categorical dimension</span>
 <span class="sd">    of a dataset.</span>
-<span class="sd">    </span>
+
 <span class="sd">    CategoricalHeader is used for categorical dimensions of a dataset. This</span>
 <span class="sd">    means that this dimension is either not continuous or that the data has not</span>
 <span class="sd">    been collected regularly in this dimension. Therefore, their is no scale,</span>
 <span class="sd">    measure for this dimension. It is more a collection of objects.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A CategoricalHeader has a general label as well as one or several</span>
 <span class="sd">    DimensionDescription objects stored in column_descriptors to describe each</span>
 <span class="sd">    of the features. For each feature, values can be given (e.g. for &#39;fruits&#39;</span>
 <span class="sd">    values would be &#39;apple&#39;, &#39;pear&#39;, &#39;blueberry&#39;, &#39;watermelon&#39;...) or be a list</span>
 <span class="sd">    of numbers. The first case corresponds to &#39;is_categorical_with_values&#39;, the</span>
 <span class="sd">    second to &#39;is_undifferentiated&#39;</span>
-<span class="sd">    </span>
-<span class="sd">    </span>
-<span class="sd">    </span>
+
+
+
 <span class="sd">    **Parameters**</span>
 
 <span class="sd">    - label:</span>
@@ -647,29 +736,29 @@
 <span class="sd">        (type: str)</span>
 <span class="sd">    - column_descriptors:</span>
 <span class="sd">        description of the dimension of each feature</span>
-<span class="sd">        </span>
+
 <span class="sd">        (type str, DimensionDescription or a list of such elements)</span>
-<span class="sd">        </span>
+
 <span class="sd">        (optional, the case with no column is possible. The legend would then</span>
 <span class="sd">        be a list of int [1, 2, ...], it is undifferentiated)</span>
-<span class="sd">     </span>
-<span class="sd">    - n_elem:</span>
-<span class="sd">        number of element in the column(s)</span>
-<span class="sd">        </span>
-<span class="sd">        (type int)</span>
-<span class="sd">        </span>
-<span class="sd">        (optional if values is specified)</span>
-<span class="sd">            </span>
+
 <span class="sd">    - values:</span>
 <span class="sd">        content of the various subdimensions</span>
-<span class="sd">        </span>
+
 <span class="sd">        (type DataFrame from pandas (pandas.core.frame.DataFrame) of shape</span>
 <span class="sd">        (n_elem, len(column_descriptors))</span>
-<span class="sd">        </span>
+
 <span class="sd">        (optional if it is just undifferentiated series of measures and that</span>
 <span class="sd">        n_elem is given)</span>
-<span class="sd">            </span>
-<span class="sd">    </span>
+
+<span class="sd">    - n_elem:</span>
+<span class="sd">        number of element in the column(s)</span>
+
+<span class="sd">        (type int)</span>
+
+<span class="sd">        (optional if values is specified)</span>
+
+
 <span class="sd">    **Attributes**</span>
 
 <span class="sd">    - label:</span>
@@ -680,11 +769,11 @@
 <span class="sd">    - values:</span>
 <span class="sd">        content of the various subdimensions (pandas DataFrame</span>
 <span class="sd">        (pandas.core.frame.DataFrame)of shape (n_elem, len(column_descriptors))</span>
-<span class="sd">      </span>
+
 <span class="sd">    **Methods**</span>
 
 <span class="sd">    *(methods imposed by inheritance)*</span>
-<span class="sd">    </span>
+
 <span class="sd">    - n_elem:</span>
 <span class="sd">        number of element in the column(s)/ number of samples number of lines</span>
 <span class="sd">        of values</span>
@@ -696,7 +785,7 @@
 <span class="sd">    - __eq__:</span>
 <span class="sd">        compares all the fields of the headers (returns True if all the</span>
 <span class="sd">        fields are the same) it can be used by writing header1 == header2</span>
-<span class="sd">    - get_n_columns:</span>
+<span class="sd">    - n_column:</span>
 <span class="sd">        gives the number of columns (1 for MeasureHeader, 0 to n for</span>
 <span class="sd">        CategoricalHeader)</span>
 <span class="sd">    - get_units:</span>
@@ -717,9 +806,9 @@
 <span class="sd">        returns the corresponding values of the first column</span>
 <span class="sd">    - copy:</span>
 <span class="sd">        creates a copy of the categorical header</span>
-<span class="sd">    </span>
+
 <span class="sd">    *(other methods)*</span>
-<span class="sd">    </span>
+
 <span class="sd">    - add_column(column_descriptor, values):</span>
 <span class="sd">        column_descriptor must be of type str or DimensionDescription</span>
 <span class="sd">        values must be of type pandas.core.series.Series this method allows</span>
@@ -746,75 +835,66 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">label</span><span class="p">,</span>
                  <span class="n">column_descriptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">n_elem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">n_elem</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor of the class CategoricalHeader&quot;&quot;&quot;</span>
+
         <span class="c1"># label is not optional and must be of type string</span>
         <span class="c1"># label can be different from the labels of the columns</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The header&#39;s label must be of type str&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">=</span> <span class="n">label</span>
-        <span class="c1"># if values is None, so is column_descriptors, but we must have n_elem</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;The header&#39;s label must be of type str&quot;</span>
+
+        <span class="c1"># It is possible not to provide column descriptors and values: in</span>
+        <span class="c1"># this case the values will be a table with zero column, and n_elem</span>
+        <span class="c1"># must be provided to inform about the number of rows.</span>
         <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n_elem</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;if no value is given, n_elem must be given&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_elem</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;n_elem must be of type int&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">column_descriptors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">column_descriptors</span> <span class="o">==</span> <span class="p">[])):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;if there is no values, there are no columns&quot;</span>
-                                <span class="s2">&quot; to be described&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_elem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;values must be a pandas DataFrame&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">n_elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> \
+                <span class="s2">&quot;if there are no values, n_elem must be provided&quot;</span>
+            <span class="k">assert</span> <span class="n">column_descriptors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> \
+                <span class="s2">&quot;if there are no values, there are no columns to be described&quot;</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_elem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+            <span class="n">column_descriptors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># values is a DataFrame</span>
+        <span class="c1"># we have to check that it has the correct shape</span>
+        <span class="c1"># labels of the data_frame will not be taken into consideration</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">),</span> \
+            <span class="s2">&quot;values must be a pandas DataFrame&quot;</span>
+        <span class="k">if</span> <span class="n">n_elem</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_elem</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># values is a DataFrame</span>
-            <span class="c1"># we have to check that it has the correct shape</span>
-            <span class="c1"># however, labels of the data_frame will not be taken into</span>
-            <span class="c1"># consideration correspond</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_elem</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">n_elem</span> <span class="o">==</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;n_elem is not coherent with shape of &quot;</span>
-                                    <span class="s2">&quot;values&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">n_elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;n_elem must but of type int&quot;</span><span class="p">)</span>
-            <span class="c1"># n_elem is either not given or correspond to the number of</span>
-            <span class="c1"># lines of the data_frame</span>
-            <span class="c1"># let&#39;s check that values and column_descriptors are size coherent</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">,</span> <span class="n">DimensionDescription</span><span class="p">)):</span>
-                <span class="n">column_descriptors</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_descriptors</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column_descriptors must be of type str, &quot;</span>
-                                <span class="s2">&quot;DimensionDescription or a list of such &quot;</span>
-                                <span class="s2">&quot;elements&quot;</span><span class="p">)</span>
-            <span class="c1"># column_descriptors is now a list</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">)</span> <span class="o">!=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column_descriptors and values must have the &quot;</span>
-                                <span class="s2">&quot;same length&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="n">dim_description</span> <span class="o">=</span> <span class="n">create_dimension_description</span><span class="p">(</span>
-                        <span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dim_description</span><span class="p">]</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">DimensionDescription</span><span class="p">):</span>
-                    <span class="n">d</span> <span class="o">=</span> <span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
-                    <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                            <span class="c1"># /!\data_frame[column][line]</span>
-                            <span class="k">if</span> <span class="p">(</span><span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">e</span><span class="p">])</span>
-                                    <span class="o">!=</span> <span class="n">d</span><span class="p">):</span>
-                                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dimension_types of &quot;</span>
-                                                <span class="s2">&quot;column_descriptors must be &quot;</span>
-                                                <span class="s2">&quot;coherent with the data in &quot;</span>
-                                                <span class="s2">&quot;values&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">+=</span> <span class="p">[</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;all column_descriptors elements must be &quot;</span>
-                                    <span class="s2">&quot;either of type str or &quot;</span>
-                                    <span class="s2">&quot;DimensionDescription&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">n_elem</span> <span class="o">==</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> \
+                <span class="s2">&quot;n_elem does not match the shape of values&quot;</span>
+
+        <span class="c1"># column descriptors can be provided as string, DimensionDescription</span>
+        <span class="c1"># object (if n_column==1), or list thereof</span>
+        <span class="n">n_column</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">,</span> <span class="n">DimensionDescription</span><span class="p">)):</span>
+            <span class="c1"># convert sting or DimensionDescription to 1-element list</span>
+            <span class="n">column_descriptors</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_descriptors</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> \
+                <span class="p">(</span><span class="s2">&quot;column_descriptors must be of type str, &quot;</span>
+                 <span class="s2">&quot;DimensionDescription or a list of such elements&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_column</span><span class="p">,</span> \
+            <span class="s2">&quot;column_descriptors does not match the number of values columns&quot;</span>
+        <span class="c1"># create DimensionDescription objects or check their type</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_column</span><span class="p">):</span>
+            <span class="n">dim_descriptor</span> <span class="o">=</span> <span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dim_descriptor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_dimension_description</span><span class="p">(</span>
+                    <span class="n">dim_descriptor</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">DimensionDescription</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_elem</span><span class="p">):</span>
+                    <span class="n">dim_descriptor</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;all column_descriptors elements must be &quot;</span>
+                                <span class="s2">&quot;either of type str or DimensionDescription&quot;</span><span class="p">)</span>
+
+        <span class="c1"># that&#39;s it, set properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="n">column_descriptors</span>
 
     <span class="c1"># private property but with get access</span>
     <span class="nd">@property</span>
@@ -834,79 +914,40 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span>
 
     <span class="c1"># methods</span>
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;CategoricalHeader&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override the default Equals behavior&quot;&quot;&quot;</span>
         <span class="c1"># the two headers must have the same type</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">CategoricalHeader</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="c1"># the label must be the same</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_label</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="c1"># the column_descriptors must be the same</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_categorical_with_values</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">is_categorical_with_values</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_categorical_with_values</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">)):</span>
-                <span class="n">self_descriptor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">other_descriptor</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">self_descriptor</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">other_descriptor</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">self_descriptor</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">!=</span>
-                        <span class="n">other_descriptor</span><span class="o">.</span><span class="n">dimension_type</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-                <span class="k">if</span> <span class="n">self_descriptor</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="n">other_descriptor</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-                <span class="k">if</span> <span class="n">self_descriptor</span><span class="o">.</span><span class="n">all_units</span> <span class="o">!=</span> <span class="n">other_descriptor</span><span class="o">.</span><span class="n">all_units</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-        <span class="c1"># the content of values must be the same</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">column</span><span class="p">][</span><span class="n">line</span><span class="p">]</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">column</span><span class="p">][</span><span class="n">line</span><span class="p">]:</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span>
+        <span class="c1"># label, column descriptors and values must be the same (but not</span>
+        <span class="c1"># necessarily additional properties that might be added later such</span>
+        <span class="c1"># as _id)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_label</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">))</span>
+        <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_n_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns the number of columns&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;gives a list of the units of all the columns&quot;&quot;&quot;</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">dimension_description</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">dimension_description</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">units</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;no unit&#39;</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">units</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dimension_description</span><span class="o">.</span><span class="n">unit</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">units</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">unit</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_all_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;gives a list of the conversion tables for the units of all the</span>
 <span class="sd">        columns&quot;&quot;&quot;</span>
-        <span class="n">all_units</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">dimension_description</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dimension_description</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">all_units</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;no unit&#39;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">all_units</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dimension_description</span><span class="o">.</span><span class="n">all_units</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">all_units</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">all_units</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">disp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;display some information about the header&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CategoricalHeader: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CategoricalHeader: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;columns:&quot;</span><span class="p">)</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
             <span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -920,29 +961,28 @@
 <span class="sd">        column&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;line must be of type int&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">line</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">|</span> <span class="n">line</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elem</span> <span class="ow">or</span> <span class="n">line</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;line must be in [0, n_elem[&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">column</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;not implemented yet (should return the whole &quot;</span>
+                                <span class="s2">&quot;line)&quot;</span><span class="p">)</span>  <span class="c1"># TODO</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># line_num must be 0 to have the first elem of a list in</span>
-                <span class="c1"># python.</span>
-                <span class="k">return</span> <span class="n">line</span>
-            <span class="k">if</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">|</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span> <span class="ow">or</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column is a str or an int in [0, n_col[&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">column</span><span class="p">][</span><span class="n">line</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">line</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column is either the label of a column or it&#39;s&quot;</span>
+                            <span class="s2">&quot;number (int)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column is either the label of a column or it&#39;s&quot;</span>
                             <span class="s2">&quot;number (int)&quot;</span><span class="p">)</span>
         <span class="c1"># if it is a string</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">dim_descriptor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dim_descriptor</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">column</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">count</span><span class="p">][</span><span class="n">line</span><span class="p">]</span>
-            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column is either the label of a column or it&#39;s&quot;</span>
-                        <span class="s2">&quot;number (int)&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_item_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get the value(s) of the line(s) in line_num (it can be an int or a list</span>
@@ -952,15 +992,17 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">line</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elem</span> <span class="ow">or</span> <span class="n">line</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;line_num must be in [0, n_elem[&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">item_names</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;all line numbers must be integers&quot;</span><span class="p">)</span>
-                <span class="n">item_names</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
-            <span class="k">return</span> <span class="n">item_names</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;line_num must be an int or a list of int&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;line_num must be an int or a list of int&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">add_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_descriptor</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;this method allows to add a column to a categorical header&quot;&quot;&quot;</span>
@@ -977,19 +1019,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if it was a given DimensionDescriptor, let&#39;s check that the</span>
             <span class="c1"># dimension_type correspond to that of the values</span>
-            <span class="n">dimension_type</span> <span class="o">=</span> <span class="n">column_descriptor</span><span class="o">.</span><span class="n">dimension_type</span>
-            <span class="k">if</span> <span class="n">dimension_type</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dimension_type</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the dimension_type of the &quot;</span>
-                                        <span class="s2">&quot;DimensionDescription must correspond&quot;</span>
-                                        <span class="s2">&quot; to that of the values&quot;</span><span class="p">)</span>
+            <span class="n">column_descriptor</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
         <span class="n">column_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">+</span> <span class="p">[</span><span class="n">column_descriptor</span><span class="p">]</span>
         <span class="n">new_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_values</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">column_descriptors</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
         <span class="k">return</span><span class="p">(</span><span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                  <span class="n">column_descriptors</span><span class="p">,</span>
-                                 <span class="n">values</span><span class="o">=</span><span class="n">new_values</span><span class="p">))</span>
+                                 <span class="n">new_values</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">update_categorical_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;updates the values of a categorical header&quot;&quot;&quot;</span>
@@ -1008,9 +1045,9 @@
                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="c1"># noinspection PyPep8</span>
                             <span class="k">if</span> <span class="p">(</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span> <span class="o">!=</span>
-                                    <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span>
+                                    <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span>
                                     <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">])):</span>
-                                <span class="n">column_descriptors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
+                                <span class="n">column_descriptors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_dim_type_to_mixed</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                          <span class="n">column_descriptors</span><span class="p">,</span>
                                          <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
@@ -1024,11 +1061,12 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;values must be a list of pandas Series&quot;</span><span class="p">)</span>
                 <span class="n">new_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="c1"># no need for deep copy for the descriptors</span>
                 <span class="n">new_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span>
                 <span class="k">if</span> <span class="n">new_descriptors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">new_descriptors</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-                    <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span>
+                    <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">series</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;values must be a list of pandas &quot;</span>
                                         <span class="s2">&quot;Series&quot;</span><span class="p">)</span>
@@ -1037,12 +1075,7 @@
                                         <span class="s2">&quot; same number of elements that the &quot;</span>
                                         <span class="s2">&quot;number of column of the header&quot;</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
-                        <span class="n">dimtype</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
-                        <span class="c1"># noinspection PyPep8</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="n">dimtype</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                                    <span class="n">dimtype</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span>
-                                    <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
-                            <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
+                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
                     <span class="n">new_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                          <span class="n">new_descriptors</span><span class="p">,</span>
@@ -1062,7 +1095,7 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;values and ind must have the same length&quot;</span><span class="p">)</span>
             <span class="n">new_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ind must be the list of the indices of&quot;</span>
@@ -1077,15 +1110,15 @@
                                     <span class="s2">&quot;element as the number of column of the &quot;</span>
                                     <span class="s2">&quot;header&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
-                    <span class="n">dimtype</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">dimtype</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="n">dimtype</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span>
+                    <span class="n">dim_type</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">dim_type</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                        <span class="n">dim_type</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span>
                                 <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">cc</span><span class="p">])):</span>
-                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
+                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dim_type_to_mixed</span><span class="p">()</span>
                 <span class="n">new_values</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                      <span class="n">new_descriptors</span><span class="p">,</span>
-                                     <span class="n">values</span><span class="o">=</span><span class="n">new_values</span><span class="p">)</span>
+                                     <span class="n">new_values</span><span class="p">)</span>
         <span class="c1"># flag &#39;remove&#39;: suppress some lines</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;remove&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -1105,7 +1138,7 @@
             <span class="n">new_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">,</span>
-                                     <span class="n">values</span><span class="o">=</span><span class="n">new_values</span><span class="p">)</span>
+                                     <span class="n">new_values</span><span class="p">)</span>
         <span class="c1"># flag &#39;perm&#39;: change the lines order</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;perm&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">values</span> <span class="o">!=</span> <span class="p">[]):</span>
@@ -1125,7 +1158,7 @@
                 <span class="n">new_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">,</span>
-                                     <span class="n">values</span><span class="o">=</span><span class="n">new_values</span><span class="p">)</span>
+                                     <span class="n">new_values</span><span class="p">)</span>
         <span class="c1"># flag &#39;chg&amp;new&#39;: combination of &#39;chg&#39; and &#39;new&#39;</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;chg&amp;new&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -1151,7 +1184,7 @@
                                 <span class="s2">&quot;a value&quot;</span><span class="p">)</span>
             <span class="n">new_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ind_chg</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind_chg</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;all indices must be of type int&quot;</span><span class="p">)</span>
@@ -1165,11 +1198,11 @@
                                     <span class="s2">&quot;element as the number of column of the &quot;</span>
                                     <span class="s2">&quot;header&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
-                    <span class="n">dimtype</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">dimtype</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="n">dimtype</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span>
+                    <span class="n">dim_type</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">dim_type</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                        <span class="n">dim_type</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span>
                                 <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">cc</span><span class="p">])):</span>
-                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
+                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dim_type_to_mixed</span><span class="p">()</span>
                 <span class="n">new_values</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ind_chg</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
             <span class="c1"># ...now let&#39;s add the new lines</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
@@ -1180,14 +1213,14 @@
                                     <span class="s2">&quot;number of elements that the number of &quot;</span>
                                     <span class="s2">&quot;column of the header&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
-                    <span class="n">dimtype</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">dimtype</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                            <span class="n">dimtype</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
-                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
+                    <span class="n">dim_type</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">dim_type</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                            <span class="n">dim_type</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dim_type_to_mixed</span><span class="p">()</span>
                 <span class="n">new_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                      <span class="n">new_descriptors</span><span class="p">,</span>
-                                     <span class="n">values</span><span class="o">=</span><span class="n">new_values</span><span class="p">)</span>
+                                     <span class="n">new_values</span><span class="p">)</span>
         <span class="c1"># flag &#39;chg&amp;rm&#39;: combination of &#39;chg&#39; and &#39;rm&#39;</span>
         <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s1">&#39;chg&amp;rm&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -1199,7 +1232,7 @@
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ind must contains the lines to change &quot;</span>
                                 <span class="s2">&quot;and the lines to remove&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span>
                       <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">list</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;values must contains the values to change &quot;</span>
                                 <span class="s2">&quot;and the values to add in two lists&quot;</span><span class="p">)</span>
@@ -1209,7 +1242,7 @@
                                 <span class="s2">&quot;a value&quot;</span><span class="p">)</span>
             <span class="n">new_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_column</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;all indices must be of type int&quot;</span><span class="p">)</span>
@@ -1223,11 +1256,11 @@
                                     <span class="s2">&quot;element as the number of column of the &quot;</span>
                                     <span class="s2">&quot;header&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
-                    <span class="n">dimtype</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">dimtype</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                            <span class="n">dimtype</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span>
+                    <span class="n">dim_type</span> <span class="o">=</span> <span class="n">new_descriptors</span><span class="p">[</span><span class="n">cc</span><span class="p">]</span><span class="o">.</span><span class="n">dimension_type</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">dim_type</span> <span class="o">!=</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                            <span class="n">dim_type</span> <span class="o">!=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infer_type</span><span class="p">(</span>
                             <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">cc</span><span class="p">])):</span>
-                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dimtype_to_mixed</span><span class="p">()</span>
+                        <span class="n">new_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_dim_type_to_mixed</span><span class="p">()</span>
                 <span class="n">new_values</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="c1"># ...now let&#39;s remove the unwanted lines</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
@@ -1240,7 +1273,7 @@
             <span class="n">new_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
                                      <span class="n">new_descriptors</span><span class="p">,</span>
-                                     <span class="n">values</span><span class="o">=</span><span class="n">new_values</span><span class="p">)</span>
+                                     <span class="n">new_values</span><span class="p">)</span>
         <span class="c1"># all the accepted flags were listed before, so the argument is not</span>
         <span class="c1"># valid</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;the given flag must be &#39;all&#39;, &#39;perm&#39;, &#39;chg&#39;, &#39;new&#39;&quot;</span>
@@ -1277,18 +1310,12 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">merge</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;creates a copy of a categoricalHeader&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">column_descriptors</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">column_descriptors</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">:</span>
-                <span class="n">column_descriptors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-                                 <span class="n">column_descriptors</span><span class="p">,</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">n_elem</span><span class="p">,</span>
-                                 <span class="n">values</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;creates a copy of a categoricalHeader: note that the list of column</span>
+<span class="sd">        descriptor elements is a &#39;simple copy&#39; as its elements themselves</span>
+<span class="sd">        are only shallow copied&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CategoricalHeader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="MeasureHeader"><a class="viewcode-back" href="../xdata.html#xdata.MeasureHeader">[docs]</a><span class="k">class</span> <span class="nc">MeasureHeader</span><span class="p">(</span><span class="n">Header</span><span class="p">):</span>
@@ -1370,7 +1397,7 @@
 <span class="sd">    - __eq__:</span>
 <span class="sd">        compares all the fields of the headers (returns True if all the</span>
 <span class="sd">        fields are the same) it can be used by writing header1 == header2</span>
-<span class="sd">    - get_n_columns:</span>
+<span class="sd">    - n_column:</span>
 <span class="sd">        gives the number of columns (1 for MeasureHeader, 0 to n for</span>
 <span class="sd">        CategoricalHeader)</span>
 <span class="sd">    - get_units:</span>
@@ -1431,7 +1458,7 @@
             <span class="k">if</span> <span class="n">column_descriptors</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">label</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                     <span class="s2">&quot;the general label and the label from the &quot;</span>
-                    <span class="s2">&quot;column_descriptors must be the same&quot;</span> 
+                    <span class="s2">&quot;column_descriptors must be the same&quot;</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -1447,25 +1474,25 @@
         <span class="k">elif</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">check_bank</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Specify a unit so as to checkout the bank&quot;</span><span class="p">)</span>
-            <span class="n">dim_description</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;numeric&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="p">[</span><span class="n">dim_description</span><span class="p">]</span>
+            <span class="n">dim_descriptor</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;numeric&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="p">[</span><span class="n">dim_descriptor</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">check_bank</span><span class="p">:</span>
                 <span class="n">all_units</span> <span class="o">=</span> <span class="n">check_bank_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">all_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">dim_description</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span>
-                                                           <span class="s1">&#39;numeric&#39;</span><span class="p">,</span>
-                                                           <span class="n">unit</span><span class="p">)</span>
+                    <span class="n">dim_descriptor</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span>
+                                                          <span class="s1">&#39;numeric&#39;</span><span class="p">,</span>
+                                                          <span class="n">unit</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">units</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">all_units</span><span class="p">:</span>
                         <span class="n">units</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">],</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]]</span>
-                    <span class="n">dim_description</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span>
-                                                           <span class="s1">&#39;numeric&#39;</span><span class="p">,</span>
-                                                           <span class="n">units</span><span class="p">)</span>
+                    <span class="n">dim_descriptor</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span>
+                                                          <span class="s1">&#39;numeric&#39;</span><span class="p">,</span>
+                                                          <span class="n">units</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">dim_description</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;numeric&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="p">[</span><span class="n">dim_description</span><span class="p">]</span>
+                <span class="n">dim_descriptor</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;numeric&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span> <span class="o">=</span> <span class="p">[</span><span class="n">dim_descriptor</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;unit must be a str or a list&quot;</span><span class="p">)</span>
 
@@ -1496,7 +1523,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_elem</span>
 
     <span class="c1"># methods</span>
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;MeasureHeader&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override the default Equals behavior&quot;&quot;&quot;</span>
         <span class="c1"># the two headers must have the same type</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">MeasureHeader</span><span class="p">):</span>
@@ -1521,7 +1548,8 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">get_n_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns the number of columns&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">1</span>
 
@@ -1601,7 +1629,7 @@
                              <span class="n">n_elem</span><span class="p">,</span>
                              <span class="n">scale</span><span class="p">,</span>
                              <span class="n">column_descriptors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_descriptors</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    
+
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;creates a copy of a measure header&quot;&quot;&quot;</span>
         <span class="n">descriptor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1940,8 +1968,8 @@
                 <span class="k">if</span> <span class="n">old_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">n_elem</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&#39; flag can&#39;t change the number of &quot;</span>
                                     <span class="s2">&quot;elements in the dimension&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">!=</span>
-                        <span class="n">modified_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span> <span class="o">!=</span>
+                        <span class="n">modified_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&#39; flag can&#39;t change the number of &quot;</span>
                                     <span class="s2">&quot;columns of the header&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_all_units</span><span class="p">()</span> <span class="o">!=</span>
@@ -1949,7 +1977,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&#39; flag can&#39;t change the units&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">old_header</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span>
                             <span class="n">modified_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
@@ -2029,8 +2057,8 @@
                                     <span class="s2">&quot;dimension must be the same in data and &quot;</span>
                                     <span class="s2">&quot;in the header&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">is_categorical_with_values</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">!=</span>
-                        <span class="n">modified_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span> <span class="o">!=</span>
+                        <span class="n">modified_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;new&#39; flag can&#39;t change the number of &quot;</span>
                                     <span class="s2">&quot;columns of the header&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_all_units</span><span class="p">()</span> <span class="o">!=</span>
@@ -2038,7 +2066,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;new&#39; flag can&#39;t change the units&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">old_header</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;new&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span>
                             <span class="n">modified_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;new&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
@@ -2086,8 +2114,8 @@
                                     <span class="s2">&quot;dimension must be the same in data and &quot;</span>
                                     <span class="s2">&quot;in the header&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">is_categorical_with_values</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">!=</span>
-                        <span class="n">modified_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span> <span class="o">!=</span>
+                        <span class="n">modified_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;remove&#39; flag can&#39;t change the number of&quot;</span>
                                     <span class="s2">&quot; columns of the header&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_all_units</span><span class="p">()</span> <span class="o">!=</span>
@@ -2095,7 +2123,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;remove&#39; flag can&#39;t change the units&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">old_header</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;remove&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span>
                             <span class="n">modified_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;remove&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
@@ -2151,8 +2179,8 @@
                                 <span class="s2">&quot;dimension must be the same in data and &quot;</span>
                                 <span class="s2">&quot;in the header&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">is_categorical_with_values</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">!=</span>
-                        <span class="n">modified_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span> <span class="o">!=</span>
+                        <span class="n">modified_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;new&#39; flag can&#39;t change the number &quot;</span>
                                     <span class="s2">&quot;of columns of the header&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_all_units</span><span class="p">()</span> <span class="o">!=</span>
@@ -2160,7 +2188,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;new&#39; flag can&#39;t change the units&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">old_header</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;new&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span>
                             <span class="n">modified_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;new&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
@@ -2255,8 +2283,8 @@
                                     <span class="s2">&quot;dimension must be the same in data and &quot;</span>
                                     <span class="s2">&quot;in the header&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">is_categorical_with_values</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">!=</span>
-                        <span class="n">modified_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span> <span class="o">!=</span>
+                        <span class="n">modified_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;rm&#39; flag can&#39;t change the number &quot;</span>
                                     <span class="s2">&quot;of columns of the header&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_all_units</span><span class="p">()</span> <span class="o">!=</span>
@@ -2264,7 +2292,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;rm&#39; flag can&#39;t change the units&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">old_header</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;rm&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span>
                             <span class="n">modified_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;chg&amp;rm&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
@@ -2319,8 +2347,8 @@
                 <span class="k">if</span> <span class="n">old_header</span><span class="o">.</span><span class="n">n_elem</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">n_elem</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;perm&#39; flag can&#39;t change the number of &quot;</span>
                                     <span class="s2">&quot;elements in the dimension&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()</span> <span class="o">!=</span>
-                        <span class="n">modified_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span> <span class="o">!=</span>
+                        <span class="n">modified_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;perm&#39; flag can&#39;t change the number of &quot;</span>
                                     <span class="s2">&quot;columns of the header&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_all_units</span><span class="p">()</span> <span class="o">!=</span>
@@ -2328,7 +2356,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;perm&#39; flag can&#39;t change the units&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">old_header</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">modified_header</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;perm&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">get_n_columns</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">n_column</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">old_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span>
                             <span class="n">modified_header</span><span class="o">.</span><span class="n">column_descriptors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;perm&#39; flag can&#39;t change labels&quot;</span><span class="p">)</span>
@@ -2482,55 +2510,6 @@
         <span class="c1"># TODO : notify instead of returns</span>
 
 
-<div class="viewcode-block" id="create_dimension_description"><a class="viewcode-back" href="../xdata.html#xdata.create_dimension_description">[docs]</a><span class="k">def</span> <span class="nf">create_dimension_description</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;the function creates an instance of DimensionDescription.</span>
-
-<span class="sd">    create_dimension_description gives an instance of the class</span>
-<span class="sd">    DimensionDescription from a label and an column of values of type</span>
-<span class="sd">    pandas.core.series.Series.</span>
-
-<span class="sd">    If column is None, the DimensionDescription instance will be of</span>
-<span class="sd">    dimension_type &#39;mixed&#39; by default.</span>
-
-<span class="sd">    When using this function, no unit is specified, so</span>
-<span class="sd">    dimension_description.unit will be None.</span>
-
-<span class="sd">    **Parameters**</span>
-
-<span class="sd">    - label:</span>
-<span class="sd">        label for the DimensionDescription instance</span>
-<span class="sd">        (type str)</span>
-<span class="sd">    - column:</span>
-<span class="sd">        values to determine the dimension_type of the DimensionDescription</span>
-<span class="sd">        (type pandas.core.series.Series, shape (n,1))</span>
-
-<span class="sd">    **returns**</span>
-<span class="sd">    DimensionDescription instance</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;label must be of type str&quot;</span><span class="p">)</span>
-    <span class="c1"># if no table of value is given:</span>
-    <span class="k">if</span> <span class="n">column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">series</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column must be of type pandas.core.series.Series&quot;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;column must be of shape (n,1)&quot;</span><span class="p">)</span>
-    <span class="c1"># if a table of value is given, we must determine the dimension_type</span>
-    <span class="c1"># we must check all the elements to make sure it is not a &#39;mixed&#39; type</span>
-    <span class="n">dimension_type</span> <span class="o">=</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">not_mixed</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">not_mixed</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">column</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">dimension_type</span> <span class="o">==</span> <span class="n">DimensionDescription</span><span class="o">.</span><span class="n">infertype</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">not_mixed</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="n">not_mixed</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">dimension_type</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">DimensionDescription</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="check_bank_unit"><a class="viewcode-back" href="../xdata.html#xdata.check_bank_unit">[docs]</a><span class="k">def</span> <span class="nf">check_bank_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The functions checks if this unit is in one of the conversion tables of</span>
 <span class="sd">    the bank. If so, it returns the conversion table, else, it returns None</span>
@@ -2596,7 +2575,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
-      Last updated on Jul 19, 2017.
+      Last updated on Jul 20, 2017.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>

@@ -238,7 +238,7 @@ the form of a list (e.g. [&#8216;mm&#8217;, 10**(-3), &#8216;m&#8217;, 1]).</p>
 <p><strong>Methods</strong></p>
 <ul class="simple">
 <li><dl class="first docutils">
-<dt>set_dimtype_to_mixed:</dt>
+<dt>set_dim_type_to_mixed:</dt>
 <dd>changing the dimension_type to &#8216;mixed&#8217; if adding values that are not
 of the correct dimension_type (merging lines for instance)</dd>
 </dl>
@@ -252,7 +252,7 @@ of the correct dimension_type (merging lines for instance)</dd>
 <p><em>(static methods)</em></p>
 <ul class="simple">
 <li><dl class="first docutils">
-<dt>infertype(x, getdefaultvalue=False):</dt>
+<dt>infer_type(x, getdefaultvalue=False):</dt>
 <dd>gives the dimension_type of the x element and possibly the associated
 defaultvalue</dd>
 </dl>
@@ -408,7 +408,7 @@ returns the corresponding values of the first column.</dd>
 <h2>CategoricalHeader  class<a class="headerlink" href="#categoricalheader-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="xdata.CategoricalHeader">
-<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">CategoricalHeader</code><span class="sig-paren">(</span><em>label</em>, <em>column_descriptors=None</em>, <em>n_elem=None</em>, <em>values=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#CategoricalHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.CategoricalHeader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xdata.</code><code class="descname">CategoricalHeader</code><span class="sig-paren">(</span><em>label</em>, <em>column_descriptors=None</em>, <em>values=None</em>, <em>n_elem=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#CategoricalHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.CategoricalHeader" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class allows the creation of a header for a categorical dimension
 of a dataset.</p>
 <p>CategoricalHeader is used for categorical dimensions of a dataset. This
@@ -440,20 +440,20 @@ be a list of int [1, 2, ...], it is undifferentiated)</p>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>n_elem:</dt>
-<dd><p class="first">number of element in the column(s)</p>
-<p>(type int)</p>
-<p class="last">(optional if values is specified)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
 <dt>values:</dt>
 <dd><p class="first">content of the various subdimensions</p>
 <p>(type DataFrame from pandas (pandas.core.frame.DataFrame) of shape
 (n_elem, len(column_descriptors))</p>
 <p class="last">(optional if it is just undifferentiated series of measures and that
 n_elem is given)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>n_elem:</dt>
+<dd><p class="first">number of element in the column(s)</p>
+<p>(type int)</p>
+<p class="last">(optional if values is specified)</p>
 </dd>
 </dl>
 </li>
@@ -505,7 +505,7 @@ fields are the same) it can be used by writing header1 == header2</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>get_n_columns:</dt>
+<dt>n_column:</dt>
 <dd>gives the number of columns (1 for MeasureHeader, 0 to n for
 CategoricalHeader)</dd>
 </dl>
@@ -737,7 +737,7 @@ fields are the same) it can be used by writing header1 == header2</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>get_n_columns:</dt>
+<dt>n_column:</dt>
 <dd>gives the number of columns (1 for MeasureHeader, 0 to n for
 CategoricalHeader)</dd>
 </dl>
@@ -1216,7 +1216,7 @@ a conversion table for the given unit if it exists in the bank</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
-      Last updated on Jul 19, 2017.
+      Last updated on Jul 20, 2017.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
