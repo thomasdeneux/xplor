@@ -30,7 +30,7 @@ a = xdata.Color('red')
 
 import mock
 
-MOCK_MODULES = ['numpy', 'abc', 'pandas']
+MOCK_MODULES = ['numpy', 'abc', 'pandas', 'abc.ABC', 'abc.abstractmethod']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
