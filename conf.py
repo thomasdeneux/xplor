@@ -27,7 +27,6 @@ a = xdata.Color('red')
 
 # -- Configuration for Read the docs --------------------------------------
 
-import sys
 from unittest.mock import MagicMock
 
 class Mock(MagicMock):
@@ -35,7 +34,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['numpy', 'pandas']
+MOCK_MODULES = ['numpy']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- General configuration ------------------------------------------------
