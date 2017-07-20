@@ -4,5 +4,6 @@ python:
 cache: pip
 install:
   - pip install pandas
+  - pip install -e git+https://github.com/vispy/vispy#egg=vispy-dev
 script:
   - python xplor/tests.py

@@ -1,0 +1,49 @@
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Tutorial
+********
+
+This tutorial shows the basic features of xplor based on the Matlab version.
+A more complete tutorial will be available once the first version for python
+is released.
+
+**Screenshot of the command line to start xplor**
+
+.. image:: \images\screenshots\unemploymentexample\callingxplor.png
+   :align: center
+   :alt: Screenshot of the command line to start xplor
+
+**Screenshot of the set headers window**
+
+.. image:: \images\screenshots\unemploymentexample\setheaders.png
+   :align: center
+   :alt: Screenshot of the set headers window
+
+**Screenshot of the initial display**
+
+.. image:: \images\screenshots\unemploymentexample\initialdisplay.png
+   :align: center
+   :alt: Screenshot of the initial display
+
+**Screenshot of the creation of filters**
+
+.. image:: \images\screenshots\unemploymentexample\filtercreation.png
+   :align: center
+   :alt: Screenshot of the creation of filters
+
+**Screenshot of a comparative display**
+
+.. image:: \images\screenshots\unemploymentexample\comparison.png
+   :align: center
+   :alt: Screenshot of a comparative display
+
+
+
+**Screenshot of an average**
+
+.. image:: \images\screenshots\unemploymentexample\average.png
+   :align: center
+   :alt: Screenshot of an average
+

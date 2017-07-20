@@ -48,7 +48,15 @@ There are 6 classes in this module:
         headers describing each of the N dimensions, stored in a list. Xdata
         also has the name of the whole set of data and a data_descriptor
         attribute to describe the data.
-    
+
+There are 2 functions in this class:
+    - **create_dimension_description**:
+        create_dimension_description gives an instance of the class
+        DimensionDescription from a label and an column of values of type
+        pandas.core.series.Series.
+    - **check_bank_unit**:
+        The functions checks if this unit is in one of the conversion tables of
+        the bank. If so, it returns the conversion table, else, it returns None
 """
 
 # Authors: Elodie Ikkache CNRS <elodie.ikkache@student.ecp.fr>
@@ -506,105 +514,6 @@ class Header(ABC):
         ind: numpy.array of shape (n,)
         
         basics checks when updating data and giving a new header
-        
-    **Examples**
-
-     *CategoricalHeader: (with values)*
-         label: 'fruits'
-
-         column_descriptors: (list of DimensionDescriptors, simplified here)
-             1/ label: 'fruits', dimension_type: 'string', no unit
-             
-             2/ label: 'prices', dimension_type: 'numeric', unit: 'euros/kg'
-             
-             3/ label: 'color', dimension_type: 'string', no unit
-             
-         n_elem: 4
-
-         values:
-             [['apple', 0.5, 'red' ]
-
-             ['pear', 0.75, 'green']
-
-             ['banana', 0.66, 'yellow']
-
-             ['cherry', 0.89, 'red']]
-             
-                        
-                                        'fruits'
-
-                        ======== ========== =======
-                         fruits    prices    color
-                        ======== ========== =======
-                         apple   0.5        red
-                         pear    0.75       green
-                         banana  0.66       yellow
-                         cherry  0.89       red
-                        ======== ========== =======
-
-
-
-    *CategoricalHeader: (undifferentiated)*
-         label: 'fruits'
-         
-         column_descriptors: (list of DimensionDescriptors): None
-                 
-         n_elem: 4
-         
-         values: None
-            
-                          'fruits'
-
-                        +---------+
-                        | fruits  |
-                        +=========+
-                        | 1       |
-                        +---------+
-                        | 2       |
-                        +---------+
-                        | 3       |
-                        +---------+
-                        | 4       |
-                        +---------+
-
-
-
-    *MeasureHeader:*
-        label: 'x'
-        
-        column_descriptors: (list of one DimensionDescription)
-        
-            label: 'x', 
-            
-            dimension_type: 'numeric',
-            
-            unit: 'mm',
-            
-            all_units: [{unit: 'mm', 'value': 10**(-3)}, {unit: 'm',
-            'value': 1}]
-            
-        n-elem: 4
-        
-        start: 1
-        
-        scale: 2
-
-
-                                        'x'
-
-                                        +-----+
-                                        | x   |
-                                        +=====+
-                                        | 1   |
-                                        +-----+
-                                        | 3   |
-                                        +-----+
-                                        | 5   |
-                                        +-----+
-                                        | 7   |
-                                        +-----+
-
-
     """
 
     # Define an abstract constructor which will not be used, but serves for
@@ -869,68 +778,6 @@ class CategoricalHeader(Header):
         When merging some data, the corresponding header's lines must be
         merged as well. merge_lines returns for each column all the
         encountered values with no repetitions in the from of a pandas Series.
-
-    **Example**
-
-    *(with values)*
-
-         label: 'fruits'
-
-         column_descriptors: (list of DimensionDescriptors, simplified here)
-             1/ label: 'fruits', dimension_type: 'string', no unit
-
-             2/ label: 'prices', dimension_type: 'numeric', unit: 'euros/kg'
-
-             3/ label: 'color', dimension_type: 'string', no unit
-
-         n_elem: 4
-
-         values:
-             [['apple', 0.5, 'red' ]
-
-             ['pear', 0.75, 'green']
-
-             ['banana', 0.66, 'yellow']
-
-             ['cherry', 0.89, 'red']]
-
-
-                                        'fruits'
-
-                        ======== ========== =======
-                         fruits    prices    color
-                        ======== ========== =======
-                         apple   0.5        red
-                         pear    0.75       green
-                         banana  0.66       yellow
-                         cherry  0.89       red
-                        ======== ========== =======
-
-
-    *(undifferentiated)*
-
-         label: 'fruits'
-
-         column_descriptors (list of DimensionDescriptors): None
-
-         n_elem: 4
-
-         values: None
-
-                          'fruits'
-
-                        +---------+
-                        | fruits  |
-                        +=========+
-                        | 1       |
-                        +---------+
-                        | 2       |
-                        +---------+
-                        | 3       |
-                        +---------+
-                        | 4       |
-                        +---------+
-
     """
 
     # noinspection PyMissingConstructor
@@ -1150,7 +997,6 @@ class CategoricalHeader(Header):
                                     DimensionDescription.infer_type(
                                     values[j][i])):
                                 column_descriptors[j].set_dim_type_to_mixed()
-                                i = values.shape[0]
                 return CategoricalHeader(self._label,
                                          column_descriptors,
                                          values=values)
@@ -1527,45 +1373,6 @@ class MeasureHeader(Header):
         and the specified changes
     - copy:
         creates a copy of a MeasureHeader instance
-
-
-    **Example**
-
-        label: 'x'
-
-        column_descriptors: (list of one DimensionDescription)
-
-            label: 'x',
-
-            dimension_type: 'numeric',
-
-            unit: 'mm',
-
-            all_units: [{unit: 'mm', 'value': 10**(-3)}, {unit: 'm',
-            'value': 1}]
-
-        n-elem: 4
-
-        start: 1
-
-        scale: 2
-
-
-                                        'x'
-
-                                        +-----+
-                                        | x   |
-                                        +=====+
-                                        | 1   |
-                                        +-----+
-                                        | 3   |
-                                        +-----+
-                                        | 5   |
-                                        +-----+
-                                        | 7   |
-                                        +-----+
-
-
     """
 
     # noinspection PyMissingConstructor
@@ -1831,7 +1638,7 @@ class Xdata:
     - update_data(new_data):
         Simply changing some values in data by giving a whole new numpy array.
         Those changes can change the length of measure headers or categorical
-        headers tht are undifferentiated. This method returns a new Xdata
+        headers that are undifferentiated. This method returns a new Xdata
         instance.
     - update_xdata(flag, dim, ind, data_slices, modified_header):
         - flag
@@ -1875,7 +1682,7 @@ class Xdata:
        the shape of data might be modified but the dimensions are still
        representing the same thing(DimensionDescriptions are not changed,
        (except for dimension_type that might become 'mixed' if some lines are
-       merged)).It returns a new data instance.
+       merged)).It returns a new data instance. TODO : change the returns part
 
     - modify_dimensions(flag, dim, new_data, new_headers):
         - flag
@@ -1899,146 +1706,7 @@ class Xdata:
         to modify the DimensionDescriptions in the list of headers (and
         therefore the data) new headers do not represent the same thing as
         before. This method also allows to change the number of dimensions.
-        It returns a new Xdata instance.
-
-
-    **Example**
-
-    Let's take the example of children throwing a ball.
-    We are interested in the height of the ball over time, for each child, and
-    for each throw.
-
-    In this example, we have 3 dimensions:
-         - time
-         - child
-         - number of the throw, that we are going to call repetition
-
-    Therefore, headers will be a list of the 3 headers given below:
-
-        - time is a MeasureHeader:
-
-        label: 't'
-
-        column_descriptors: (list of one DimensionDescription)
-
-            label: 't',
-
-            dimension_type: 'numeric',
-
-            unit: 'ms',
-
-            all_units: [{unit: 'ms', 'value': 10**(-3)},
-            {unit: 's', 'value': 1}]
-
-        n-elem: 3000
-
-        start: 0
-
-        scale: 2
-
-
-
-                                        't'
-
-                                        +-----+
-                                        | t   |
-                                        +=====+
-                                        | 0   |
-                                        +-----+
-                                        | 2   |
-                                        +-----+
-                                        | 4   |
-                                        +-----+
-                                        | 6   |
-                                        +-----+
-                                        | ... |
-                                        +-----+
-
-        - repetition is a CategoricalHeader that is undifferentiated
-
-         label: 'repetitions'
-
-         column_descriptors (list of DimensionDescriptors): None
-
-         n_elem: 8
-
-         values: None
-
-                          'repetitions'
-
-                        +--------------+
-                        | repetitions  |
-                        +==============+
-                        | 0            |
-                        +--------------+
-                        | 1            |
-                        +--------------+
-                        | 2            |
-                        +--------------+
-                        | 3            |
-                        +--------------+
-                        | 4            |
-                        +--------------+
-                        | 5            |
-                        +--------------+
-                        | 6            |
-                        +--------------+
-                        | 7            |
-                        +--------------+
-
-
-        - child is a CategoricalHeader with values (because we can store some
-            complementary information)
-
-         label: 'child'
-
-         column_descriptors: (list of DimensionDescriptors, simplified here)
-
-             1/ label: 'name', dimension_type: 'string', no unit
-
-             2/ label: 'age', dimension_type: 'numeric', unit: 'year old'
-
-             3/ label: 'gender', dimension_type: 'string', no unit
-
-         n_elem: 5
-
-         values:
-
-
-             [['Emily', 8, 'female' ]
-
-             ['Paul', 7, 'male']
-
-             ['Helen', 9, 'female']
-
-             ['Lily', 7, 'female']
-
-             ['James', 9, 'male']]
-
-
-                                        'child'
-
-                        ======== ====== =======
-                         name     age    gender
-                        ======== ====== =======
-                         Emily   8      female
-                         Paul    7      male
-                         Helen   9      female
-                         Lily    7      female
-                         James   9      male
-                        ======== ====== =======
-
-
-        Now we have our list of headers, of length 3.
-
-
-        The corresponding data is 3D array containing the values of the height
-        of the ball at all time for each of the children's throw. It is
-        described (dimension_type and unit) in data_descriptor.
-
-        All we miss is the name of this set of data and headers: "height of
-        the throw of a ball"
-
+        It returns a new Xdata instance. TODO : change the returns part
     """
     def __init__(self,
                  name,
@@ -2154,6 +1822,7 @@ class Xdata:
         # once all headers are updated, update the data itself
         new_xdata._data = new_data
         return new_xdata
+        # TODO : notify instead of returns
 
     def update_xdata(self, flag, dim, ind, data_slices, modified_header):
         """creates a new Xdata instance with the same attributes as the
@@ -2669,6 +2338,7 @@ class Xdata:
         # flag argument is either not a flag or not one accepted by this method
         raise Exception("flag must be 'all', 'chg', 'new', 'remove', 'perm' "
                         "'chg&new' or 'chg&rm'")
+        # TODO : notify instead of returns
 
     def modify_dimensions(self, flag, dim, new_data, new_headers):
         """creates a new Xdata instance with changes for the dimensions"""
@@ -2786,6 +2456,7 @@ class Xdata:
         # flag argument is either not a flag or not one accepted by this method
         raise Exception("flag must be 'global', 'dim_chg', 'dim_insert', "
                         "'dim_rm', or 'dim_perm'")
+        # TODO : notify instead of returns
 
 
 def check_bank_unit(unit):

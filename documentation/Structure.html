@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Structure &#8212; Xplor your data</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon1.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module xdata : defining a data structure" href="xdata.html" />
+    <link rel="prev" title="Overview" href="Overview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xdata.html" title="Module xdata : defining a data structure"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Overview.html" title="Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="structure">
+<h1>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>The three main modules are :</dt>
+<dd><ul class="first last simple">
+<li><strong>view</strong>, the user interface,</li>
+<li><strong>xdata</strong>, the data container,</li>
+<li><strong>operation</strong>, to apply filters.</li>
+</ul>
+</dd>
+</dl>
+<p>The following UML diagram shows the the main structure of the toolbox. The use
+of each of the module is presented below. They are further detailed in the
+next pages of the documentation.
+At the last section of the page, the main interactions between the classes are
+described in sequence diagrams.</p>
+<div class="section" id="uml-diagram-of-all-xplor-s-modules">
+<h2>UML diagram of all Xplor&#8217;s modules<a class="headerlink" href="#uml-diagram-of-all-xplor-s-modules" title="Permalink to this headline">¶</a></h2>
+<p><strong>UML diagram of the global structure of the toolbox</strong></p>
+<img alt="UML diagram of all Xplor's modules" class="align-center" src="_images/GlobalDiagram.png" />
+</div>
+<div class="section" id="presentation-of-the-modules">
+<h2>Presentation of the modules<a class="headerlink" href="#presentation-of-the-modules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="view">
+<h3>view<a class="headerlink" href="#view" title="Permalink to this headline">¶</a></h3>
+<p><strong>view</strong>&#8216;s main class is Window. Window creates the canvas (i.e. the window)
+on witch to display the data. This canvas is composed of a control zone, where
+the user can select the filters (of the operation module) to apply, and a
+display zone, in which the user can zoom and change the labels&#8217; position.
+Window also possesses a Slicer instance and a ZoomSlicer instance (both of the
+operation module) to apply the correct filters on the Xdata instance.</p>
+<p><strong>Screenshot of the Window with the control zone and the display zone</strong></p>
+<img alt="Screenshot of Window" class="align-center" src="_images/windowExp.png" />
+</div>
+<div class="section" id="xdata">
+<h3>xdata<a class="headerlink" href="#xdata" title="Permalink to this headline">¶</a></h3>
+<p>The module <strong>xdata</strong> aims at the creation of a container for the N dimensional
+data and all the relative information on the dimensions and the data itself.</p>
+<p>The metadata of a dimension is stored in a header.</p>
+<p><strong>Example of a MeasureHeader instance</strong></p>
+<img alt="illustration for a measure header" class="align-center" src="_images/measureheader.png" />
+<p>The data, the headers and other metadata are contained in the xdata object.</p>
+<p><strong>Example of a Xdata instance</strong></p>
+<img alt="illustration for a xdata element" class="align-center" src="_images/xdataexample.png" />
+</div>
+<div class="section" id="operation">
+<h3>operation<a class="headerlink" href="#operation" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>The module <strong>operation</strong> contains two main classes :</dt>
+<dd><ul class="first last simple">
+<li>Filters</li>
+<li>Slicers</li>
+</ul>
+</dd>
+</dl>
+<p>The slicer and zoomslicer elements apply a succession of Filters on
+the Xdata instance. The result of those operations is what is going to be
+displayed on the canvas.</p>
+<p>The interactions between the various classes are illustrated by the sequence
+diagrams of the next section.</p>
+</div>
+<div class="section" id="list-display">
+<h3>list_display<a class="headerlink" href="#list-display" title="Permalink to this headline">¶</a></h3>
+<p><strong>list_display</strong>&#8216;s main class is ListDisplay. It is an interface for the user
+to select what data is to be displayed. For each filter created from the
+control zone of a Window instance, a new List instance appears.</p>
+<p><strong>Screenshot of the ListDisplay and the Window</strong></p>
+<img alt="Screenshot of the ListDisplay element" class="align-center" src="_images/Filtre.png" />
+</div>
+<div class="section" id="bank">
+<h3>bank<a class="headerlink" href="#bank" title="Permalink to this headline">¶</a></h3>
+<p><strong>bank</strong> is used to store previously used Headers and units, to save the user
+some time.</p>
+</div>
+<div class="section" id="header-edit">
+<h3>header_edit<a class="headerlink" href="#header-edit" title="Permalink to this headline">¶</a></h3>
+<p><strong>header_edit</strong> allows the initialisation of a Xdata element : the user
+specifies the headers&#8217; labels and units. It suggests some previously used
+labels and units thanks to Bank.</p>
+<p><strong>Screenshot of the set headers window</strong></p>
+<img alt="Screenshot of set headers window" class="align-center" src="_images/setHeaders.PNG" />
+</div>
+<div class="section" id="gui-tools">
+<h3>GUI_tools<a class="headerlink" href="#gui-tools" title="Permalink to this headline">¶</a></h3>
+<p><strong>GUI_tools</strong> is a set of tools for the interface.</p>
+</div>
+</div>
+<div class="section" id="sequence-diagrams-events-handling">
+<h2>Sequence Diagrams, events handling<a class="headerlink" href="#sequence-diagrams-events-handling" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="initialisation-of-the-window">
+<h3>Initialisation of the Window<a class="headerlink" href="#initialisation-of-the-window" title="Permalink to this headline">¶</a></h3>
+<p><strong>Sequence Diagram of the creation of a Window</strong></p>
+<img alt="Sequence diagram of the creation of a Window" class="align-center" src="_images/InitialisationSequence.png" />
+<p><strong>Screenshot of the Window with the control zone and the display zone</strong></p>
+<img alt="Screenshot of Window" class="align-center" src="_images/windowExp.png" />
+<p>In the control part of Window, a list of the dimensions appears. The user will
+then be able to create a filter for each dimension by selecting it in the list.
+What happens then is described in the next section.</p>
+</div>
+<div class="section" id="initialisation-of-a-filter">
+<h3>Initialisation of a filter<a class="headerlink" href="#initialisation-of-a-filter" title="Permalink to this headline">¶</a></h3>
+<p><strong>Sequence Diagram of the creation of a filter</strong></p>
+<img alt="Sequence diagram of the creation of a filter" class="align-center" src="_images/FilterSequence.png" />
+<p>When the user creates a filter, it appears in the control zone as well as in
+the ListDisplay element.</p>
+<p>The ListDisplay element could interact with several windows. It&#8217;s main function
+is to allow the user to chose what values to give to a filter, to select what
+data will be displayed.</p>
+<p>The filter that appears in the control zone allows the user to change the
+order of the filters to apply but also to activate/deactivate a filter for
+this specific window.</p>
+<p>Each time a filter is created, it&#8217;s default value is to only keep the first
+element of it&#8217;s dimension.</p>
+<p><strong>Screenshot of the newly created ListDisplay element and the Window</strong></p>
+<img alt="Screenshot of ListDisplay and the Window" class="align-center" src="_images/ListDisplay.PNG" />
+</div>
+<div class="section" id="changing-a-filter-with-the-listdisplay-element">
+<h3>Changing a filter with the ListDisplay element<a class="headerlink" href="#changing-a-filter-with-the-listdisplay-element" title="Permalink to this headline">¶</a></h3>
+<p><strong>Sequence Diagram of the modification of a filter</strong></p>
+<img alt="Screenshot of the ListDisplay" class="align-center" src="_images/ListDisplaySequence.png" />
+<p>The user can change the selection in ListDisplay to change the filter. The new
+selected slice will appear on the display zone.</p>
+<p><strong>Screenshot of the changed ListDisplay element and the Window</strong></p>
+<img alt="Screenshot of ListDisplay and the Window" class="align-center" src="_images/Filtre.PNG" />
+</div>
+<div class="section" id="zooming-in-or-out">
+<h3>Zooming in or out<a class="headerlink" href="#zooming-in-or-out" title="Permalink to this headline">¶</a></h3>
+<p><strong>Sequence Diagram for a zoom action</strong></p>
+<img alt="Sequence diagram for a zoom action" class="align-center" src="_images/ZoomSequence.png" />
+<p><strong>Screenshot of ListDisplay and the Window after a zoom action</strong></p>
+<img alt="Screenshot after a zoom action" class="align-center" src="_images/Zoom.PNG" />
+<p>The side and upper bar allow the user to zoom in and out in each of the
+dimensions separately. Only a part of the data will appear.</p>
+<p>Another possibility is to bind the data in a dimension. All the elements
+within the binding step will be averaged to form a new element. All the new
+elements will be displayed.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/xplor.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Structure</a><ul>
+<li><a class="reference internal" href="#uml-diagram-of-all-xplor-s-modules">UML diagram of all Xplor&#8217;s modules</a></li>
+<li><a class="reference internal" href="#presentation-of-the-modules">Presentation of the modules</a><ul>
+<li><a class="reference internal" href="#view">view</a></li>
+<li><a class="reference internal" href="#xdata">xdata</a></li>
+<li><a class="reference internal" href="#operation">operation</a></li>
+<li><a class="reference internal" href="#list-display">list_display</a></li>
+<li><a class="reference internal" href="#bank">bank</a></li>
+<li><a class="reference internal" href="#header-edit">header_edit</a></li>
+<li><a class="reference internal" href="#gui-tools">GUI_tools</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sequence-diagrams-events-handling">Sequence Diagrams, events handling</a><ul>
+<li><a class="reference internal" href="#initialisation-of-the-window">Initialisation of the Window</a></li>
+<li><a class="reference internal" href="#initialisation-of-a-filter">Initialisation of a filter</a></li>
+<li><a class="reference internal" href="#changing-a-filter-with-the-listdisplay-element">Changing a filter with the ListDisplay element</a></li>
+<li><a class="reference internal" href="#zooming-in-or-out">Zooming in or out</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Overview.html"
+                        title="previous chapter">Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="xdata.html"
+                        title="next chapter">Module xdata : defining a data structure</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Structure.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xdata.html" title="Module xdata : defining a data structure"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Overview.html" title="Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
+      Last updated on Jul 19, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

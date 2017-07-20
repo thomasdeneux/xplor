@@ -24,9 +24,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon1.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module xdata : defining a data structure" href="xdata.html" /> 
+    <link rel="next" title="Tutorial" href="Tutorial.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,7 +40,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="xdata.html" title="Module xdata : defining a data structure"
+          <a href="Tutorial.html" title="Tutorial"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Xplor your data</a> &#187;</li> 
       </ul>
@@ -52,23 +53,65 @@
             
   <div class="section" id="welcome-to-xplor-s-documentation">
 <h1>Welcome to xplor&#8217;s documentation!<a class="headerlink" href="#welcome-to-xplor-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Table of Contents:</p>
+<p>The first version of xplor in Python with soon be available!</p>
+<div class="section" id="introduction">
+<h2>Introduction:<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Xplor is a free toolbox to visualise as easily as possible your N dimensional
+data.
+It started as a project for neuroscience at CNRS (French National Center for
+Scientific Research), however it can be used for any type of data as shown in
+the examples below.</p>
+<img alt="example of data displayed with xplor" class="align-center" src="_images/Window.PNG" />
+<img alt="example of data displayed with xplor" class="align-center" src="_images/unemployment.PNG" />
+<p>It is available on github:</p>
+<p><a class="reference external" href="https://github.com/thomasdeneux/xplor">https://github.com/thomasdeneux/xplor</a></p>
+<p>The toolbox is also available for matlab:</p>
+<p><a class="reference external" href="https://github.com/thomasdeneux/xplor-Matlab">https://github.com/thomasdeneux/xplor-Matlab</a>-</p>
+<p>This documentation presents some tutorials on how to use the toolbox as well as
+the architecture of the code so that you can go through it more easily.
+Feel free to build on top of the existing code to answer your needs!</p>
+</div>
+<div class="section" id="index">
+<h2>Index:<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Overview.html#window-object">window object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview.html#xdata-object">xdata object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview.html#filter-object">filter object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Structure.html">Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Structure.html#uml-diagram-of-all-xplor-s-modules">UML diagram of all Xplor&#8217;s modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Structure.html#presentation-of-the-modules">Presentation of the modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Structure.html#sequence-diagrams-events-handling">Sequence Diagrams, events handling</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="xdata.html">Module xdata : defining a data structure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="xdata.html#color-class">Color class:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xdata.html#dimensiondescription-class">DimensionDescription class:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xdata.html#header-abstract-class">Header abstract class:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xdata.html#categoricalheader-class">CategoricalHeader  class:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xdata.html#measureheader-class">MeasureHeader class:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xdata.html#xdata-class">Xdata class:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#color-class">Color class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#dimensiondescription-class">DimensionDescription class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#header-abstract-class">Header abstract class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#categoricalheader-class">CategoricalHeader  class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#measureheader-class">MeasureHeader class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#xdata-class">Xdata class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#create-dimension-description-function">create_dimension_description function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdata.html#check-bank-unit-function">check_bank_unit function</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Annexes.html">Annexes : Various functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Annexes.html#in-the-xdata-module">In the xdata module:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="view.html">Module view : user interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Credits.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#numpy">numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#pandas">pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#vispy-and-pyqt">Vispy and PyQt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#sphinx">Sphinx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#travis-ci">Travis CI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#websequencediagrams">WebSequenceDiagrams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Credits.html#umletino">UMLetino</a></li>
 </ul>
 </li>
 </ul>
+</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
@@ -86,17 +129,22 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/xplor.png" alt="Logo"/>
+            </a></p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to xplor&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction:</a></li>
+<li><a class="reference internal" href="#index">Index:</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="xdata.html"
-                        title="next chapter">Module xdata : defining a data structure</a></p>
+  <p class="topless"><a href="Tutorial.html"
+                        title="next chapter">Tutorial</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -128,13 +176,14 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="xdata.html" title="Module xdata : defining a data structure"
+          <a href="Tutorial.html" title="Tutorial"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Xplor your data</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
+      Last updated on Jul 19, 2017.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>

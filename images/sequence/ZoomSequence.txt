@@ -1,0 +1,33 @@
+
+participant User as u
+
+participant Window as w
+
+participant ViewControl as vc
+participant ListDisplay as ld
+
+participant Data as d
+
+participant Slicer as s
+participant Filter as f
+participant Slice
+
+participant ViewDisplay as vd
+participant ZoomSlicer as zs
+participant ZoomFilter as zf
+participant ZoomSlice
+
+
+
+ 
+
+note leftof u : visualisation already instanciated
+
+note leftof u : zooming
+
+u -> vd : zoom in one of the dimensiosn
+vd -> zf: modifies zoomfilter
+zf --> zs : notifies
+zs -> ZoomSlice : updates
+ZoomSlice --> vd : notifies
+note over vd : new display

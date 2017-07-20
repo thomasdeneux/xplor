@@ -24,8 +24,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon1.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Annexes : Libraries and other tools" href="Library.html" />
     <link rel="prev" title="Module xdata : defining a data structure" href="xdata.html" /> 
   </head>
   <body role="document">
@@ -38,6 +40,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="Library.html" title="Annexes : Libraries and other tools"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="xdata.html" title="Module xdata : defining a data structure"
              accesskey="P">previous</a> |</li>
@@ -55,54 +60,7 @@
 <div class="section" id="annexes-various-functions">
 <h1>Annexes : Various functions<a class="headerlink" href="#annexes-various-functions" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="in-the-xdata-module">
-<h2>In the xdata module:<a class="headerlink" href="#in-the-xdata-module" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="createdimensionsdescription">
-<h3>createDimensionsDescription<a class="headerlink" href="#createdimensionsdescription" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt id="xdata.createDimensionDescription">
-<code class="descclassname">xdata.</code><code class="descname">createDimensionDescription</code><span class="sig-paren">(</span><em>label</em>, <em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#createDimensionDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.createDimensionDescription" title="Permalink to this definition">¶</a></dt>
-<dd><p>the function creates an instance of DimensionDescription.</p>
-<p>createDimensionDescription gives an instance of the class
-DimensionDescription from a label and an column of values of type
-pandas.core.series.Series.</p>
-<p>If column is None, the DimensionDescription instance will be of
-dimension_type &#8216;mixed&#8217; by default.</p>
-<p>When using this function, no unit is specified, so
-dimensiondescription.unit will be None.</p>
-<p><strong>Parameters</strong></p>
-<ul class="simple">
-<li><dl class="first docutils">
-<dt>label:</dt>
-<dd>label for the DimensionDescription instance
-(type str)</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>column :</dt>
-<dd>values to determine the dimension_type of the DimensionDescription
-(type pandas.core.series.Series, shape (n,1))</dd>
-</dl>
-</li>
-</ul>
-<p><strong>returns</strong>
-DimensionDescription instance</p>
-</dd></dl>
-
-</div>
-<div class="section" id="check-bank">
-<h3>check_bank<a class="headerlink" href="#check-bank" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt id="xdata.check_bank">
-<code class="descclassname">xdata.</code><code class="descname">check_bank</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xdata.html#check_bank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdata.check_bank" title="Permalink to this definition">¶</a></dt>
-<dd><p>The functions checks if this unit is in one of the conversion tables of
-the bank. If so, it returns the conversion table, else, it returns None</p>
-<p><strong>Parameters</strong>
-- unit: type str, name of the unit</p>
-<p><strong>returns</strong>
-conversion table for the given unit if it exists in the bank</p>
-</dd></dl>
-
-</div>
+<h2>In the xdata module<a class="headerlink" href="#in-the-xdata-module" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -112,14 +70,13 @@ conversion table for the given unit if it exists in the bank</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/xplor.png" alt="Logo"/>
+            </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Annexes : Various functions</a><ul>
-<li><a class="reference internal" href="#in-the-xdata-module">In the xdata module:</a><ul>
-<li><a class="reference internal" href="#createdimensionsdescription">createDimensionsDescription</a></li>
-<li><a class="reference internal" href="#check-bank">check_bank</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#in-the-xdata-module">In the xdata module</a></li>
 </ul>
 </li>
 </ul>
@@ -127,6 +84,9 @@ conversion table for the given unit if it exists in the bank</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="xdata.html"
                         title="previous chapter">Module xdata : defining a data structure</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Library.html"
+                        title="next chapter">Annexes : Libraries and other tools</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -158,6 +118,9 @@ conversion table for the given unit if it exists in the bank</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="Library.html" title="Annexes : Libraries and other tools"
+             >next</a> |</li>
+        <li class="right" >
           <a href="xdata.html" title="Module xdata : defining a data structure"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Xplor your data</a> &#187;</li> 
@@ -165,6 +128,7 @@ conversion table for the given unit if it exists in the bank</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Elodie Ikkache, Thomas Deneux.
+      Last updated on Jul 18, 2017.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>

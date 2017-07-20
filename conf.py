@@ -20,6 +20,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('xplor'))
+sys.path.insert(0, os.path.abspath('image'))
 import xdata
 a = xdata.Color('red')
 
@@ -97,15 +98,19 @@ html_theme = "classic"
 #
 html_theme_options = {
     "stickysidebar" : "true",
-    "relbarbgcolor": "black"
+    "relbarbgcolor": "black",
+    "visitedlinkcolor": "#a97de8",
+    "linkcolor": "#852563"
 }
 html_title = "Xplor your data"
+html_favicon = "images/favicons/favicon1.ico"
+html_logo = "images/logos/xplor.png"
+html_last_updated_fmt =  '%b %d, %Y'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
 
 # -- Options for HTMLHelp output ------------------------------------------
 

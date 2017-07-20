@@ -1,0 +1,37 @@
+
+participant User as u
+
+participant Window as w
+
+participant ViewControl as vc
+participant ListDisplay as ld
+
+participant Data as d
+
+participant Slicer as s
+participant Filter as f
+participant Slice
+
+participant ViewDisplay as vd
+participant ZoomSlicer as zs
+participant ZoomFilter as zf
+participant ZoomSlice
+
+
+note leftof u : creating a filter
+
+u -> vc : clicks on "add filter"
+vc -> f: creates a filter
+note over vc : filter appers in the list of filters
+vc -> ld : creates
+note over ld : ListDisplay appears
+vc -> s : adds the filter
+s --> f : listens
+s -> Slice : updates
+Slice --> vd : notifies
+vd -> vd : turns on flag
+Slice --> zs : notifies
+zs -> zf : updates
+zs -> ZoomSlice : updates
+ZoomSlice --> vd : notifies
+note over vd : new display
