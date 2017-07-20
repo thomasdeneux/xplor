@@ -556,7 +556,7 @@ class Header(ABC):
         return self.is_categorical and self.n_column == 0
 
     # Methods
-    def check_header_update(self, flag, ind, new_header: 'Header'):
+    def check_header_update(self, flag, ind, new_header):
         """basics checks when updating data and giving a new header"""
         # check types of parameters
         assert isinstance(new_header, Header)
@@ -863,7 +863,7 @@ class CategoricalHeader(Header):
         return self._values
 
     # methods
-    def __eq__(self, other: 'CategoricalHeader'):
+    def __eq__(self, other):
         """Override the default Equals behavior"""
         # the two headers must have the same type
         if not isinstance(other, CategoricalHeader):
@@ -1472,7 +1472,7 @@ class MeasureHeader(Header):
         return self._n_elem
 
     # methods
-    def __eq__(self, other: 'MeasureHeader'):
+    def __eq__(self, other):
         """Override the default Equals behavior"""
         # the two headers must have the same type
         if not isinstance(other, MeasureHeader):
