@@ -28,18 +28,18 @@ a = xdata.Color('red')
 # -- Configuration for Read the docs --------------------------------------
 #
 
-import mock
+#import mock
 
-#MOCK_MODULES = ['numpy', 'abc.ABC', 'abc', 'pandas', 'abc.abstractmethod']
-MOCK_MODULES = ['abc', 'numpy', 'abc.ABC']
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
+#MOCK_MODULES = ['numpy', 'abc.ABC', 'pandas', 'abc.abstractmethod']
+#for mod_name in MOCK_MODULES:
+#    sys.modules[mod_name] = mock.Mock()
+#This doesn't work!
 
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = '1.5.1'
+# needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
