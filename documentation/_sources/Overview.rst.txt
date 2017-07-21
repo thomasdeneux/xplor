@@ -6,7 +6,17 @@
 Overview
 ********
 
-Here is a quick presentation of the main elements of xplor:
+Xplor allows users to easily visualise their multi-dimensional data.
+An intuitive interface allows the selection of the filters that will be
+applied to the data before rendering the display.
+
+**Steps in using Xplor**
+
+.. image:: \images\drawings\globalinterest.png
+   :align: center
+   :alt: Main mecanism of Xplor
+
+Here is a quick presentation of the main elements of Xplor:
    - Window : the interface ;
    - Xdata : the container of the data and metadata ;
    - Filter : to display only a slice of the data.

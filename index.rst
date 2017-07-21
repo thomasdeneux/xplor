@@ -15,16 +15,23 @@ Introduction:
 
 Xplor is a free toolbox to visualise as easily as possible your N dimensional
 data.
+
+.. image:: \images\drawings\steps.png
+   :align: center
+   :alt: Main mecanism of Xplor
+
+
+.. image:: \images\drawings\globalinterest.png
+   :align: center
+   :alt: Main mecanism of Xplor
+
+
 It started as a project for neuroscience at CNRS (French National Center for
 Scientific Research), however it can be used for any type of data as shown in
 the examples below.
 
 
-.. image:: \images\screenshots\basicexample\Window.PNG
-   :align: center
-   :alt: example of data displayed with xplor
-
-.. image:: \images\screenshots\unemploymentexample\unemployment.PNG
+.. image:: \images\screenshots\introexamples.PNG
    :align: center
    :alt: example of data displayed with xplor
 

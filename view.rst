@@ -10,3 +10,7 @@ Module view : user interface
 Not implemented yet.
 
 Using vispy
+
+.. image:: \images\drawings\vispy.png
+   :align: center
+   :alt: Using Vispy

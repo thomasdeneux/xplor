@@ -47,6 +47,12 @@ operation module) to apply the correct filters on the Xdata instance.
    :align: center
    :alt: Screenshot of Window
 
+**Interactions between the Window, the Slicer, the Filters and the Xdata**
+
+.. image:: \images\drawings\slicerandfilter.png
+   :align: center
+   :alt: Main mecanism of Xplor
+
 xdata
 +++++
 
