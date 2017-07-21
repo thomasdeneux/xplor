@@ -19,7 +19,7 @@ Then you can launch the toolbox with this simple line of command : xplor mydata
 
 **Screenshot of the command line to start xplor**
 
-.. image:: /images/screenshots/unemploymentexample/callingxplor.png
+.. image:: \images\screenshots\unemploymentexample\callingxplor.png
    :align: center
    :alt: Screenshot of the command line to start xplor
 
