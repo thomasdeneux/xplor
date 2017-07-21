@@ -30,7 +30,7 @@ a = xdata.Color('red')
 
 import mock
 
-MOCK_MODULES = ['numpy', 'abc.ABC', 'abc.ABCMeta', 'abc', 'pandas', 'abc.abstractmethod']
+MOCK_MODULES = ['numpy', 'abc.ABC', 'abc', 'pandas', 'abc.abstractmethod']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
@@ -38,7 +38,7 @@ for mod_name in MOCK_MODULES:
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+ needs_sphinx = '1.5.1'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
