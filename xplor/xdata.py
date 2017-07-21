@@ -68,7 +68,8 @@ There are 2 functions in this class:
 import numpy as np
 import pandas as pd
 # Header is abstract, subclasses are MeasureHeader and CategoricalHeader
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+import abc.ABC
 # itemgetter is used to sort a list of dictionaries
 from operator import itemgetter
 from pprint import pprint
@@ -438,7 +439,7 @@ def create_dimension_description(label, column=None):
     return DimensionDescription(label, dimension_type)
 
 
-class Header(ABC):
+class Header(abc.ABC):
     """ This abstract class allows the creation of headers for the different 
     dimensions of a dataset.
     
