@@ -28,9 +28,9 @@ a = xdata.Color('red')
 # -- Configuration for Read the docs --------------------------------------
 #
 
-#import mock
+import mock
 
-#MOCK_MODULES = ['numpy', 'abc.ABC', 'abc', 'pandas', 'abc.abstractmethod']
+MOCK_MODULES = ['numpy', 'abc.ABC', 'abc', 'pandas', 'abc.abstractmethod']
 #for mod_name in MOCK_MODULES:
 #    sys.modules[mod_name] = mock.Mock()
 
